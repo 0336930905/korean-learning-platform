@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Toast Notifications</title>
+    <style>
+        /* Toast Notification System */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            overflow: hidden;
+            transform: translateX(400px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 4px solid;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-content {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            background: #10b981;
+        }
+
+        .toast.error .toast-icon {
+            background: #ef4444;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem;
+        }
+
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .test-button:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="test-container">
+        <h1>Test Toast Notifications</h1>
+        <p>Click các nút bên dưới để test toast notifications:</p>
+        
+        <button class="test-button" onclick="showToast('Đây là thông báo thành công!', 'success')">
+            Test Success Toast
+        </button>
+        
+        <button class="test-button" onclick="showToast('Đây là thông báo lỗi!', 'error')">
+            Test Error Toast
+        </button>
+        
+        <button class="test-button" onclick="testMultipleToasts()">
+            Test Multiple Toasts
+        </button>
+    </div>
+
+    <script>
+        // Toast Notification System
+        function showToast(message, type = 'success') {
+            console.log('showToast called:', message, type);
+            const container = document.getElementById('toastContainer');
+            
+            if (!container) {
+                console.error('Toast container not found!');
+                return;
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const iconClass = type === 'success' ? 'fas fa-check' : 'fas fa-times';
+            
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <div class="toast-icon">
+                        ✓
+                    </div>
+                    <div class="toast-message">${message}</div>
+                    <button class="toast-close" onclick="hideToast(this)">
+                        ×
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            console.log('Toast added to DOM');
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+                console.log('Toast show class added');
+            }, 100);
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hideToast(toast.querySelector('.toast-close'));
+            }, 5000);
+        }
+
+        function hideToast(button) {
+            console.log('hideToast called');
+            const toast = button.closest('.toast');
+            if (toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                    console.log('Toast removed from DOM');
+                }, 300);
+            }
+        }
+
+        function testMultipleToasts() {
+            showToast('Thông báo 1: Thành công!', 'success');
+            setTimeout(() => showToast('Thông báo 2: Có lỗi xảy ra!', 'error'), 500);
+            setTimeout(() => showToast('Thông báo 3: Hoàn thành!', 'success'), 1000);
+        }
+
+        // Test khi page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, testing toast...');
+            setTimeout(() => {
+                showToast('Chào mừng! Toast system đã sẵn sàng.', 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

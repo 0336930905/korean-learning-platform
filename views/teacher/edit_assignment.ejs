@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa bài tập | Giảng viên</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .enhanced-input {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .enhanced-input:focus-within {
+            transform: scale(1.02);
+        }
+        
+        .enhanced-input input,
+        .enhanced-input textarea,
+        .enhanced-input select {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .enhanced-input input:focus,
+        .enhanced-input textarea:focus,
+        .enhanced-input select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .enhanced-input label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .enhanced-input label i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+        
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 16px 24px;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .breadcrumb a:hover {
+            color: #764ba2;
+            transform: translateX(2px);
+        }
+        
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .action-button:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .progress-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.1);
+            z-index: 9999;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .field-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .validation-message {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            font-size: 12px;
+            color: #ef4444;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .validation-message.show {
+            opacity: 1;
+        }
+        
+        .char-counter {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 12px;
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-grid {
+            display: grid;
+            gap: 24px;
+        }
+        
+        .two-column {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .preview-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+        
+        .status-draft {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Enhanced Breadcrumb -->
+                <nav class="breadcrumb mb-8 slide-in">
+                    <div class="flex items-center space-x-3">
+                        <a href="/teacher/assignments" 
+                           class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Quay lại danh sách bài tập</span>
+                        </a>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                        <span class="font-semibold text-gray-800">Chỉnh sửa bài tập</span>
+                    </div>
+                </nav>
+
+                <!-- Enhanced Header -->
+                <div class="text-center mb-8 slide-in">
+                    <div class="header-icon floating-animation mx-auto">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold gradient-text mb-4">Chỉnh sửa bài tập</h1>
+                    <p class="text-xl text-gray-600">Cập nhật thông tin và nội dung bài tập của bạn</p>
+                </div>
+
+                <!-- Enhanced Form -->
+                <div class="max-w-4xl mx-auto">
+                    <div class="form-section slide-in card-hover">
+                        <form id="editAssignmentForm" method="POST" enctype="multipart/form-data" class="space-y-8">
+                            <!-- Assignment Title -->
+                            <div class="field-group enhanced-input">
+                                <label for="title">
+                                    <i class="fas fa-heading"></i>
+                                    Tiêu đề bài tập <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="title" 
+                                       name="title" 
+                                       value="<%= assignment.title %>"
+                                       placeholder="Nhập tiêu đề bài tập..."
+                                       maxlength="100"
+                                       class="w-full"
+                                       required>
+                                <div class="char-counter">
+                                    <span id="titleCounter">0</span>/100
+                                </div>
+                                <div class="validation-message" id="titleError"></div>
+                            </div>
+
+                            <!-- Assignment Description -->
+                            <div class="field-group enhanced-input">
+                                <label for="description">
+                                    <i class="fas fa-align-left"></i>
+                                    Mô tả bài tập <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="description" 
+                                          name="description" 
+                                          rows="6"
+                                          placeholder="Nhập mô tả chi tiết về bài tập, yêu cầu, hướng dẫn..."
+                                          maxlength="1000"
+                                          class="w-full resize-none"
+                                          required><%= assignment.description %></textarea>
+                                <div class="char-counter">
+                                    <span id="descCounter">0</span>/1000
+                                </div>
+                                <div class="validation-message" id="descError"></div>
+                            </div>
+
+                            <!-- Due Date & Class Selection -->
+                            <div class="form-grid two-column">
+                                <div class="field-group enhanced-input">
+                                    <label for="dueDate">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        Hạn nộp bài <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="datetime-local" 
+                                           id="dueDate" 
+                                           name="dueDate"
+                                           value="<%= assignment.dueDate && new Date(assignment.dueDate).getTime() ? new Date(assignment.dueDate).toISOString().slice(0, 16) : '' %>"
+                                           class="w-full"
+                                           required>
+                                    <div class="validation-message" id="dueDateError"></div>
+                                </div>
+
+                                <div class="field-group enhanced-input">
+                                    <label for="classId">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        Lớp học <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="classId" 
+                                            name="classId"
+                                            class="w-full"
+                                            required>
+                                        <option value="">📚 Chọn lớp học</option>
+                                        <% classes.forEach(function(classItem) { %>
+                                            <option value="<%= classItem._id %>" 
+                                                    <%= classItem._id.toString() === assignment.class._id.toString() ? 'selected' : '' %>>
+                                                📖 <%= classItem.course.title %> - <%= classItem.name %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                    <div class="validation-message" id="classError"></div>
+                                </div>
+                            </div>
+
+                            <!-- File Attachment -->
+                            <div class="field-group">
+                                <label for="attachmentFile" class="block text-lg font-semibold text-gray-800 mb-3">
+                                    <i class="fas fa-paperclip text-indigo-500 mr-2"></i>
+                                    Đính kèm tệp (Tùy chọn)
+                                </label>
+                                <div class="upload-area border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                                    <input type="file" 
+                                           id="attachmentFile" 
+                                           name="attachmentFile" 
+                                           accept=".pdf,.mp3,.wav,.m4a,.doc,.docx"
+                                           class="hidden">
+                                    <label for="attachmentFile" class="cursor-pointer block text-center">
+                                        <div class="upload-icon mb-4">
+                                            <i class="fas fa-cloud-upload-alt text-4xl text-indigo-400"></i>
+                                        </div>
+                                        <div class="upload-text">
+                                            <p class="text-lg font-medium text-gray-700 mb-2">Nhấp để chọn tệp hoặc kéo thả vào đây</p>
+                                            <p class="text-sm text-gray-500">Hỗ trợ: PDF, Audio (MP3, WAV, M4A), Word (DOC, DOCX)</p>
+                                            <p class="text-xs text-gray-400 mt-1">Kích thước tối đa: 30MB</p>
+                                        </div>
+                                    </label>
+                                    <div id="filePreview" class="hidden mt-4 p-3 bg-white rounded-lg border">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i id="fileIcon" class="fas fa-file text-2xl text-gray-600 mr-3"></i>
+                                                <div>
+                                                    <p id="fileName" class="font-medium text-gray-800"></p>
+                                                    <p id="fileSize" class="text-sm text-gray-500"></p>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="removeFile" class="text-red-500 hover:text-red-700">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Show current attachment if exists -->
+                                    <% if (assignment.attachmentFile) { %>
+                                        <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-paperclip text-blue-500 mr-2"></i>
+                                                <span class="text-blue-700 font-medium">File hiện tại:</span>
+                                                <% 
+                                                    const fileName = typeof assignment.attachmentFile === 'object' 
+                                                        ? assignment.attachmentFile.fileName 
+                                                        : assignment.attachmentFile;
+                                                    const displayName = typeof assignment.attachmentFile === 'object' 
+                                                        ? assignment.attachmentFile.originalName || assignment.attachmentFile.fileName
+                                                        : assignment.attachmentFile;
+                                                %>
+                                                <a href="/uploads/assignments/<%= fileName %>" 
+                                                   target="_blank" 
+                                                   class="ml-2 text-blue-600 hover:text-blue-800 underline">
+                                                    <%= displayName %>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    💡 Tip: Đính kèm file audio để tạo bài tập nghe, hoặc PDF cho tài liệu tham khảo
+                                </div>
+                            </div>
+
+                            <!-- Preview Card -->
+                            <div class="preview-card">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4">
+                                    <i class="fas fa-eye mr-2 text-blue-500"></i>
+                                    Xem trước bài tập
+                                </h3>
+                                <div id="assignmentPreview">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-gray-800" id="previewTitle">
+                                                <%= assignment.title %>
+                                            </h4>
+                                            <p class="text-gray-600 flex items-center">
+                                                <i class="fas fa-chalkboard-teacher mr-2"></i>
+                                                <span id="previewClass">
+                                                    <%= assignment.class.course.title %> - <%= assignment.class.name %>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <span class="status-indicator status-active">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Đang hoạt động
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-700 mb-4" id="previewDesc">
+                                        <%= assignment.description %>
+                                    </p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-calendar-alt mr-2"></i>
+                                        Hạn nộp: <span id="previewDueDate">
+                                            <%= assignment.dueDate && new Date(assignment.dueDate).getTime() ? 
+                                                new Date(assignment.dueDate).toLocaleDateString('vi-VN', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                }) : 'Chưa thiết lập' %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="flex items-center justify-end pt-8 border-t border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <a href="/teacher/assignments" 
+                                       class="action-button btn-3d bg-gray-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Hủy bỏ
+                                    </a>
+                                    <button type="submit"
+                                            class="action-button btn-3d bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <i class="fas fa-save mr-2"></i>
+                                        Lưu thay đổi
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+            updateProgress(100);
+        });
+
+        function initializeForm() {
+            // Character counters
+            updateCharCounter('title', 'titleCounter', 100);
+            updateCharCounter('description', 'descCounter', 1000);
+
+            // Event listeners
+            document.getElementById('title').addEventListener('input', function() {
+                updateCharCounter('title', 'titleCounter', 100);
+                updatePreview();
+                validateField('title');
+            });
+
+            document.getElementById('description').addEventListener('input', function() {
+                updateCharCounter('description', 'descCounter', 1000);
+                updatePreview();
+                validateField('description');
+            });
+
+            document.getElementById('dueDate').addEventListener('change', function() {
+                updatePreview();
+                validateField('dueDate');
+            });
+
+            document.getElementById('classId').addEventListener('change', function() {
+                updatePreview();
+                validateField('classId');
+            });
+
+            // Form validation
+            document.getElementById('editAssignmentForm').addEventListener('submit', handleSubmit);
+            
+            // Initialize file upload
+            initializeFileUpload();
+        }
+
+        function updateCharCounter(inputId, counterId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            const currentLength = input.value.length;
+            
+            counter.textContent = currentLength;
+            counter.style.color = currentLength > maxLength * 0.9 ? '#ef4444' : '#6b7280';
+        }
+
+        function updatePreview() {
+            const title = document.getElementById('title').value || 'Tiêu đề bài tập';
+            const description = document.getElementById('description').value || 'Mô tả bài tập';
+            const dueDate = document.getElementById('dueDate').value;
+            const classSelect = document.getElementById('classId');
+            const className = classSelect.options[classSelect.selectedIndex]?.text || 'Chưa chọn lớp';
+
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewDesc').textContent = description;
+            document.getElementById('previewClass').textContent = className.replace('📖 ', '');
+            
+            if (dueDate) {
+                const date = new Date(dueDate);
+                document.getElementById('previewDueDate').textContent = date.toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        function validateField(fieldName) {
+            const field = document.getElementById(fieldName);
+            const errorElement = document.getElementById(fieldName + 'Error');
+            let isValid = true;
+            let errorMessage = '';
+
+            switch (fieldName) {
+                case 'title':
+                    if (!field.value.trim()) {
+                        errorMessage = 'Tiêu đề không được để trống';
+                        isValid = false;
+                    } else if (field.value.length > 100) {
+                        errorMessage = 'Tiêu đề không được vượt quá 100 ký tự';
+                        isValid = false;
+                    }
+                    break;
+                case 'description':
+                    if (!field.value.trim()) {
+                        errorMessage = 'Mô tả không được để trống';
+                        isValid = false;
+                    } else if (field.value.length > 1000) {
+                        errorMessage = 'Mô tả không được vượt quá 1000 ký tự';
+                        isValid = false;
+                    }
+                    break;
+                case 'dueDate':
+                    if (!field.value) {
+                        errorMessage = 'Hạn nộp bài không được để trống';
+                        isValid = false;
+                    } else {
+                        const dueDateValue = new Date(field.value);
+                        if (isNaN(dueDateValue.getTime())) {
+                            errorMessage = 'Ngày hạn nộp không hợp lệ';
+                            isValid = false;
+                        } else if (dueDateValue <= new Date()) {
+                            errorMessage = 'Hạn nộp bài phải lớn hơn thời gian hiện tại';
+                            isValid = false;
+                        }
+                    }
+                    break;
+                case 'classId':
+                    if (!field.value) {
+                        errorMessage = 'Vui lòng chọn lớp học';
+                        isValid = false;
+                    }
+                    break;
+            }
+
+            if (errorElement) {
+                errorElement.textContent = errorMessage;
+                errorElement.classList.toggle('show', !isValid);
+            }
+
+            field.style.borderColor = isValid ? 'rgba(102, 126, 234, 0.2)' : '#ef4444';
+            return isValid;
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function showLoading(show = true) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // File upload handling
+        function initializeFileUpload() {
+            const fileInput = document.getElementById('attachmentFile');
+            const uploadArea = document.querySelector('.upload-area');
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileIcon = document.getElementById('fileIcon');
+            const removeFileBtn = document.getElementById('removeFile');
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+
+            // Remove file
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', removeFile);
+            }
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    displayFilePreview(file);
+                }
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('border-indigo-400', 'bg-indigo-50');
+            }
+
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('border-indigo-400', 'bg-indigo-50');
+            }
+
+            function handleFileDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('border-indigo-400', 'bg-indigo-50');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    fileInput.files = files;
+                    displayFilePreview(file);
+                }
+            }
+
+            function displayFilePreview(file) {
+                // Validate file
+                const allowedTypes = [
+                    'application/pdf',
+                    'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/mp4',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                ];
+
+                if (!allowedTypes.includes(file.type)) {
+                    showNotification('Định dạng file không được hỗ trợ!', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+
+                if (file.size > 30 * 1024 * 1024) {
+                    showNotification('File không được vượt quá 30MB!', 'error');
+                    fileInput.value = '';
+                    return;
+                }
+
+                // Update file preview
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                
+                // Update icon based on file type
+                if (file.type.includes('pdf')) {
+                    fileIcon.className = 'fas fa-file-pdf text-2xl text-red-500 mr-3';
+                } else if (file.type.includes('audio')) {
+                    fileIcon.className = 'fas fa-file-audio text-2xl text-purple-500 mr-3';
+                } else if (file.type.includes('word') || file.type.includes('document')) {
+                    fileIcon.className = 'fas fa-file-word text-2xl text-blue-500 mr-3';
+                } else {
+                    fileIcon.className = 'fas fa-file text-2xl text-gray-600 mr-3';
+                }
+
+                filePreview.classList.remove('hidden');
+            }
+
+            function removeFile() {
+                fileInput.value = '';
+                filePreview.classList.add('hidden');
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+
+        function getFormData() {
+            const fileInput = document.getElementById('attachmentFile');
+            const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+            
+            // Get and validate form values
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const dueDate = document.getElementById('dueDate').value;
+            const classId = document.getElementById('classId').value;
+            
+            // Validate dueDate before sending
+            if (!dueDate) {
+                throw new Error('Hạn nộp bài không được để trống');
+            }
+            
+            const dueDateObj = new Date(dueDate);
+            if (isNaN(dueDateObj.getTime())) {
+                throw new Error('Ngày hạn nộp không hợp lệ');
+            }
+            
+            if (dueDateObj <= new Date()) {
+                throw new Error('Hạn nộp bài phải lớn hơn thời gian hiện tại');
+            }
+            
+            if (hasFile) {
+                // Use FormData for file uploads
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('dueDate', dueDate);
+                formData.append('classId', classId);
+                formData.append('attachmentFile', fileInput.files[0]);
+                return formData;
+            } else {
+                // Use JSON for regular updates
+                return {
+                    title: title,
+                    description: description,
+                    dueDate: dueDate,
+                    classId: classId
+                };
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            // Validate all fields
+            const fields = ['title', 'description', 'dueDate', 'classId'];
+            let isFormValid = true;
+            
+            fields.forEach(field => {
+                if (!validateField(field)) {
+                    isFormValid = false;
+                }
+            });
+            
+            if (!isFormValid) {
+                showNotification('Vui lòng kiểm tra lại thông tin đã nhập', 'error');
+                return;
+            }
+
+            showLoading(true);
+            updateProgress(50);
+
+            try {
+                // Get form data with validation
+                let formData;
+                try {
+                    formData = getFormData();
+                } catch (validationError) {
+                    showNotification(validationError.message, 'error');
+                    showLoading(false);
+                    updateProgress(0);
+                    return;
+                }
+                
+                const fileInput = document.getElementById('attachmentFile');
+                const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+                
+                const requestOptions = {
+                    method: 'POST'
+                };
+
+                if (hasFile) {
+                    // For file uploads, don't set Content-Type header (let browser set it)
+                    requestOptions.body = formData;
+                } else {
+                    // For JSON data
+                    requestOptions.headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    requestOptions.body = JSON.stringify(formData);
+                }
+                
+                const response = await fetch('/teacher/assignments/<%= assignment._id %>/edit', requestOptions);
+
+                updateProgress(80);
+                const data = await response.json();
+
+                if (data.success) {
+                    updateProgress(100);
+                    showNotification('Đã cập nhật bài tập thành công!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/teacher/assignments';
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Có lỗi xảy ra khi cập nhật bài tập');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification(error.message || 'Có lỗi xảy ra khi cập nhật bài tập', 'error');
+                updateProgress(0);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Initialize animations
+        const elements = document.querySelectorAll('.slide-in');
+        elements.forEach((element, index) => {
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, index * 200);
+        });
+    </script>
+</body>
+</html>

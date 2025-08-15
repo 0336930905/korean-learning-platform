@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý từ vựng theo chủ đề | Korean Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .filter-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .filter-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .filter-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+            outline: none;
+        }
+        
+        .search-input {
+            padding-left: 50px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-primary:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+        }
+        
+        .vocab-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .vocab-card:hover::before {
+            opacity: 1;
+        }
+        
+        .vocab-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .vocab-card:hover .action-buttons {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .action-buttons {
+            opacity: 0.7;
+            transform: translateY(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .vocab-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .vocab-card:hover .vocab-image {
+            transform: scale(1.1);
+        }
+        
+        .vocab-content {
+            padding: 24px;
+        }
+        
+        .vocab-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        
+        .level-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .level-basic {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .level-intermediate {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            color: #1d4ed8;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .level-advanced {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+            color: #7c3aed;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+        
+        .action-btn[title]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .action-btn:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+        
+        .word-count {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .word-list {
+            margin-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding-top: 16px;
+        }
+        
+        .word-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(247, 250, 252, 0.8), rgba(241, 245, 249, 0.8));
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .word-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: translateX(4px);
+        }
+        
+        .word-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .word-info {
+            flex: 1;
+        }
+        
+        .word-korean {
+            font-weight: 600;
+            color: #374151;
+            font-size: 16px;
+        }
+        
+        .word-pronunciation {
+            color: #667eea;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .word-meaning {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            transform: scale(1.05);
+        }
+        
+        .modal {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 25px 25px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .image-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .image-preview:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .word-entry {
+            background: linear-gradient(135deg, rgba(247, 250, 252, 0.8), rgba(241, 245, 249, 0.8));
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .word-entry:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @media (max-width: 768px) {
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-card {
+                padding: 16px;
+                margin: 0 -16px 24px;
+                border-radius: 0;
+            }
+            
+            .modal-content {
+                margin: 0;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+            
+            .modal-body {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <%- include('../partials/teacher_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col">
+            <!-- Header -->
+            <%- include('../partials/dashboards_header', { user: user }) %>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section -->
+                <div class="text-center mb-8 slide-in">
+                    <div class="header-icon floating-animation mx-auto">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold gradient-text mb-4">Quản lý từ vựng theo chủ đề</h1>
+                    <p class="text-xl text-gray-600">Tạo và quản lý bộ từ vựng theo chủ đề cho học sinh</p>
+                </div>
+
+                <!-- Enhanced Flash Messages -->
+                <% if (messages.success && messages.success.length > 0) { %>
+                    <div class="glass-card border-l-4 border-green-500 p-4 mb-6 slide-in">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
+                            <span class="text-green-700 font-medium"><%= messages.success[0] %></span>
+                        </div>
+                    </div>
+                <% } %>
+                <% if (messages.error && messages.error.length > 0) { %>
+                    <div class="glass-card border-l-4 border-red-500 p-4 mb-6 slide-in">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-500 text-xl mr-3"></i>
+                            <span class="text-red-700 font-medium"><%= messages.error[0] %></span>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- Enhanced Filter Section -->
+                <div class="filter-card slide-in">
+                    <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                        <div class="flex-1 w-full">
+                            <form action="/teacher/thematic-vocabulary" method="GET" class="flex flex-col lg:flex-row gap-4">
+                                <div class="flex-1">
+                                    <label class="form-label">
+                                        <i class="fas fa-layer-group mr-2 text-purple-500"></i>
+                                        Cấp độ
+                                    </label>
+                                    <select name="level" 
+                                            onchange="this.form.submit()"
+                                            class="filter-input">
+                                        <option value="all" <%= level === 'all' ? 'selected' : '' %>>📚 Tất cả cấp độ</option>
+                                        <option value="basic" <%= level === 'basic' ? 'selected' : '' %>>🌱 Cơ bản</option>
+                                        <option value="intermediate" <%= level === 'intermediate' ? 'selected' : '' %>>🌿 Trung cấp</option>
+                                        <option value="advanced" <%= level === 'advanced' ? 'selected' : '' %>>🌳 Nâng cao</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-search mr-2 text-blue-500"></i>
+                                        Tìm kiếm chủ đề
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" 
+                                               name="search" 
+                                               value="<%= search %>"
+                                               placeholder="Nhập tên chủ đề cần tìm..."
+                                               class="filter-input search-input">
+                                        <i class="fas fa-search search-icon"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-end">
+                                    <button type="submit" 
+                                            class="btn-primary">
+                                        <i class="fas fa-search mr-2"></i>
+                                        Tìm kiếm
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div>
+                            <button onclick="openAddModal()"
+                                    class="btn-primary btn-success pulse-animation">
+                                <i class="fas fa-plus mr-2"></i>
+                                Thêm chủ đề mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Vocabulary Grid -->
+                <% if (vocabularies.length > 0) { %>
+                    <div class="vocab-grid fade-in">
+                        <% vocabularies.forEach((vocab, index) => { %>
+                            <div class="vocab-card card-hover slide-in" 
+                                 style="animation-delay: <%= index * 0.1 %>s;">
+                                <!-- Theme Image -->
+                                <div class="relative overflow-hidden">
+                                    <% if (vocab.imageUrl) { %>
+                                        <img src="<%= vocab.imageUrl %>" 
+                                             alt="<%= vocab.theme %>"
+                                             class="vocab-image">
+                                    <% } else { %>
+                                        <div class="w-full h-48 bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 flex items-center justify-center">
+                                            <i class="fas fa-image text-white text-4xl opacity-50"></i>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <!-- Action Buttons Overlay -->
+                                    <div class="absolute top-4 right-4 flex gap-2 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                                        <button onclick="openEditModal('<%= vocab._id %>')"
+                                                class="action-btn btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteVocabulary('<%= vocab._id %>')"
+                                                class="action-btn btn-delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Card Content -->
+                                <div class="vocab-content">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <h3 class="vocab-title"><%= vocab.theme %></h3>
+                                        <span class="word-count">
+                                            <i class="fas fa-book mr-1"></i>
+                                            <%= vocab.words.length %> từ
+                                        </span>
+                                    </div>
+                                    
+                                    <span class="level-badge level-<%= vocab.level %>">
+                                        <i class="fas fa-graduation-cap mr-2"></i>
+                                        <%= vocab.level === 'basic' ? '🌱 Cơ bản' :
+                                            vocab.level === 'intermediate' ? '🌿 Trung cấp' :
+                                            '🌳 Nâng cao' %>
+                                    </span>
+
+                                    <!-- Word List Preview -->
+                                    <div class="word-list">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="font-semibold text-gray-700">
+                                                <i class="fas fa-list mr-2 text-purple-500"></i>
+                                                Từ vựng
+                                            </h4>
+                                            <button onclick="toggleWordList(this)" 
+                                                    class="toggle-btn"
+                                                    data-target="wordList-<%= vocab._id %>">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Xem danh sách
+                                            </button>
+                                        </div>
+
+                                        <!-- Hidden word list -->
+                                        <div id="wordList-<%= vocab._id %>" class="hidden">
+                                            <% if (vocab.words.length > 0) { %>
+                                                <% vocab.words.slice(0, 5).forEach(word => { %>
+                                                    <div class="word-item">
+                                                        <% if (word.imageUrl) { %>
+                                                            <img src="<%= word.imageUrl %>" 
+                                                                 alt="<%= word.korean %>"
+                                                                 class="word-image">
+                                                        <% } else { %>
+                                                            <div class="word-image bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                                                                <i class="fas fa-font text-white text-sm"></i>
+                                                            </div>
+                                                        <% } %>
+                                                        <div class="word-info">
+                                                            <div class="word-korean"><%= word.korean %></div>
+                                                            <div class="word-pronunciation"><%= word.pronunciation %></div>
+                                                            <div class="word-meaning"><%= word.meaning %></div>
+                                                        </div>
+                                                    </div>
+                                                <% }); %>
+                                                <% if (vocab.words.length > 5) { %>
+                                                    <div class="text-center py-2">
+                                                        <span class="text-sm text-gray-500">
+                                                            <i class="fas fa-ellipsis-h mr-1"></i>
+                                                            Và <%= vocab.words.length - 5 %> từ khác...
+                                                        </span>
+                                                    </div>
+                                                <% } %>
+                                            <% } else { %>
+                                                <div class="text-center py-4">
+                                                    <span class="text-gray-500">
+                                                        <i class="fas fa-inbox mr-2"></i>
+                                                        Chưa có từ vựng nào
+                                                    </span>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="action-buttons mt-4 pt-4 border-t border-gray-100">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex gap-3">
+                                                <button onclick="openEditModal('<%= vocab._id %>')"
+                                                        class="action-btn btn-edit"
+                                                        title="Chỉnh sửa chủ đề từ vựng">
+                                                    <i class="fas fa-edit"></i>
+                                                    Sửa
+                                                </button>
+                                                <button onclick="deleteVocabulary('<%= vocab._id %>')"
+                                                        class="action-btn btn-delete"
+                                                        title="Xóa chủ đề từ vựng (không thể hoàn tác)">
+                                                    <i class="fas fa-trash"></i>
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <i class="fas fa-calendar mr-1"></i>
+                                                <%= new Date(vocab.createdAt).toLocaleDateString('vi-VN') %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-600 mb-4">Chưa có chủ đề từ vựng nào</h3>
+                        <p class="text-gray-500 text-lg mb-6">
+                            Hãy tạo chủ đề từ vựng đầu tiên để bắt đầu xây dựng bộ từ vựng
+                        </p>
+                        <button onclick="openAddModal()" 
+                                class="btn-primary btn-success">
+                            <i class="fas fa-plus mr-2"></i>
+                            Tạo chủ đề đầu tiên
+                        </button>
+                    </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Add Modal -->
+    <div id="addVocabularyModal" class="fixed inset-0 modal hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-4xl">
+                <div class="modal-header">
+                    <div class="flex justify-between items-center relative z-10">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">Thêm chủ đề từ vựng mới</h3>
+                            <p class="opacity-90">Tạo bộ từ vựng theo chủ đề để học sinh học tập</p>
+                        </div>
+                        <button onclick="closeAddModal()"
+                                class="text-white hover:text-gray-200 transition-colors p-2">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <form id="addVocabularyForm" onsubmit="handleAddSubmit(event)" class="space-y-6">
+                        <!-- Theme and Level -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>
+                                    Tên chủ đề <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="theme" 
+                                       required
+                                       placeholder="VD: Gia đình, Thức ăn, Du lịch..."
+                                       class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-layer-group mr-2 text-blue-500"></i>
+                                    Cấp độ <span class="text-red-500">*</span>
+                                </label>
+                                <select name="level" required class="form-input">
+                                    <option value="basic">🌱 Cơ bản</option>
+                                    <option value="intermediate">🌿 Trung cấp</option>
+                                    <option value="advanced">🌳 Nâng cao</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Theme Image -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-image mr-2 text-green-500"></i>
+                                Hình ảnh chủ đề
+                            </label>
+                            <div class="flex items-center space-x-6">
+                                <div id="addThemeImagePreview" class="flex-shrink-0">
+                                    <div class="w-32 h-32 bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-image text-white text-2xl opacity-70"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file"
+                                           name="themeImage" 
+                                           accept="image/*"
+                                           onchange="previewAddThemeImage(this)"
+                                           class="form-input">
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Hỗ trợ: JPG, PNG, GIF (Tối đa 5MB)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Words List -->
+                        <div class="form-group">
+                            <div class="flex justify-between items-center mb-4">
+                                <label class="form-label mb-0">
+                                    <i class="fas fa-list mr-2 text-yellow-500"></i>
+                                    Danh sách từ vựng <span class="text-red-500">*</span>
+                                </label>
+                                <button type="button" 
+                                        onclick="addNewWordField()"
+                                        class="btn-primary btn-success">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Thêm từ mới
+                                </button>
+                            </div>
+                            <div id="addWordsList" class="space-y-4">
+                                <!-- Words will be added here dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="flex justify-end space-x-4 pt-6 border-t">
+                            <button type="button" 
+                                    onclick="closeAddModal()"
+                                    class="px-6 py-3 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-times mr-2"></i>
+                                Hủy bỏ
+                            </button>
+                            <button type="submit"
+                                    class="btn-primary btn-success">
+                                <i class="fas fa-save mr-2"></i>
+                                Tạo chủ đề
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Edit Modal -->
+    <div id="editVocabularyModal" class="fixed inset-0 modal hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-4xl relative">
+                <div class="modal-header">
+                    <div class="flex justify-between items-center relative z-10">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">Chỉnh sửa chủ đề từ vựng</h3>
+                            <p class="opacity-90">Cập nhật thông tin và từ vựng trong chủ đề</p>
+                        </div>
+                        <button type="button" 
+                                onclick="closeEditModal()" 
+                                class="text-white hover:text-gray-200 transition-colors p-2">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fixed Action Buttons -->
+                <div class="sticky top-0 z-20 bg-white border-b border-gray-200 px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <button type="button" 
+                                onclick="addEditWordField()"
+                                class="btn-primary btn-success">
+                            <i class="fas fa-plus mr-2"></i>
+                            Thêm từ mới
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button" 
+                                    onclick="closeEditModal()"
+                                    class="px-6 py-3 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-times mr-2"></i>
+                                Hủy bỏ
+                            </button>
+                            <button type="submit"
+                                    form="editVocabularyForm"
+                                    class="btn-primary">
+                                <i class="fas fa-save mr-2"></i>
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <form id="editVocabularyForm" onsubmit="handleEditSubmit(event)" enctype="multipart/form-data" class="space-y-6">
+                        <!-- Hidden input for vocabulary ID -->
+                        <input type="hidden" id="editVocabularyId" name="vocabularyId">
+
+                        <!-- Theme and Level -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-tag mr-2 text-purple-500"></i>
+                                    Tên chủ đề <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="editTheme" 
+                                       name="theme" 
+                                       required
+                                       class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-layer-group mr-2 text-blue-500"></i>
+                                    Cấp độ <span class="text-red-500">*</span>
+                                </label>
+                                <select id="editLevel" 
+                                        name="level" 
+                                        required
+                                        class="form-input">
+                                    <option value="basic">🌱 Cơ bản</option>
+                                    <option value="intermediate">🌿 Trung cấp</option>
+                                    <option value="advanced">🌳 Nâng cao</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Theme Image -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-image mr-2 text-green-500"></i>
+                                Hình ảnh chủ đề
+                            </label>
+                            <div class="flex items-center space-x-6">
+                                <div id="editThemeImagePreview" class="flex-shrink-0">
+                                    <div class="w-32 h-32 bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-image text-white text-2xl opacity-70"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file"
+                                           name="themeImage" 
+                                           accept="image/*"
+                                           onchange="previewThemeImage(this)"
+                                           class="form-input">
+                                    <input type="hidden" id="existingThemeImage" name="existingThemeImage">
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Để trống nếu không muốn thay đổi hình ảnh
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Words List -->
+                        <div class="form-group">
+                            <div class="flex justify-between items-center mb-4">
+                                <label class="form-label mb-0">
+                                    <i class="fas fa-list mr-2 text-yellow-500"></i>
+                                    Danh sách từ vựng
+                                </label>
+                            </div>
+                            <div id="editWordsList" class="space-y-4">
+                                <!-- Words will be added here dynamically -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced toggle function with smooth animations
+        function toggleWordList(button) {
+            const targetId = button.getAttribute('data-target');
+            const wordList = document.getElementById(targetId);
+            const icon = button.querySelector('i');
+            const isHidden = wordList.classList.contains('hidden');
+            
+            if (isHidden) {
+                wordList.classList.remove('hidden');
+                wordList.style.animation = 'slideIn 0.3s ease-out forwards';
+                button.innerHTML = '<i class="fas fa-eye-slash mr-1"></i>Ẩn danh sách';
+                button.classList.add('pulse-animation');
+            } else {
+                wordList.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    wordList.classList.add('hidden');
+                }, 250);
+                button.innerHTML = '<i class="fas fa-eye mr-1"></i>Xem danh sách';
+                button.classList.remove('pulse-animation');
+            }
+        }
+
+        // Enhanced modal functions
+        async function openEditModal(vocabularyId) {
+            showLoading(true);
+            try {
+                const response = await fetch(`/teacher/thematic-vocabulary/${vocabularyId}/get`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const vocabulary = data.vocabulary;
+                    populateEditForm(vocabulary);
+                    document.getElementById('editVocabularyModal').classList.remove('hidden');
+                } else {
+                    throw new Error(data.message || 'Không thể tải dữ liệu');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    title: '❌ Lỗi!',
+                    text: error.message || 'Có lỗi xảy ra khi tải dữ liệu chỉnh sửa',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    customClass: {
+                        popup: 'rounded-xl'
+                    }
+                });
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function populateEditForm(vocabulary) {
+            document.getElementById('editVocabularyId').value = vocabulary._id;
+            document.getElementById('editTheme').value = vocabulary.theme;
+            document.getElementById('editLevel').value = vocabulary.level;
+
+            // Set the form dataset for vocabularyId
+            const form = document.getElementById('editVocabularyForm');
+            form.dataset.vocabularyId = vocabulary._id;
+
+            // Update theme image preview
+            const themeImagePreview = document.getElementById('editThemeImagePreview');
+            if (vocabulary.imageUrl) {
+                themeImagePreview.innerHTML = `
+                    <img src="${vocabulary.imageUrl}" class="image-preview">
+                `;
+                document.getElementById('existingThemeImage').value = vocabulary.imageUrl;
+            }
+
+            // Populate words list
+            const wordsList = document.getElementById('editWordsList');
+            wordsList.innerHTML = '';
+            
+            if (vocabulary.words && vocabulary.words.length > 0) {
+                vocabulary.words.forEach((word, index) => {
+                    addEditWordField(word, index);
+                });
+            } else {
+                addEditWordField(); // Add at least one empty field
+            }
+        }
+
+        function addEditWordField(word = null, index = null) {
+            const wordsList = document.getElementById('editWordsList');
+            const wordIndex = index !== null ? index : wordsList.children.length;
+            
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'word-entry';
+            wordDiv.setAttribute('data-word-index', wordIndex);
+            wordDiv.setAttribute('data-word-id', word?._id || '');
+
+            wordDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-lg text-gray-800">
+                        <i class="fas fa-font mr-2 text-purple-500"></i>
+                        Từ vựng #${wordIndex + 1}
+                    </h4>
+                    <button type="button" onclick="removeWord(this)" 
+                            class="action-btn btn-delete">
+                        <i class="fas fa-trash mr-1"></i>
+                        Xóa
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label class="form-label">Tiếng Hàn <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                            name="words[${wordIndex}][korean]" 
+                            value="${word?.korean || ''}" 
+                            required 
+                            placeholder="안녕하세요"
+                            class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nghĩa tiếng Việt <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                            name="words[${wordIndex}][meaning]" 
+                            value="${word?.meaning || ''}" 
+                            required 
+                            placeholder="Xin chào"
+                            class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phiên âm <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                            name="words[${wordIndex}][pronunciation]" 
+                            value="${word?.pronunciation || ''}" 
+                            required 
+                            placeholder="an-nyeong-ha-se-yo"
+                            class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hình ảnh minh họa</label>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                ${word?.imageUrl ? `
+                                    <img src="${word.imageUrl}" class="image-preview">
+                                ` : `
+                                    <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-image text-white opacity-70"></i>
+                                    </div>
+                                `}
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" 
+                                    name="wordImage_${wordIndex}" 
+                                    accept="image/*" 
+                                    onchange="previewWordImage(this)"
+                                    class="form-input">
+                                <input type="hidden" 
+                                    name="words[${wordIndex}][existingImage]" 
+                                    value="${word?.imageUrl || ''}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Nếu đang thêm từ mới (không có index cụ thể), thêm vào đầu danh sách
+            if (index === null && word === null) {
+                wordsList.insertBefore(wordDiv, wordsList.firstChild);
+                // Scroll to top để hiển thị từ mới
+                wordDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                wordsList.appendChild(wordDiv);
+            }
+            
+            // Đánh số lại tất cả các từ
+            renumberWords();
+        }
+
+        function closeEditModal() {
+            document.getElementById('editVocabularyModal').classList.add('hidden');
+            document.getElementById('editVocabularyForm').reset();
+            document.getElementById('editWordsList').innerHTML = '';
+        }
+
+        function removeWord(button) {
+            if (confirm('Bạn có chắc chắn muốn xóa từ này không?')) {
+                const wordEntry = button.closest('.word-entry');
+                wordEntry.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    wordEntry.remove();
+                    renumberWords();
+                }, 250);
+            }
+        }
+
+        function renumberWords() {
+            const wordEntries = document.querySelectorAll('#editWordsList .word-entry');
+            wordEntries.forEach((entry, index) => {
+                // Cập nhật data-word-index
+                entry.setAttribute('data-word-index', index);
+                
+                // Cập nhật tiêu đề
+                const h4 = entry.querySelector('h4');
+                h4.innerHTML = `
+                    <i class="fas fa-font mr-2 text-purple-500"></i>
+                    Từ vựng #${index + 1}
+                `;
+                
+                // Cập nhật name attributes cho các input
+                const inputs = entry.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name && name.includes('words[')) {
+                        // Replace the index in name attribute
+                        const newName = name.replace(/words\[\d+\]/, `words[${index}]`);
+                        input.setAttribute('name', newName);
+                    }
+                });
+                
+                // Cập nhật name cho file input
+                const fileInput = entry.querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.setAttribute('name', `wordImage_${index}`);
+                }
+            });
+        }
+
+        async function deleteVocabulary(id) {
+            // Create beautiful confirmation modal
+            const result = await Swal.fire({
+                title: '⚠️ Xác nhận xóa',
+                html: `
+                    <div class="text-left">
+                        <p class="mb-3">Bạn có chắc chắn muốn xóa chủ đề từ vựng này?</p>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                            <p class="text-red-700 text-sm">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <strong>Cảnh báo:</strong> Tất cả từ vựng và hình ảnh trong chủ đề sẽ bị xóa vĩnh viễn và không thể khôi phục!
+                            </p>
+                        </div>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-trash mr-2"></i>Xóa ngay',
+                cancelButtonText: '<i class="fas fa-times mr-2"></i>Hủy bỏ',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-xl',
+                    title: 'text-xl',
+                    content: 'text-base',
+                    confirmButton: 'rounded-lg px-6 py-3 font-semibold',
+                    cancelButton: 'rounded-lg px-6 py-3 font-semibold'
+                }
+            });
+
+            if (result.isConfirmed) {
+                showLoading(true);
+                try {
+                    const response = await fetch(`/teacher/thematic-vocabulary/${id}/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        await Swal.fire({
+                            title: '✅ Thành công!',
+                            text: 'Chủ đề từ vựng đã được xóa thành công',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            customClass: {
+                                popup: 'rounded-xl'
+                            }
+                        });
+                        
+                        // Smooth page reload
+                        window.location.reload();
+                    } else {
+                        throw new Error(data.message || 'Có lỗi xảy ra khi xóa');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    await Swal.fire({
+                        title: '❌ Lỗi!',
+                        text: 'Có lỗi xảy ra khi xóa chủ đề từ vựng',
+                        icon: 'error',
+                        confirmButtonColor: '#ef4444',
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
+                    });
+                } finally {
+                    showLoading(false);
+                }
+            }
+        }
+
+        // Image preview functions
+        function previewWordImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = input.closest('.flex.items-center');
+                    const previewDiv = container.querySelector('.flex-shrink-0');
+                    previewDiv.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewThemeImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById('editThemeImagePreview');
+                    previewContainer.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewAddThemeImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById('addThemeImagePreview');
+                    previewContainer.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Add Modal Functions
+        function openAddModal() {
+            document.getElementById('addVocabularyModal').classList.remove('hidden');
+            // Add at least one empty word field when opening modal
+            if (document.getElementById('addWordsList').children.length === 0) {
+                addNewWordField();
+            }
+        }
+
+        function closeAddModal() {
+            document.getElementById('addVocabularyModal').classList.add('hidden');
+            document.getElementById('addVocabularyForm').reset();
+            document.getElementById('addWordsList').innerHTML = '';
+            // Reset theme image preview
+            document.getElementById('addThemeImagePreview').innerHTML = `
+                <div class="w-32 h-32 bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-white text-2xl opacity-70"></i>
+                </div>
+            `;
+        }
+
+        // Add word field for Add Modal
+        function addNewWordField() {
+            const wordsList = document.getElementById('addWordsList');
+            const wordIndex = wordsList.children.length;
+            
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'word-entry';
+            
+            wordDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-lg text-gray-800">
+                        <i class="fas fa-font mr-2 text-purple-500"></i>
+                        Từ vựng #${wordIndex + 1}
+                    </h4>
+                    <button type="button" onclick="removeAddWord(this)" 
+                            class="action-btn btn-delete">
+                        <i class="fas fa-trash mr-1"></i>
+                        Xóa
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label class="form-label">Tiếng Hàn <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                               name="words[${wordIndex}][korean]" 
+                               required 
+                               placeholder="안녕하세요"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nghĩa tiếng Việt <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                               name="words[${wordIndex}][meaning]" 
+                               required 
+                               placeholder="Xin chào"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phiên âm <span class="text-red-500">*</span></label>
+                        <input type="text" 
+                               name="words[${wordIndex}][pronunciation]" 
+                               required 
+                               placeholder="an-nyeong-ha-se-yo"
+                               class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hình ảnh minh họa</label>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-image text-white opacity-70"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" 
+                                       name="words[${wordIndex}][image]" 
+                                       accept="image/*" 
+                                       onchange="previewAddWordImage(this)"
+                                       class="form-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            wordsList.appendChild(wordDiv);
+        }
+
+        function removeAddWord(button) {
+            if (confirm('Bạn có chắc chắn muốn xóa từ này không?')) {
+                const wordEntry = button.closest('.word-entry');
+                wordEntry.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    wordEntry.remove();
+                    renumberAddWords();
+                }, 250);
+            }
+        }
+
+        function renumberAddWords() {
+            document.querySelectorAll('#addWordsList .word-entry h4').forEach((h4, index) => {
+                h4.innerHTML = `
+                    <i class="fas fa-font mr-2 text-purple-500"></i>
+                    Từ vựng #${index + 1}
+                `;
+            });
+        }
+
+        // Preview image for add word
+        function previewAddWordImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = input.closest('.flex.items-center');
+                    const previewDiv = container.querySelector('.flex-shrink-0');
+                    previewDiv.innerHTML = `<img src="${e.target.result}" class="w-24 h-24 rounded-lg object-cover border-3 border-gray-300">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Handle Add Form Submission
+        async function handleAddSubmit(event) {
+            event.preventDefault();
+            showLoading(true);
+            
+            const form = event.target;
+            const formData = new FormData();
+            
+            try {
+                // Add basic data
+                formData.append('theme', form.theme.value.trim());
+                formData.append('level', form.level.value);
+                
+                // Add theme image if selected
+                const themeImageInput = form.querySelector('input[name="themeImage"]');
+                if (themeImageInput?.files[0]) {
+                    formData.append('themeImage', themeImageInput.files[0]);
+                }
+                
+                // Process words
+                const wordEntries = form.querySelectorAll('.word-entry');
+                const wordsData = [];
+                
+                for (let i = 0; i < wordEntries.length; i++) {
+                    const entry = wordEntries[i];
+                    const korean = entry.querySelector(`input[name="words[${i}][korean]"]`).value.trim();
+                    const meaning = entry.querySelector(`input[name="words[${i}][meaning]"]`).value.trim();
+                    const pronunciation = entry.querySelector(`input[name="words[${i}][pronunciation]"]`).value.trim();
+                    const imageInput = entry.querySelector(`input[name="words[${i}][image]"]`);
+                    
+                    if (korean && meaning && pronunciation) {
+                        const wordData = { korean, meaning, pronunciation };
+                        wordsData.push(wordData);
+                        
+                        // Add word image if selected
+                        if (imageInput?.files[0]) {
+                            formData.append(`wordImages`, imageInput.files[0]);
+                            formData.append(`wordImageIndexes`, i);
+                        }
+                    }
+                }
+                
+                if (wordsData.length === 0) {
+                    throw new Error('Vui lòng thêm ít nhất một từ vựng');
+                }
+                
+                formData.append('words', JSON.stringify(wordsData));
+                
+                const response = await fetch('/teacher/thematic-vocabulary/add', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Thêm chủ đề từ vựng thành công!', 'success');
+                    closeAddModal();
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    throw new Error(data.message || 'Có lỗi xảy ra khi thêm chủ đề từ vựng');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification(error.message || 'Có lỗi xảy ra khi thêm chủ đề từ vựng', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Handle Edit Form Submission
+        async function handleEditSubmit(event) {
+            event.preventDefault();
+            showLoading(true);
+            
+            try {
+                const form = event.target;
+                const formData = new FormData();
+                
+                // Get vocabularyId from form dataset or hidden input
+                const vocabularyId = form.dataset.vocabularyId || document.getElementById('editVocabularyId').value;
+                
+                if (!vocabularyId) {
+                    throw new Error('Không tìm thấy ID chủ đề từ vựng');
+                }
+                
+                // Get basic data
+                const theme = form.querySelector('#editTheme').value.trim();
+                const level = form.querySelector('#editLevel').value;
+                
+                if (!theme) {
+                    throw new Error('Vui lòng nhập tên chủ đề');
+                }
+                
+                formData.append('theme', theme);
+                formData.append('level', level);
+                
+                // Add theme image if selected
+                const themeImageInput = form.querySelector('input[name="themeImage"]');
+                if (themeImageInput?.files[0]) {
+                    formData.append('themeImage', themeImageInput.files[0]);
+                }
+                
+                // Process words
+                const wordEntries = form.querySelectorAll('[data-word-index]');
+                const wordsData = [];
+                
+                for (let i = 0; i < wordEntries.length; i++) {
+                    const entry = wordEntries[i];
+                    const wordIndex = entry.dataset.wordIndex;
+                    
+                    const korean = entry.querySelector(`[name="words[${wordIndex}][korean]"]`).value.trim();
+                    const meaning = entry.querySelector(`[name="words[${wordIndex}][meaning]"]`).value.trim();
+                    const pronunciation = entry.querySelector(`[name="words[${wordIndex}][pronunciation]"]`).value.trim();
+                    const imageInput = entry.querySelector(`[name="wordImage_${wordIndex}"]`);
+                    const existingImage = entry.querySelector(`[name="words[${wordIndex}][existingImage]"]`)?.value || '';
+                    
+                    if (korean && meaning && pronunciation) {
+                        const wordData = { 
+                            korean, 
+                            meaning, 
+                            pronunciation,
+                            existingImage 
+                        };
+                        wordsData.push(wordData);
+                        
+                        // Add word image if selected
+                        if (imageInput?.files[0]) {
+                            formData.append(`wordImage_${i}`, imageInput.files[0]);
+                        }
+                    }
+                }
+                
+                if (wordsData.length === 0) {
+                    throw new Error('Vui lòng thêm ít nhất một từ vựng');
+                }
+                
+                formData.append('words', JSON.stringify(wordsData));
+                
+                const response = await fetch(`/teacher/thematic-vocabulary/${vocabularyId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await Swal.fire({
+                        title: '✅ Thành công!',
+                        text: 'Cập nhật chủ đề từ vựng thành công',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        customClass: {
+                            popup: 'rounded-xl'
+                        }
+                    });
+                    
+                    closeEditModal();
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || 'Có lỗi xảy ra khi cập nhật chủ đề từ vựng');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire({
+                    title: '❌ Lỗi!',
+                    text: error.message || 'Có lỗi xảy ra khi cập nhật chủ đề từ vựng',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    customClass: {
+                        popup: 'rounded-xl'
+                    }
+                });
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Loading and notification functions
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const addModal = document.getElementById('addVocabularyModal');
+            const editModal = document.getElementById('editVocabularyModal');
+            
+            if (event.target === addModal) {
+                closeAddModal();
+            }
+            if (event.target === editModal) {
+                closeEditModal();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Thematic vocabulary page loaded');
+        });
+    </script>
+</body>
+ <%- include('../partials/teacher_footer') %>
+</html>

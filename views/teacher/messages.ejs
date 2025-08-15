@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin nhắn | Teacher Portal</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        .contact-item {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .contact-item:hover {
+            background-color: rgb(243 244 246);
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar', { 
+            user: locals.user,
+            currentUrl: currentUrl || '/teacher/messages' 
+        }) %>
+        
+        <div class="flex-1 flex flex-col">
+            <%- include('../partials/dashboards_header', { 
+                user: locals.user 
+            }) %>
+            
+            <%- include('../partials/chat_layout', { 
+                user: locals.user,
+                contacts: contacts || [],
+                currentUrl: currentUrl || '/teacher/messages'
+            }) %>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Socket.io
+        const socket = io();
+        
+        // Join user's room when page loads
+        socket.emit('join', '<%= user._id %>');
+        
+        // Listen for new messages
+        socket.on('new_message', async (data) => {
+            if (data.receiverId === '<%= user._id %>') {
+                // Update unread count badge
+                const contactEl = document.querySelector(`[data-user-id="${data.senderId}"]`);
+                if (contactEl) {
+                    let badge = contactEl.querySelector('.bg-red-500');
+                    if (!badge) {
+                        const imgContainer = contactEl.querySelector('.relative');
+                        badge = document.createElement('span');
+                        badge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center';
+                        imgContainer.appendChild(badge);
+                    }
+                    badge.textContent = parseInt(badge.textContent || 0) + 1;
+
+                    // Update last message preview
+                    const preview = contactEl.querySelector('.text-sm.text-gray-500.truncate');
+                    if (preview) {
+                        preview.textContent = data.content;
+                    }
+
+                    // Update timestamp
+                    const timestamp = contactEl.querySelector('.text-xs.text-gray-500');
+                    if (timestamp) {
+                        timestamp.textContent = new Date().toLocaleTimeString('vi-VN', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+
+                    // Move contact to top of list
+                    const parentList = contactEl.parentElement;
+                    parentList.insertBefore(contactEl, parentList.firstChild);
+
+                    // If chat is open with this sender, update chat
+                    if (currentChatId === data.senderId) {
+                        await loadChat(data.senderId);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê học lực - Korea_DB</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style/headerall.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px) rotateX(5deg);
+        }
+
+        .classification-excellent {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .classification-good {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+
+        .classification-average {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+        }
+
+        .classification-below-average {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: white;
+        }
+
+        .classification-poor {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+
+        .stats-table {
+            font-size: 0.9rem;
+        }
+
+        .stats-table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+            padding: 1rem 0.75rem;
+            text-align: center;
+        }
+
+        .stats-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .student-info {
+            text-align: left !important;
+            min-width: 200px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+        }
+
+        .score-cell {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-wrapper {
+            display: none;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .loading-content {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-content {
+            display: none;
+        }
+
+        .stats-content.show {
+            display: block;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .gender-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .gender-male {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .gender-female {
+            background-color: #fce7f3;
+            color: #be185d;
+        }
+
+        .gender-other {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section -->
+                <div class="mb-8">
+                    <div class="gradient-bg rounded-3xl p-8 text-white relative overflow-hidden slide-in">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8 floating-animation"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full transform -translate-x-4 translate-y-4 floating-animation" style="animation-delay: 1s;"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-4">
+                                        <i class="fas fa-chart-line mr-4"></i>
+                                        Thống kê học lực
+                                    </h1>
+                                    <p class="text-xl opacity-90 mb-4">Theo dõi và đánh giá kết quả học tập của học viên</p>
+                                </div>
+                                
+                                <div class="text-right">
+                                    <button onclick="refreshStats()" class="btn-3d bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-opacity-30 transition-all duration-300">
+                                        <i class="fas fa-sync-alt mr-2"></i>
+                                        Làm mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Selector Section -->
+                <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in">
+                    <div class="flex items-center mb-6">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 floating-animation mr-4">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">Chọn lớp học để xem thống kê</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                        <div class="md:col-span-4">
+                            <select id="classSelector" onchange="loadClassStats()" 
+                                    class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg">
+                                <option value="">-- Chọn lớp học --</option>
+                                <% classes.forEach(cls => { %>
+                                    <option value="<%= cls._id %>" <%= selectedClassId === cls._id.toString() ? 'selected' : '' %>>
+                                        <%= cls.name %> - <%= cls.course.title %> 
+                                        (<%= cls.students.length %> học viên)
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="md:col-span-1">
+                            <button onclick="exportStats()" 
+                                    class="btn-3d w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                                    id="exportBtn" disabled>
+                                <i class="fas fa-file-excel text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Information Filter Section -->
+                <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in" id="classInfoFilter" style="display: none;">
+                    <div class="flex items-center mb-6">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 floating-animation mr-4">
+                            <i class="fas fa-filter text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">Lọc thông tin lớp học</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tìm theo tên học viên</label>
+                            <input type="text" id="studentNameFilter" placeholder="Nhập tên học viên..." 
+                                   class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                   onkeyup="filterStudents()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Lọc theo xếp loại</label>
+                            <select id="classificationFilter" onchange="filterStudents()" 
+                                    class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Tất cả xếp loại</option>
+                                <option value="excellent">Xuất sắc</option>
+                                <option value="good">Giỏi</option>
+                                <option value="average">Khá</option>
+                                <option value="belowAverage">Trung bình</option>
+                                <option value="poor">Yếu</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Lọc theo giới tính</label>
+                            <select id="genderFilter" onchange="filterStudents()" 
+                                    class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Tất cả giới tính</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+
+                <!-- Loading Spinner -->
+                <div class="loading-wrapper" id="loadingSpinner">
+                    <div class="loading-content glass-card">
+                        <div class="spinner"></div>
+                        <p class="text-gray-600 font-semibold">Đang tải dữ liệu thống kê...</p>
+                    </div>
+                </div>
+
+                <!-- No Class Selected -->
+                <div class="glass-card rounded-2xl" id="noClassSelected">
+                    <div class="empty-state">
+                        <div class="empty-state-icon floating-animation">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-600 mb-4">Chọn lớp học để xem thống kê</h3>
+                        <p class="text-gray-400 text-lg">Hãy chọn một lớp học từ dropdown phía trên để xem thống kê học lực</p>
+                    </div>
+                </div>
+
+                <!-- Stats Content -->
+                <div class="stats-content" id="statsContent">
+                    <!-- Class Info Card -->
+                    <div class="glass-card rounded-2xl mb-8 card-hover slide-in" id="classInfoCard">
+                        <!-- Class info will be loaded here -->
+                    </div>
+
+                    <!-- Overall Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="overallStatsCards">
+                        <!-- Overall stats will be loaded here -->
+                    </div>
+
+                    <!-- Classification Chart -->
+                    <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in">
+                        <div class="flex items-center mb-6">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600 floating-animation mr-4">
+                                <i class="fas fa-chart-pie text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold gradient-text">Phân bố xếp loại học lực</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="classificationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Gender Statistics Section -->
+                    <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in" id="genderStatsSection" style="display: none;">
+                        <div class="flex items-center mb-6">
+                            <div class="p-3 rounded-full bg-pink-100 text-pink-600 floating-animation mr-4">
+                                <i class="fas fa-venus-mars text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold gradient-text">Báo cáo giới tính học viên</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Gender Statistics Cards -->
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 text-center">
+                                    <div class="text-3xl font-bold text-blue-600 mb-2" id="maleCount">0</div>
+                                    <div class="text-blue-800 font-semibold flex items-center justify-center">
+                                        <i class="fas fa-male mr-2"></i>Nam
+                                    </div>
+                                    <div class="text-sm text-blue-600 mt-1" id="malePercentage">0%</div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-xl border border-pink-200 text-center">
+                                    <div class="text-3xl font-bold text-pink-600 mb-2" id="femaleCount">0</div>
+                                    <div class="text-pink-800 font-semibold flex items-center justify-center">
+                                        <i class="fas fa-female mr-2"></i>Nữ
+                                    </div>
+                                    <div class="text-sm text-pink-600 mt-1" id="femalePercentage">0%</div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 text-center">
+                                    <div class="text-3xl font-bold text-gray-600 mb-2" id="otherCount">0</div>
+                                    <div class="text-gray-800 font-semibold flex items-center justify-center">
+                                        <i class="fas fa-genderless mr-2"></i>Khác
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1" id="otherPercentage">0%</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gender Chart -->
+                            <div class="bg-white p-6 rounded-xl border border-gray-200">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-4 text-center">Phân bố giới tính</h4>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="genderChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gender Insights -->
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-2xl font-bold" id="genderRatio">1:1</div>
+                                        <div class="text-blue-100">Tỷ lệ Nam:Nữ</div>
+                                    </div>
+                                    <i class="fas fa-balance-scale text-3xl text-blue-200"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-2xl font-bold" id="dominantGender">Cân bằng</div>
+                                        <div class="text-green-100">Giới tính chiếm ưu thế</div>
+                                    </div>
+                                    <i class="fas fa-chart-line text-3xl text-green-200"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-xl">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-2xl font-bold" id="totalStudents">0</div>
+                                        <div class="text-purple-100">Tổng học viên</div>
+                                    </div>
+                                    <i class="fas fa-users text-3xl text-purple-200"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Stats Table -->
+                    <div class="glass-card rounded-2xl card-hover slide-in">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-green-100 text-green-600 floating-animation mr-4">
+                                        <i class="fas fa-table text-2xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold gradient-text">Chi tiết điểm số học viên</h3>
+                                </div>
+                                <button onclick="refreshStats()" 
+                                        class="btn-3d bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                    <i class="fas fa-sync-alt mr-2"></i>
+                                    Làm mới
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full stats-table" id="statsTable">
+                                <!-- Table will be loaded here -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let currentClassId = '<%= selectedClassId || "" %>';
+        let currentStatsData = null;
+        let classificationChart = null;
+        let genderChart = null;
+        let allStudentStats = []; // Store all student data for filtering
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentClassId) {
+                loadClassStats();
+            }
+        });
+
+        async function loadClassStats() {
+            const selector = document.getElementById('classSelector');
+            const classId = selector.value;
+            
+            if (!classId) {
+                showNoClassSelected();
+                return;
+            }
+
+            try {
+                showLoading(true);
+                hideNoClassSelected();
+                
+                const url = new URL(window.location);
+                url.searchParams.set('classId', classId);
+                window.history.pushState({}, '', url);
+                
+                const response = await fetch(`/teacher/academic-stats/${classId}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentClassId = classId;
+                    currentStatsData = result;
+                    allStudentStats = result.studentStats; // Store original data
+                    
+                    // Reset filters
+                    document.getElementById('studentNameFilter').value = '';
+                    document.getElementById('classificationFilter').value = '';
+                    document.getElementById('genderFilter').value = '';
+                    
+                    renderClassInfo();
+                    renderOverallStats();
+                    renderClassificationChart();
+                    renderGenderStats();
+                    renderStatsTable();
+                    showStatsContent();
+                    showClassInfoFilter();
+                    
+                    document.getElementById('exportBtn').disabled = false;
+                    showNotification('Tải dữ liệu thành công!', 'success');
+                } else {
+                    showNotification(result.message || 'Có lỗi xảy ra khi tải dữ liệu', 'error');
+                    showNoClassSelected();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi tải thống kê học lực', 'error');
+                showNoClassSelected();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderClassInfo() {
+            const classInfoCard = document.getElementById('classInfoCard');
+            const classData = currentStatsData.classData;
+            const startDate = new Date(classData.startDate).toLocaleDateString('vi-VN');
+            const endDate = new Date(classData.endDate).toLocaleDateString('vi-VN');
+            
+            classInfoCard.innerHTML = `
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 floating-animation mr-4">
+                            <i class="fas fa-info-circle text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">Thông tin lớp học</h3>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="md:col-span-3">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                                <i class="fas fa-users mr-3"></i>
+                                ${classData.name}
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-center p-4 bg-blue-50 rounded-xl">
+                                    <i class="fas fa-book text-blue-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Khóa học</p>
+                                        <p class="text-gray-600">${classData.course.title}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-green-50 rounded-xl">
+                                    <i class="fas fa-calendar text-green-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Từ ${startDate}</p>
+                                        <p class="text-gray-600">đến ${endDate}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-purple-50 rounded-xl">
+                                    <i class="fas fa-user-graduate text-purple-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Học viên</p>
+                                        <p class="text-gray-600">${classData.students.length} người</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <div class="text-center p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl">
+                                <div class="text-4xl font-bold mb-2">${currentStatsData.classOverallStats.avgClassScore}</div>
+                                <div class="text-lg opacity-90">Điểm TB lớp</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderOverallStats() {
+            const overallStatsCards = document.getElementById('overallStatsCards');
+            const stats = currentStatsData.classOverallStats;
+            
+            overallStatsCards.innerHTML = `
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">${stats.totalStudents}</div>
+                    <div class="text-gray-600 font-semibold">Tổng học viên</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-green-600 mb-2">${stats.testCount}</div>
+                    <div class="text-gray-600 font-semibold">Bài kiểm tra</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">${stats.assignmentCount}</div>
+                    <div class="text-gray-600 font-semibold">Bài tập</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-orange-600 mb-2">${stats.classifications.excellent + stats.classifications.good}</div>
+                    <div class="text-gray-600 font-semibold">Giỏi trở lên</div>
+                </div>
+            `;
+        }
+
+        function renderClassificationChart() {
+            const ctx = document.getElementById('classificationChart').getContext('2d');
+            const stats = currentStatsData.classOverallStats.classifications;
+            
+            // Destroy existing chart if exists
+            if (classificationChart) {
+                classificationChart.destroy();
+            }
+            
+            classificationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Xuất sắc', 'Giỏi', 'Khá', 'Trung bình', 'Yếu'],
+                    datasets: [{
+                        data: [
+                            stats.excellent,
+                            stats.good,
+                            stats.average,
+                            stats.belowAverage,
+                            stats.poor
+                        ],
+                        backgroundColor: [
+                            '#10b981',
+                            '#3b82f6',
+                            '#f59e0b',
+                            '#f97316',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderStatsTable() {
+            const table = document.getElementById('statsTable');
+            const students = currentStatsData.studentStats;
+            
+            let headerHtml = `
+                <thead>
+                    <tr>
+                        <th class="student-info">Học viên</th>
+                        <th>Giới tính</th>
+                        <th>Số BT</th>
+                        <th>Điểm BT</th>
+                        <th>Số KT</th>
+                        <th>Điểm KT</th>
+                        <th>Điểm TB</th>
+                        <th>Xếp loại</th>
+                    </tr>
+                </thead>
+            `;
+
+            let bodyHtml = '<tbody>';
+            
+            students.forEach((studentStat, index) => {
+                const student = studentStat.student;
+                const gender = student.gender || 'other';
+                const genderIcon = gender === 'male' ? 'fa-male' : gender === 'female' ? 'fa-female' : 'fa-genderless';
+                const genderClass = `gender-${gender}`;
+                const genderText = gender === 'male' ? 'Nam' : gender === 'female' ? 'Nữ' : 'Khác';
+                
+                bodyHtml += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="student-info">
+                            <div class="flex items-center">
+                                <img src="${student.profileImage || '/images/default-avatar.png'}" 
+                                     alt="Avatar" class="student-avatar mr-3">
+                                <div>
+                                    <div class="font-semibold text-gray-800">${student.fullName}</div>
+                                    <div class="text-sm text-gray-500">${student.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="gender-badge ${genderClass}">
+                                <i class="fas ${genderIcon} mr-1"></i>${genderText}
+                            </span>
+                        </td>
+                        <td class="font-semibold">${studentStat.assignmentCount}</td>
+                        <td class="score-cell ${getScoreClass(studentStat.avgAssignmentScore)}">${studentStat.avgAssignmentScore !== null && studentStat.avgAssignmentScore !== undefined ? parseFloat(studentStat.avgAssignmentScore).toFixed(1) : 'N/A'}</td>
+                        <td class="font-semibold">${studentStat.testCount}</td>
+                        <td class="score-cell ${getScoreClass(studentStat.avgTestScore)}">${studentStat.avgTestScore !== null && studentStat.avgTestScore !== undefined ? parseFloat(studentStat.avgTestScore).toFixed(1) : 'N/A'}</td>
+                        <td class="score-cell ${getScoreClass(studentStat.finalScore)} text-lg">${studentStat.finalScore !== null && studentStat.finalScore !== undefined ? parseFloat(studentStat.finalScore).toFixed(1) : 'N/A'}</td>
+                        <td>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold classification-${studentStat.classificationClass}">
+                                ${studentStat.classification}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            bodyHtml += '</tbody>';
+            table.innerHTML = headerHtml + bodyHtml;
+        }
+
+        function getScoreClass(score) {
+            if (score >= 8.5) return 'text-green-600';
+            if (score >= 7.0) return 'text-blue-600';
+            if (score >= 5.5) return 'text-yellow-600';
+            if (score >= 4.0) return 'text-orange-600';
+            return 'text-red-600';
+        }
+
+        function exportStats() {
+            if (!currentClassId) {
+                showNotification('Vui lòng chọn lớp học trước', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            window.location.href = `/teacher/academic-stats/${currentClassId}/export`;
+            setTimeout(() => showLoading(false), 2000);
+        }
+
+        function refreshStats() {
+            if (currentClassId) {
+                showNotification('Đang làm mới dữ liệu...', 'info');
+                loadClassStats();
+            } else {
+                showNotification('Đang làm mới danh sách lớp...', 'info');
+                window.location.reload();
+            }
+        }
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        function showNoClassSelected() {
+            document.getElementById('noClassSelected').style.display = 'block';
+            document.getElementById('statsContent').classList.remove('show');
+            document.getElementById('classInfoFilter').style.display = 'none';
+            document.getElementById('genderStatsSection').style.display = 'none';
+            document.getElementById('exportBtn').disabled = true;
+        }
+
+        function hideNoClassSelected() {
+            document.getElementById('noClassSelected').style.display = 'none';
+        }
+
+        function showStatsContent() {
+            document.getElementById('statsContent').classList.add('show');
+        }
+
+        function showClassInfoFilter() {
+            document.getElementById('classInfoFilter').style.display = 'block';
+            document.getElementById('genderStatsSection').style.display = 'block';
+        }
+
+        function renderGenderStats() {
+            const students = currentStatsData.studentStats;
+            let maleCount = 0, femaleCount = 0, otherCount = 0;
+            
+            students.forEach(studentStat => {
+                const gender = studentStat.student.gender || 'other';
+                switch(gender) {
+                    case 'male': maleCount++; break;
+                    case 'female': femaleCount++; break;
+                    default: otherCount++; break;
+                }
+            });
+            
+            const total = maleCount + femaleCount + otherCount;
+            
+            // Update counts and percentages
+            document.getElementById('maleCount').textContent = maleCount;
+            document.getElementById('femaleCount').textContent = femaleCount;
+            document.getElementById('otherCount').textContent = otherCount;
+            document.getElementById('totalStudents').textContent = total;
+            
+            const malePercentage = total > 0 ? ((maleCount / total) * 100).toFixed(1) : 0;
+            const femalePercentage = total > 0 ? ((femaleCount / total) * 100).toFixed(1) : 0;
+            const otherPercentage = total > 0 ? ((otherCount / total) * 100).toFixed(1) : 0;
+            
+            document.getElementById('malePercentage').textContent = `${malePercentage}%`;
+            document.getElementById('femalePercentage').textContent = `${femalePercentage}%`;
+            document.getElementById('otherPercentage').textContent = `${otherPercentage}%`;
+            
+            // Calculate ratio
+            let ratio = '1:1';
+            if (maleCount > 0 && femaleCount > 0) {
+                const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+                const divisor = gcd(maleCount, femaleCount);
+                ratio = `${maleCount/divisor}:${femaleCount/divisor}`;
+            } else if (maleCount > 0) {
+                ratio = `${maleCount}:0`;
+            } else if (femaleCount > 0) {
+                ratio = `0:${femaleCount}`;
+            }
+            
+            document.getElementById('genderRatio').textContent = ratio;
+            
+            // Determine dominant gender
+            let dominant = 'Cân bằng';
+            if (maleCount > femaleCount + otherCount) {
+                dominant = 'Nam';
+            } else if (femaleCount > maleCount + otherCount) {
+                dominant = 'Nữ';
+            }
+            document.getElementById('dominantGender').textContent = dominant;
+            
+            // Render gender chart
+            renderGenderChart(maleCount, femaleCount, otherCount);
+        }
+
+        function renderGenderChart(maleCount, femaleCount, otherCount) {
+            const ctx = document.getElementById('genderChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (genderChart) {
+                genderChart.destroy();
+            }
+            
+            const total = maleCount + femaleCount + otherCount;
+            if (total === 0) return;
+            
+            genderChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nam', 'Nữ', 'Khác'],
+                    datasets: [{
+                        data: [maleCount, femaleCount, otherCount],
+                        backgroundColor: [
+                            '#3B82F6', // Blue for male
+                            '#EC4899', // Pink for female  
+                            '#6B7280'  // Gray for other
+                        ],
+                        borderColor: [
+                            '#2563EB',
+                            '#DB2777', 
+                            '#4B5563'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function filterStudents() {
+            const nameFilter = document.getElementById('studentNameFilter').value.toLowerCase();
+            const classificationFilter = document.getElementById('classificationFilter').value;
+            const genderFilter = document.getElementById('genderFilter').value;
+            
+            let filteredStats = allStudentStats.filter(studentStat => {
+                const student = studentStat.student;
+                const name = student.fullName.toLowerCase();
+                const classification = studentStat.classificationClass;
+                const gender = student.gender || 'other';
+                
+                let matchName = nameFilter === '' || name.includes(nameFilter);
+                let matchClassification = classificationFilter === '' || classification === classificationFilter;
+                let matchGender = genderFilter === '' || gender === genderFilter;
+                
+                return matchName && matchClassification && matchGender;
+            });
+            
+            // Update the displayed data
+            currentStatsData.studentStats = filteredStats;
+            renderStatsTable();
+            renderGenderStats();
+            
+            // Update overall stats based on filtered data
+            renderFilteredOverallStats(filteredStats);
+        }
+
+        function renderFilteredOverallStats(filteredStats) {
+            const overallStatsCards = document.getElementById('overallStatsCards');
+            const stats = currentStatsData.classOverallStats;
+            
+            // Calculate filtered classifications
+            const filteredClassifications = {
+                excellent: filteredStats.filter(s => s.classificationClass === 'excellent').length,
+                good: filteredStats.filter(s => s.classificationClass === 'good').length,
+                average: filteredStats.filter(s => s.classificationClass === 'average').length,
+                belowAverage: filteredStats.filter(s => s.classificationClass === 'belowAverage').length,
+                poor: filteredStats.filter(s => s.classificationClass === 'poor').length
+            };
+            
+            overallStatsCards.innerHTML = `
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-blue-600 mb-2">${filteredStats.length}</div>
+                    <div class="text-gray-600 font-semibold">Học viên hiển thị</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-green-600 mb-2">${stats.testCount}</div>
+                    <div class="text-gray-600 font-semibold">Bài kiểm tra</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">${stats.assignmentCount}</div>
+                    <div class="text-gray-600 font-semibold">Bài tập</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center card-hover">
+                    <div class="text-4xl font-bold text-orange-600 mb-2">${filteredClassifications.excellent + filteredClassifications.good}</div>
+                    <div class="text-gray-600 font-semibold">Giỏi trở lên</div>
+                </div>
+            `;
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 
+                           type === 'error' ? 'from-red-500 to-red-600' : 
+                           type === 'warning' ? 'from-yellow-500 to-yellow-600' :
+                           'from-blue-500 to-blue-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        type === 'warning' ? 'fa-exclamation-triangle' : 
+                        'fa-info-circle';
+            
+            notification.className = `fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} text-xl mr-3"></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

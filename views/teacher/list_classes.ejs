@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách lớp học | Giảng viên</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateZ(10px) rotateX(5deg);
+        }
+        
+        .search-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .search-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .search-container:hover::before {
+            left: 100%;
+        }
+        
+        .status-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.8s;
+        }
+        
+        .status-badge:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section with Stats -->
+                <div class="mb-8">
+                    <div class="gradient-bg rounded-3xl p-8 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8 floating-animation"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full transform -translate-x-4 translate-y-4 floating-animation" style="animation-delay: 1s;"></div>
+                        
+                        <div class="relative z-10">
+                            <h1 class="text-4xl font-bold mb-2 slide-in">Quản lý lớp học</h1>
+                            <p class="text-xl opacity-90 mb-8 slide-in" style="animation-delay: 0.2s;">Theo dõi và quản lý các lớp học của bạn một cách hiệu quả</p>
+                            
+                            <!-- Enhanced Stats -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <div class="glass-card rounded-2xl p-6 text-center slide-in" style="animation-delay: 0.3s;">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-4 floating-animation">
+                                        <i class="fas fa-chalkboard-teacher text-2xl text-white"></i>
+                                    </div>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-2"><%= classes.length %></h3>
+                                    <p class="text-gray-600 font-medium">Tổng lớp học</p>
+                                </div>
+                                
+                                <div class="glass-card rounded-2xl p-6 text-center slide-in" style="animation-delay: 0.4s;">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4 floating-animation" style="animation-delay: 0.5s;">
+                                        <i class="fas fa-users text-2xl text-white"></i>
+                                    </div>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-2">
+                                        <% 
+                                        let totalStudents = 0;
+                                        classes.forEach(classItem => {
+                                            totalStudents += classItem.students.length;
+                                        });
+                                        %>
+                                        <%= totalStudents %>
+                                    </h3>
+                                    <p class="text-gray-600 font-medium">Tổng học viên</p>
+                                </div>
+                                
+                                <div class="glass-card rounded-2xl p-6 text-center slide-in" style="animation-delay: 0.5s;">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-full mb-4 floating-animation" style="animation-delay: 1s;">
+                                        <i class="fas fa-clock text-2xl text-white"></i>
+                                    </div>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-2">
+                                        <% 
+                                        let activeClasses = classes.filter(classItem => new Date() >= new Date(classItem.startDate) && new Date() <= new Date(classItem.endDate)).length;
+                                        %>
+                                        <%= activeClasses %>
+                                    </h3>
+                                    <p class="text-gray-600 font-medium">Đang diễn ra</p>
+                                </div>
+                                
+                                <div class="glass-card rounded-2xl p-6 text-center slide-in" style="animation-delay: 0.6s;">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-500 rounded-full mb-4 floating-animation pulse-animation" style="animation-delay: 1.5s;">
+                                        <i class="fas fa-bell text-2xl text-white"></i>
+                                    </div>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-2">
+                                        <% 
+                                        let totalRequests = 0;
+                                        classes.forEach(classItem => {
+                                            if (classItem.pendingRequests) {
+                                                totalRequests += classItem.pendingRequests.length;
+                                            }
+                                        });
+                                        %>
+                                        <%= totalRequests %>
+                                    </h3>
+                                    <p class="text-gray-600 font-medium">Yêu cầu chờ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter Section -->
+                <div class="mb-8">
+                    <div class="glass-card rounded-2xl p-6 slide-in">
+                        <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+                            <div>
+                                <h2 class="text-2xl font-bold gradient-text mb-2">Danh sách lớp học</h2>
+                                <p class="text-gray-600">Quản lý và theo dõi tất cả các lớp học của bạn</p>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="search-container relative">
+                                    <input type="text" 
+                                           id="courseSearch" 
+                                           placeholder="Tìm kiếm lớp học..." 
+                                           class="w-80 pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white shadow-sm">
+                                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                                
+                                <select class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white shadow-sm">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="active">Đang diễn ra</option>
+                                    <option value="upcoming">Sắp bắt đầu</option>
+                                    <option value="completed">Đã kết thúc</option>
+                                </select>
+                                
+                                <button class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Tạo lớp mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Classes Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <% classes.forEach(function(classItem, index) { %>
+                        <div class="glass-card rounded-2xl overflow-hidden card-hover slide-in" style="animation-delay: <%= index * 0.1 %>s;">
+                            <!-- Class Image Header -->
+                            <div class="relative h-48 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 overflow-hidden">
+                                <% 
+                                // Handle different image path formats and provide fallback
+                                let imagePath = '/images/class-default.jpg'; // Default fallback
+                                
+                                if (classItem.classImage) {
+                                    if (classItem.classImage.startsWith('/')) {
+                                        // Already has full path like /images/class-default.jpg
+                                        imagePath = classItem.classImage;
+                                    } else {
+                                        // Just filename, add /uploads/ prefix
+                                        imagePath = '/uploads/' + classItem.classImage;
+                                    }
+                                }
+                                %>
+                                <img src="<%= imagePath %>" 
+                                     alt="<%= classItem.name %>" 
+                                     class="w-full h-full object-cover transition-opacity duration-300"
+                                     onerror="this.src='/images/class-default.jpg'; this.onerror=null;">
+                                
+                                <!-- Course name overlay -->
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                                    <% if (classItem.course) { %>
+                                        <span class="text-white text-sm font-medium bg-white/20 px-2 py-1 rounded-lg backdrop-blur-sm">
+                                            <i class="fas fa-book mr-1"></i>
+                                            <%= classItem.course.title %>
+                                        </span>
+                                    <% } %>
+                                </div>
+                                
+                                <!-- Overlay -->
+                                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                                
+                                <!-- Status Badge -->
+                                <div class="absolute top-4 left-4">
+                                    <% 
+                                    let statusClass = 'bg-green-500';
+                                    let statusText = 'Đang diễn ra';
+                                    let now = new Date();
+                                    let startDate = new Date(classItem.startDate);
+                                    let endDate = new Date(classItem.endDate);
+                                    
+                                    if (now < startDate) {
+                                        statusClass = 'bg-blue-500';
+                                        statusText = 'Sắp bắt đầu';
+                                    } else if (now > endDate) {
+                                        statusClass = 'bg-gray-500';
+                                        statusText = 'Đã kết thúc';
+                                    }
+                                    %>
+                                    <span class="status-badge <%= statusClass %> text-white px-3 py-1 rounded-full text-sm font-medium">
+                                        <%= statusText %>
+                                    </span>
+                                </div>
+                                
+                                <!-- Pending Requests Badge -->
+                                <% if (classItem.pendingRequests && classItem.pendingRequests.length > 0) { %>
+                                    <div class="absolute top-4 right-4">
+                                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold pulse-animation">
+                                            <i class="fas fa-bell mr-1"></i>
+                                            <%= classItem.pendingRequests.length %>
+                                        </span>
+                                    </div>
+                                <% } %>
+                                
+                                <!-- Class Title -->
+                                <div class="absolute bottom-4 left-4 right-4">
+                                    <h3 class="text-2xl font-bold text-white mb-2"><%= classItem.name %></h3>
+                                    <p class="text-white opacity-90 text-sm line-clamp-2"><%= classItem.description %></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Class Content -->
+                            <div class="p-6">
+                                <!-- Course Info -->
+                                <div class="mb-4">
+                                    <div class="flex items-center text-gray-600 mb-2">
+                                        <i class="fas fa-book mr-3 text-purple-500"></i>
+                                        <span class="font-medium">
+                                            <% if (classItem.course) { %>
+                                                <%= classItem.course.title %>
+                                            <% } else { %>
+                                                Chưa gán khóa học
+                                            <% } %>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Class Details -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="text-center p-3 bg-blue-50 rounded-xl">
+                                        <i class="fas fa-users text-blue-500 text-xl mb-2"></i>
+                                        <p class="text-2xl font-bold text-gray-800"><%= classItem.students.length %></p>
+                                        <p class="text-sm text-gray-600">Học viên</p>
+                                    </div>
+                                    
+                                    <div class="text-center p-3 bg-green-50 rounded-xl">
+                                        <i class="fas fa-user-plus text-green-500 text-xl mb-2"></i>
+                                        <p class="text-2xl font-bold text-gray-800"><%= classItem.maxStudents %></p>
+                                        <p class="text-sm text-gray-600">Tối đa</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Schedule Info -->
+                                <div class="mb-6 p-4 bg-gray-50 rounded-xl">
+                                    <div class="flex items-center mb-2">
+                                        <i class="fas fa-clock mr-2 text-orange-500"></i>
+                                        <span class="text-sm font-medium text-gray-700">Lịch học:</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <strong>Thời gian:</strong> <%= classItem.schedule.days.join(', ') %> - <%= classItem.schedule.time %>
+                                    </p>
+                                    <p class="text-sm text-gray-600">
+                                        <strong>Thời hạn:</strong> <%= classItem.startDate.toLocaleDateString() %> - <%= classItem.endDate.toLocaleDateString() %>
+                                    </p>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="flex gap-3">
+                                    <a href="/teacher/classes/<%= classItem._id %>" 
+                                       class="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-xl font-semibold text-center hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-eye mr-2"></i>
+                                        Xem chi tiết
+                                    </a>
+                                    
+                                    <button class="edit-class-btn px-4 py-3 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-all duration-300 transform hover:scale-105"
+                                            data-id="<%= classItem._id %>"
+                                            data-name="<%= classItem.name %>"
+                                            data-description="<%= classItem.description %>"
+                                            data-course="<%= classItem.course ? classItem.course._id : '' %>"
+                                            data-schedule-days="<%= classItem.schedule.days.join(', ') %>"
+                                            data-schedule-time="<%= classItem.schedule.time %>"
+                                            data-start-date="<%= classItem.startDate.toISOString().split('T')[0] %>"
+                                            data-end-date="<%= classItem.endDate.toISOString().split('T')[0] %>"
+                                            data-max-students="<%= classItem.maxStudents %>"
+                                            data-class-image="<%= classItem.classImage || '' %>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    
+                                    <form action="/teacher/classes/<%= classItem._id %>/delete" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lớp học này không?');" class="inline">
+                                        <button type="submit" 
+                                                class="px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-300 transform hover:scale-105">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Pending Requests Section -->
+                                <% if (classItem.pendingRequests && classItem.pendingRequests.length > 0) { %>
+                                    <div class="mt-6 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                                            Yêu cầu tham gia lớp (<%= classItem.pendingRequests.length %>)
+                                        </h4>
+                                        <div class="space-y-3 max-h-40 overflow-y-auto">
+                                            <% classItem.pendingRequests.forEach(function(student) { %>
+                                                <div class="flex justify-between items-center bg-white p-3 rounded-lg border" id="request-<%= student._id %>">
+                                                    <div class="flex items-center">
+                                                        <div class="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                                            <%= student.fullName.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                        <span class="font-medium text-gray-800"><%= student.fullName %></span>
+                                                    </div>
+                                                    <div class="flex gap-2">
+                                                        <button onclick="handleEnrollmentRequest('<%= classItem._id %>', '<%= student._id %>', 'approve')"
+                                                                class="bg-green-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-600 transition-colors">
+                                                            <i class="fas fa-check mr-1"></i>Duyệt
+                                                        </button>
+                                                        <button onclick="handleEnrollmentRequest('<%= classItem._id %>', '<%= student._id %>', 'reject')"
+                                                                class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors">
+                                                            <i class="fas fa-times mr-1"></i>Từ chối
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <!-- Empty State -->
+                <% if (classes.length === 0) { %>
+                    <div class="glass-card rounded-2xl p-12 text-center slide-in">
+                        <div class="floating-animation mb-6">
+                            <i class="fas fa-chalkboard-teacher text-8xl text-gray-300"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-700 mb-4">Chưa có lớp học nào</h3>
+                        <p class="text-gray-500 mb-8 text-lg">Bạn chưa tạo lớp học nào. Hãy bắt đầu tạo lớp học đầu tiên của bạn!</p>
+                        <button class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                            <i class="fas fa-plus mr-3"></i>
+                            Tạo lớp học đầu tiên
+                        </button>
+                    </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Edit Modal -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold gradient-text">Cập nhật thông tin lớp học</h2>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="editForm" action="" method="POST" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="className" class="block text-gray-700 font-semibold mb-2">Tên lớp học</label>
+                        <input type="text" id="className" name="name" 
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label for="classCourse" class="block text-gray-700 font-semibold mb-2">Khóa học</label>
+                        <select id="classCourse" name="course" 
+                                class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            <option value="">Chọn khóa học</option>
+                            <% courses.forEach(function(course) { %>
+                                <option value="<%= course._id %>"><%= course.title %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="classMaxStudents" class="block text-gray-700 font-semibold mb-2">Số học sinh tối đa</label>
+                        <input type="number" id="classMaxStudents" name="maxStudents" 
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="classDescription" class="block text-gray-700 font-semibold mb-2">Mô tả</label>
+                        <textarea id="classDescription" name="description" rows="4"
+                                  class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="classScheduleDays" class="block text-gray-700 font-semibold mb-2">Ngày học</label>
+                        <input type="text" id="classScheduleDays" name="scheduleDays" placeholder="VD: Thứ 2, Thứ 4, Thứ 6"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label for="classScheduleTime" class="block text-gray-700 font-semibold mb-2">Thời gian</label>
+                        <input type="text" id="classScheduleTime" name="scheduleTime" placeholder="VD: 19:00 - 21:00"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label for="classStartDate" class="block text-gray-700 font-semibold mb-2">Ngày bắt đầu</label>
+                        <input type="date" id="classStartDate" name="startDate" 
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div>
+                        <label for="classEndDate" class="block text-gray-700 font-semibold mb-2">Ngày kết thúc</label>
+                        <input type="date" id="classEndDate" name="endDate" 
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="classImage" class="block text-gray-700 font-semibold mb-2">Hình ảnh lớp học</label>
+                        <input type="file" id="classImage" name="classImage" accept="image/*"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" onclick="closeEditModal()" 
+                            class="px-8 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" 
+                            class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-save mr-2"></i>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // Enhanced modal functions
+    function openEditModal(id, name, description, courseId, scheduleDays, scheduleTime, startDate, endDate, maxStudents, classImage) {
+        document.getElementById('editForm').action = '/teacher/classes/' + id + '/edit';
+        document.getElementById('className').value = name;
+        document.getElementById('classDescription').value = description;
+        document.getElementById('classCourse').value = courseId;
+        document.getElementById('classScheduleDays').value = scheduleDays;
+        document.getElementById('classScheduleTime').value = scheduleTime;
+        document.getElementById('classStartDate').value = startDate;
+        document.getElementById('classEndDate').value = endDate;
+        document.getElementById('classMaxStudents').value = maxStudents;
+        
+        const modal = document.getElementById('editModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('slide-in');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+
+    // Enhanced enrollment request handling
+    async function handleEnrollmentRequest(classId, studentId, action) {
+        try {
+            const response = await fetch(`/teacher/enrollment-requests/${classId}/${studentId}/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const requestElement = document.getElementById(`request-${studentId}`);
+                if (requestElement) {
+                    // Add fade out animation
+                    requestElement.style.transition = 'all 0.3s ease';
+                    requestElement.style.transform = 'translateX(100%)';
+                    requestElement.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        const parentDiv = requestElement.closest('.space-y-3');
+                        requestElement.remove();
+
+                        if (parentDiv && parentDiv.children.length === 0) {
+                            const requestsSection = parentDiv.closest('.mt-6');
+                            if (requestsSection) {
+                                requestsSection.style.transition = 'all 0.3s ease';
+                                requestsSection.style.transform = 'translateY(-20px)';
+                                requestsSection.style.opacity = '0';
+                                setTimeout(() => requestsSection.remove(), 300);
+                            }
+                        }
+
+                        // Update badge count with animation
+                        const card = document.querySelector(`[id*="request-${studentId}"]`)?.closest('.glass-card');
+                        const badge = card?.querySelector('.bg-red-500');
+                        if (badge) {
+                            const currentCount = parseInt(badge.textContent.trim());
+                            if (currentCount <= 1) {
+                                badge.style.transition = 'all 0.3s ease';
+                                badge.style.transform = 'scale(0)';
+                                setTimeout(() => badge.remove(), 300);
+                            } else {
+                                badge.innerHTML = `<i class="fas fa-bell mr-1"></i>${currentCount - 1}`;
+                            }
+                        }
+                    }, 300);
+                }
+
+                // Enhanced notification
+                const message = action === 'approve' ? 'Đã chấp nhận yêu cầu tham gia' : 'Đã từ chối yêu cầu tham gia';
+                showEnhancedNotification(message, action === 'approve' ? 'success' : 'error');
+            } else {
+                throw new Error('Failed to process request');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showEnhancedNotification('Có lỗi xảy ra, vui lòng thử lại', 'error');
+        }
+    }
+
+    // Enhanced notification system
+    function showEnhancedNotification(message, type) {
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        notification.className = `fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${icon} text-xl mr-3"></i>
+                <span class="font-semibold">${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Animate out
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    }
+
+    // Search functionality
+    document.getElementById('courseSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const classCards = document.querySelectorAll('.glass-card');
+        
+        classCards.forEach(card => {
+            const className = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const classDescription = card.querySelector('p')?.textContent.toLowerCase() || '';
+            
+            if (className.includes(searchTerm) || classDescription.includes(searchTerm)) {
+                card.style.display = 'block';
+                card.style.animation = 'slideIn 0.3s ease-out';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Add loading animations on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.slide-in');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+
+    // Enhanced Search and Filter Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeClassManagement();
+    });
+
+    function initializeClassManagement() {
+        // Initialize search functionality
+        initializeSearch();
+        
+        // Initialize filter functionality
+        initializeFilter();
+        
+        // Initialize create class button
+        initializeCreateClassButton();
+        
+        // Initialize animations
+        initializeAnimations();
+    }
+
+    // Search functionality
+    function initializeSearch() {
+        const searchInput = document.getElementById('courseSearch');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function(e) {
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+            
+            // Add loading indicator to search
+            const searchContainer = searchInput.parentElement;
+            searchContainer.classList.add('searching');
+            
+            // Debounce search to avoid too many operations
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value.trim());
+                searchContainer.classList.remove('searching');
+            }, 300);
+        });
+
+        // Add search animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            .searching::after {
+                content: '';
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 16px;
+                height: 16px;
+                border: 2px solid #9ca3af;
+                border-top: 2px solid #8b5cf6;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                0% { transform: translateY(-50%) rotate(0deg); }
+                100% { transform: translateY(-50%) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function performSearch(searchTerm) {
+        const classCards = document.querySelectorAll('.glass-card');
+        let visibleCount = 0;
+        
+        classCards.forEach((card, index) => {
+            // Skip the search/filter card
+            if (card.querySelector('#courseSearch')) return;
+            
+            const className = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const classDescription = card.querySelector('.line-clamp-2')?.textContent.toLowerCase() || '';
+            const courseName = card.querySelector('.fas.fa-book')?.parentElement?.textContent.toLowerCase() || '';
+            
+            const isMatch = searchTerm === '' || 
+                           className.includes(searchTerm.toLowerCase()) || 
+                           classDescription.includes(searchTerm.toLowerCase()) ||
+                           courseName.includes(searchTerm.toLowerCase());
+            
+            if (isMatch) {
+                showCard(card, visibleCount * 100);
+                visibleCount++;
+            } else {
+                hideCard(card);
+            }
+        });
+        
+        // Show/hide empty state
+        toggleEmptyState(visibleCount === 0 && searchTerm !== '');
+    }
+
+    // Filter functionality
+    function initializeFilter() {
+        const filterSelect = document.querySelector('select');
+        
+        filterSelect.addEventListener('change', function(e) {
+            performFilter(e.target.value);
+        });
+    }
+
+    function performFilter(filterValue) {
+        const classCards = document.querySelectorAll('.glass-card');
+        const now = new Date();
+        let visibleCount = 0;
+        
+        classCards.forEach((card, index) => {
+            // Skip the search/filter card
+            if (card.querySelector('#courseSearch')) return;
+            
+            const statusBadge = card.querySelector('.status-badge');
+            if (!statusBadge) return;
+            
+            const statusText = statusBadge.textContent.trim();
+            let showCard = false;
+            
+            switch (filterValue) {
+                case '':
+                    showCard = true;
+                    break;
+                case 'active':
+                    showCard = statusText === 'Đang diễn ra';
+                    break;
+                case 'upcoming':
+                    showCard = statusText === 'Sắp bắt đầu';
+                    break;
+                case 'completed':
+                    showCard = statusText === 'Đã kết thúc';
+                    break;
+            }
+            
+            if (showCard) {
+                showCard(card, visibleCount * 100);
+                visibleCount++;
+            } else {
+                hideCard(card);
+            }
+        });
+        
+        // Show/hide empty state
+        toggleEmptyState(visibleCount === 0 && filterValue !== '');
+    }
+
+    // Card animation functions
+    function showCard(card, delay = 0) {
+        card.style.display = 'block';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px) scale(0.95)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.3s ease-out';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0) scale(1)';
+        }, delay);
+    }
+
+    function hideCard(card) {
+        card.style.transition = 'all 0.3s ease-out';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(-20px) scale(0.95)';
+        
+        setTimeout(() => {
+            card.style.display = 'none';
+        }, 300);
+    }
+
+    function toggleEmptyState(show) {
+        let emptyState = document.getElementById('searchEmptyState');
+        
+        if (show && !emptyState) {
+            emptyState = createEmptyState();
+            document.querySelector('.grid').appendChild(emptyState);
+        } else if (!show && emptyState) {
+            emptyState.remove();
+        }
+    }
+
+    function createEmptyState() {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.id = 'searchEmptyState';
+        emptyDiv.className = 'col-span-full glass-card rounded-2xl p-12 text-center slide-in';
+        emptyDiv.innerHTML = `
+            <div class="floating-animation mb-6">
+                <i class="fas fa-search text-6xl text-gray-300"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-700 mb-4">Không tìm thấy lớp học</h3>
+            <p class="text-gray-500 mb-6">Không có lớp học nào phù hợp với tiêu chí tìm kiếm của bạn.</p>
+            <button onclick="clearSearch()" class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                <i class="fas fa-times mr-2"></i>
+                Xóa bộ lọc
+            </button>
+        `;
+        return emptyDiv;
+    }
+
+    function clearSearch() {
+        document.getElementById('courseSearch').value = '';
+        document.querySelector('select').value = '';
+        performSearch('');
+        performFilter('');
+    }
+
+    // Create Class Button functionality
+    function initializeCreateClassButton() {
+        const createButton = document.querySelector('.btn-3d');
+        
+        createButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            openCreateClassModal();
+        });
+    }
+
+    // Create Class Modal
+    function openCreateClassModal() {
+        // Create modal if it doesn't exist
+        if (!document.getElementById('createClassModal')) {
+            createClassModal();
+        }
+        
+        const modal = document.getElementById('createClassModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('modal-show');
+        document.body.style.overflow = 'hidden';
+        
+        // Load courses for selection
+        loadAvailableCourses();
+    }
+
+    function createClassModal() {
+        const modalHTML = `
+            <div id="createClassModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+                <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold gradient-text">Tạo lớp học mới</h2>
+                        <button onclick="closeCreateClassModal()" class="text-gray-400 hover:text-gray-600 text-2xl transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="createClassForm" onsubmit="handleCreateClass(event)" enctype="multipart/form-data">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Course Selection -->
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-book text-purple-500 mr-2"></i>
+                                    Chọn khóa học <span class="text-red-500">*</span>
+                                </label>
+                                <select id="courseSelect" name="courseId" required 
+                                        class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                                    <option value="">Đang tải khóa học...</option>
+                                </select>
+                                <div id="courseInfo" class="mt-3 p-3 bg-blue-50 rounded-lg hidden">
+                                    <div class="flex items-center text-sm text-blue-700">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        <span id="courseDetails"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Class Name -->
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-tag text-green-500 mr-2"></i>
+                                    Tên lớp học <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="className" required 
+                                       placeholder="VD: Tiếng Hàn Sơ cấp - Lớp A1"
+                                       class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-align-left text-blue-500 mr-2"></i>
+                                    Mô tả lớp học <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="description" rows="4" required
+                                          placeholder="Mô tả chi tiết về lớp học, mục tiêu và nội dung..."
+                                          class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white resize-none"></textarea>
+                            </div>
+                            
+                            <!-- Schedule -->
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-calendar-day text-orange-500 mr-2"></i>
+                                    Ngày học trong tuần <span class="text-red-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-3 gap-2" id="scheduleInput">
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 2" class="mr-2">
+                                        <span class="text-sm">Thứ 2</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 3" class="mr-2">
+                                        <span class="text-sm">Thứ 3</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 4" class="mr-2">
+                                        <span class="text-sm">Thứ 4</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 5" class="mr-2">
+                                        <span class="text-sm">Thứ 5</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 6" class="mr-2">
+                                        <span class="text-sm">Thứ 6</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Thứ 7" class="mr-2">
+                                        <span class="text-sm">Thứ 7</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="checkbox" name="scheduleDays" value="Chủ nhật" class="mr-2">
+                                        <span class="text-sm">CN</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Time -->
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-clock text-red-500 mr-2"></i>
+                                    Thời gian học <span class="text-red-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm text-gray-600 mb-1">Bắt đầu</label>
+                                        <input type="time" name="startTime" required value="19:00"
+                                               class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-600 mb-1">Kết thúc</label>
+                                        <input type="time" name="endTime" required value="21:00"
+                                               class="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Dates -->
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-play text-green-500 mr-2"></i>
+                                    Ngày bắt đầu <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" name="startDate" required
+                                       class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-stop text-red-500 mr-2"></i>
+                                    Ngày kết thúc <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" name="endDate" required
+                                       class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            </div>
+                            
+                            <!-- Max Students -->
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-users text-blue-500 mr-2"></i>
+                                    Số học viên tối đa <span class="text-red-500">*</span>
+                                </label>
+                                <input type="number" name="maxStudents" required min="1" max="50" value="20"
+                                       class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            </div>
+                            
+                            <!-- Class Image -->
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">
+                                    <i class="fas fa-image text-purple-500 mr-2"></i>
+                                    Hình ảnh lớp học
+                                </label>
+                                <input type="file" name="classImage" accept="image/*"
+                                       class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end gap-4 mt-8">
+                            <button type="button" onclick="closeCreateClassModal()" 
+                                    class="px-8 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                                <i class="fas fa-times mr-2"></i>
+                                Hủy
+                            </button>
+                            <button type="submit" 
+                                    class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                <i class="fas fa-plus mr-2"></i>
+                                Tạo lớp học
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Add modal animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .modal-show .glass-card {
+                transform: scale(1);
+            }
+            
+            .glass-card {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function closeCreateClassModal() {
+        const modal = document.getElementById('createClassModal');
+        const card = modal.querySelector('.glass-card');
+        
+        card.style.transform = 'scale(0.95)';
+        modal.style.opacity = '0';
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('modal-show');
+            document.body.style.overflow = 'auto';
+            modal.style.opacity = '1';
+        }, 300);
+    }
+
+    // Load available courses
+    async function loadAvailableCourses() {
+        try {
+            const response = await fetch('/api/courses');
+            if (!response.ok) throw new Error('Failed to fetch courses');
+            
+            const courses = await response.json();
+            const courseSelect = document.getElementById('courseSelect');
+            
+            if (courses.length === 0) {
+                courseSelect.innerHTML = '<option value="">Không có khóa học nào</option>';
+                return;
+            }
+            
+            courseSelect.innerHTML = '<option value="">Chọn khóa học...</option>';
+            
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course._id;
+                option.textContent = `${course.title} (${course.level})`;
+                option.dataset.course = JSON.stringify(course);
+                courseSelect.appendChild(option);
+            });
+            
+            // Add course selection handler
+            courseSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const courseInfo = document.getElementById('courseInfo');
+                const courseDetails = document.getElementById('courseDetails');
+                
+                if (selectedOption.value && selectedOption.dataset.course) {
+                    const course = JSON.parse(selectedOption.dataset.course);
+                    courseDetails.textContent = `${course.category} - ${course.duration} - ${course.price.toLocaleString()}đ`;
+                    courseInfo.classList.remove('hidden');
+                } else {
+                    courseInfo.classList.add('hidden');
+                }
+            });
+            
+        } catch (error) {
+            console.error('Error loading courses:', error);
+            const courseSelect = document.getElementById('courseSelect');
+            courseSelect.innerHTML = '<option value="">Lỗi khi tải khóa học</option>';
+            showEnhancedNotification('Không thể tải danh sách khóa học', 'error');
+        }
+    }
+
+    // Handle form submission
+    async function handleCreateClass(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang tạo...';
+        
+        try {
+            // Validate form
+            if (!validateCreateClassForm(form)) {
+                throw new Error('Vui lòng điền đầy đủ thông tin bắt buộc');
+            }
+            
+            const formData = new FormData(form);
+            
+            // Process schedule days
+            const scheduleDays = Array.from(form.querySelectorAll('input[name="scheduleDays"]:checked'))
+                .map(input => input.value);
+            
+            if (scheduleDays.length === 0) {
+                throw new Error('Vui lòng chọn ít nhất một ngày học trong tuần');
+            }
+            
+            // Combine start and end time
+            const startTime = form.startTime.value;
+            const endTime = form.endTime.value;
+            const scheduleTime = `${startTime} - ${endTime}`;
+            
+            // Remove individual time fields and add combined
+            formData.delete('startTime');
+            formData.delete('endTime');
+            formData.append('scheduleTime', scheduleTime);
+            formData.append('scheduleDays', scheduleDays.join(', '));
+            
+            const response = await fetch('/teacher/classes', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Có lỗi xảy ra khi tạo lớp học');
+            }
+            
+            // Success
+            showEnhancedNotification('Tạo lớp học thành công!', 'success');
+            closeCreateClassModal();
+            
+            // Reload page after a delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Error creating class:', error);
+            showEnhancedNotification(error.message, 'error');
+        } finally {
+            // Reset button state
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        }
+    }
+
+    function validateCreateClassForm(form) {
+        const requiredFields = ['courseId', 'className', 'description', 'startDate', 'endDate', 'maxStudents'];
+        
+        for (const field of requiredFields) {
+            const input = form.querySelector(`[name="${field}"]`);
+            if (!input || !input.value.trim()) {
+                input?.focus();
+                return false;
+            }
+        }
+        
+        // Validate dates
+        const startDate = new Date(form.startDate.value);
+        const endDate = new Date(form.endDate.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (startDate < today) {
+            showEnhancedNotification('Ngày bắt đầu không thể là ngày trong quá khứ', 'error');
+            form.startDate.focus();
+            return false;
+        }
+        
+        if (endDate <= startDate) {
+            showEnhancedNotification('Ngày kết thúc phải sau ngày bắt đầu', 'error');
+            form.endDate.focus();
+            return false;
+        }
+        
+        // Validate time
+        const startTime = form.startTime.value;
+        const endTime = form.endTime.value;
+        
+        if (startTime >= endTime) {
+            showEnhancedNotification('Thời gian kết thúc phải sau thời gian bắt đầu', 'error');
+            form.endTime.focus();
+            return false;
+        }
+        
+        return true;
+    }
+
+    // Initialize animations
+    function initializeAnimations() {
+        const cards = document.querySelectorAll('.slide-in');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease-out';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    }
+
+    // Enhanced notification system (if not already exists)
+    function showEnhancedNotification(message, type = 'success') {
+        // Remove existing notifications
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        notification.className = `notification fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${icon} text-xl mr-3"></i>
+                <span class="font-semibold">${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 500);
+            }
+        }, 5000);
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('createClassModal');
+        if (modal && e.target === modal) {
+            closeCreateClassModal();
+        }
+    });
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('createClassModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeCreateClassModal();
+            }
+        }
+    });
+
+    // Add event listeners for edit buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.edit-class-btn');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const data = this.dataset;
+                openEditModal(
+                    data.id,
+                    data.name,
+                    data.description,
+                    data.course,
+                    data.scheduleDays,
+                    data.scheduleTime,
+                    data.startDate,
+                    data.endDate,
+                    data.maxStudents,
+                    data.classImage
+                );
+            });
+        });
+    });
+</script>

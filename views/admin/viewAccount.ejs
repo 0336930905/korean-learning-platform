@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Tài Khoản - <%= user.fullName %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Enhanced styles for modern UI */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .activity-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .activity-item:hover {
+            border-left-color: #3b82f6;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), transparent);
+            transform: translateX(4px);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .action-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .profile-avatar {
+            position: relative;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .profile-avatar:hover::after {
+            opacity: 1;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .tab-button {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .tab-button.active::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #3b82f6;
+            border-radius: 1px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: -20px;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 10px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        
+        .role-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .role-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .role-badge:hover::before {
+            left: 100%;
+        }
+        
+        .metric-card {
+            background: linear-gradient(45deg, #f8fafc, #ffffff);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 40;
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                <!-- Enhanced Page Header -->
+                <div class="gradient-bg py-8 px-8 text-white">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">
+                                    <i class="fas fa-user-circle mr-3"></i>
+                                    Chi Tiết Tài Khoản
+                                </h1>
+                                <p class="text-indigo-100">Thông tin chi tiết và hoạt động của người dùng</p>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="flex items-center space-x-4">
+                                <button onclick="exportUserData()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Xuất dữ liệu
+                                </button>
+                                <button onclick="sendMessage()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    Gửi tin nhắn
+                                </button>
+                                <button onclick="window.location.href='/account-management/edit/<%= viewUser._id %>'"
+                                        class="action-button px-6 py-2 bg-white text-indigo-600 rounded-lg hover:bg-gray-100 font-semibold">
+                                    <i class="fas fa-edit mr-2"></i>
+                                    Chỉnh sửa
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Breadcrumb -->
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                <li class="inline-flex items-center">
+                                    <a href="/dashboard/admin" class="text-indigo-100 hover:text-white transition-colors">
+                                        <i class="fas fa-home mr-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <a href="/account-management" class="text-indigo-100 hover:text-white transition-colors">
+                                        Quản lý tài khoản
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <span class="text-white font-medium">Chi tiết tài khoản</span>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-8 py-8">
+                    <!-- Enhanced User Profile Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                        <!-- Profile Card -->
+                        <div class="lg:col-span-1">
+                            <div class="profile-card rounded-xl p-8 text-center animate-fade-in">
+                                <div class="relative inline-block mb-6">
+                                    <div class="profile-avatar w-32 h-32 rounded-full mx-auto overflow-hidden">
+                                        <img class="w-full h-full object-cover" 
+                                             src="<%= viewUser.profileImage || '/images/default-avatar.png' %>" 
+                                             alt="<%= viewUser.fullName %>"
+                                             onerror="this.src='/images/default-avatar.png'">
+                                    </div>
+                                    <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center
+                                              <%= viewUser.isActive ? 'bg-green-500' : 'bg-red-500' %> text-white text-sm">
+                                        <i class="fas <%= viewUser.isActive ? 'fa-check' : 'fa-times' %>"></i>
+                                    </div>
+                                </div>
+                                
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2"><%= viewUser.fullName %></h2>
+                                <p class="text-gray-600 mb-4"><%= viewUser.email %></p>
+                                
+                                <div class="flex justify-center mb-6">
+                                    <span class="role-badge px-4 py-2 text-sm font-semibold rounded-full
+                                               <%= viewUser.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
+                                                  viewUser.role === 'teacher' ? 'bg-green-100 text-green-800' : 
+                                                  'bg-blue-100 text-blue-800' %>">
+                                        <i class="fas <%= viewUser.role === 'admin' ? 'fa-crown' : 
+                                                         viewUser.role === 'teacher' ? 'fa-chalkboard-teacher' : 
+                                                         'fa-user-graduate' %> mr-2"></i>
+                                        <%= viewUser.role === 'admin' ? 'Quản trị viên' : 
+                                           viewUser.role === 'teacher' ? 'Giảng viên' : 'Học viên' %>
+                                    </span>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="space-y-3">
+                                    <form id="toggleStatusForm" action="/account-management/toggle-status/<%= viewUser._id %>" 
+                                          method="POST" class="w-full">
+                                        <button type="submit" 
+                                                class="action-button w-full px-6 py-3 rounded-lg font-medium transition-all
+                                                       <%= viewUser.isActive ? 'bg-red-500 text-white hover:bg-red-600' : 
+                                                          'bg-green-500 text-white hover:bg-green-600' %>">
+                                            <i class="fas <%= viewUser.isActive ? 'fa-user-slash' : 'fa-user-check' %> mr-2"></i>
+                                            <%= viewUser.isActive ? 'Vô hiệu hóa' : 'Kích hoạt' %>
+                                        </button>
+                                    </form>
+                                    
+                                    <button onclick="resetPassword()" 
+                                            class="action-button w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium transition-all">
+                                        <i class="fas fa-key mr-2"></i>
+                                        Đặt lại mật khẩu
+                                    </button>
+                                    
+                                    <button onclick="viewLoginHistory()" 
+                                            class="action-button w-full px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium transition-all">
+                                        <i class="fas fa-history mr-2"></i>
+                                        Lịch sử đăng nhập
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Information Cards -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Basic Information -->
+                            <div class="info-card animate-fade-in" style="animation-delay: 0.1s">
+                                <div class="flex items-center mb-6">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-info-circle text-blue-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Thông tin cơ bản</h3>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Email</label>
+                                        <p class="text-gray-900 font-medium"><%= viewUser.email %></p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Số điện thoại</label>
+                                        <p class="text-gray-900 font-medium"><%= viewUser.phone || 'Chưa cập nhật' %></p>
+                                    </div>
+                                    
+                                    <!-- Thêm thông tin giới tính -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Giới tính</label>
+                                        <p class="text-gray-900 font-medium flex items-center">
+                                            <% if (viewUser.gender === 'male') { %>
+                                                <i class="fas fa-mars text-blue-500 mr-2"></i>Nam
+                                            <% } else if (viewUser.gender === 'female') { %>
+                                                <i class="fas fa-venus text-pink-500 mr-2"></i>Nữ
+                                            <% } else if (viewUser.gender === 'other') { %>
+                                                <i class="fas fa-genderless text-purple-500 mr-2"></i>Khác
+                                            <% } else { %>
+                                                <i class="fas fa-question-circle text-gray-400 mr-2"></i>Chưa xác định
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Thêm thông tin tuổi nếu có ngày sinh -->
+                                    <% if (viewUser.dateOfBirth) { %>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Tuổi</label>
+                                        <p class="text-gray-900 font-medium">
+                                            <i class="fas fa-birthday-cake text-orange-400 mr-2"></i>
+                                            <%= new Date().getFullYear() - new Date(viewUser.dateOfBirth).getFullYear() %> tuổi
+                                        </p>
+                                    </div>
+                                    <% } %>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Ngày tham gia</label>
+                                        <p class="text-gray-900 font-medium">
+                                            <i class="fas fa-calendar-alt text-gray-400 mr-2"></i>
+                                            <%= new Date(viewUser.joinedDate).toLocaleDateString('vi-VN') %>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Trạng thái</label>
+                                        <p>
+                                            <span id="statusBadge" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                   <%= viewUser.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                                <i class="fas <%= viewUser.isActive ? 'fa-check-circle' : 'fa-times-circle' %> mr-1"></i>
+                                                <%= viewUser.isActive ? 'Hoạt động' : 'Vô hiệu' %>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Thêm thông tin ngày sinh -->
+                                    <% if (viewUser.dateOfBirth) { %>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Ngày sinh</label>
+                                        <p class="text-gray-900 font-medium">
+                                            <i class="fas fa-gift text-purple-400 mr-2"></i>
+                                            <%= new Date(viewUser.dateOfBirth).toLocaleDateString('vi-VN') %>
+                                        </p>
+                                    </div>
+                                    <% } %>
+                                    
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Địa chỉ</label>
+                                        <p class="text-gray-900 font-medium">
+                                            <i class="fas fa-map-marker-alt text-gray-400 mr-2"></i>
+                                            <%= viewUser.address || 'Chưa cập nhật' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Statistics Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style="animation-delay: 0.2s">
+                                <div class="metric-card rounded-lg p-6">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-book text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500">Khóa học</p>
+                                            <p class="text-2xl font-bold text-gray-900">12</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-card rounded-lg p-6">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-clock text-green-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500">Giờ học</p>
+                                            <p class="text-2xl font-bold text-gray-900">156</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="metric-card rounded-lg p-6">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-trophy text-yellow-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500">Điểm số</p>
+                                            <p class="text-2xl font-bold text-gray-900">87%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Tabbed Content -->
+                    <div class="glass-card rounded-xl shadow-lg overflow-hidden animate-fade-in" style="animation-delay: 0.3s">
+                        <!-- Tab Navigation -->
+                        <div class="border-b border-gray-200 bg-gray-50">
+                            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                                <button class="tab-button active py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-900" 
+                                        onclick="switchTab('activity')">
+                                    <i class="fas fa-history mr-2"></i>Lịch sử hoạt động
+                                </button>
+                                <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700" 
+                                        onclick="switchTab('courses')">
+                                    <i class="fas fa-graduation-cap mr-2"></i>Khóa học
+                                </button>
+                                <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700" 
+                                        onclick="switchTab('progress')">
+                                    <i class="fas fa-chart-line mr-2"></i>Tiến độ
+                                </button>
+                                <button class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700" 
+                                        onclick="switchTab('settings')">
+                                    <i class="fas fa-cog mr-2"></i>Cài đặt
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="p-6">
+                            <!-- Activity History Tab -->
+                            <div id="activityTab" class="tab-content">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900">Lịch sử hoạt động gần đây</h3>
+                                    <div class="flex items-center space-x-3">
+                                        <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option>Tất cả hoạt động</option>
+                                            <option>Đăng nhập</option>
+                                            <option>Học tập</option>
+                                            <option>Thi cử</option>
+                                        </select>
+                                        <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                            <i class="fas fa-filter mr-2"></i>Lọc
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <% if (user.activities && user.activities.length > 0) { %>
+                                        <% user.activities.forEach((activity, index) => { %>
+                                            <div class="timeline-item activity-item p-4 rounded-lg border border-gray-100">
+                                                <div class="timeline-dot"></div>
+                                                <div class="flex items-start justify-between">
+                                                    <div class="flex items-start space-x-3">
+                                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                            <i class="fas fa-<%= activity.type === 'login' ? 'sign-in-alt' : 
+                                                                                  activity.type === 'course' ? 'book' :
+                                                                                  activity.type === 'test' ? 'clipboard-check' : 'activity' %> text-blue-600"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm font-medium text-gray-900">
+                                                                <%= activity.description %>
+                                                            </p>
+                                                            <p class="text-xs text-gray-500 mt-1">
+                                                                <i class="fas fa-clock mr-1"></i>
+                                                                <%= new Date(activity.timestamp).toLocaleString('vi-VN') %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                                                             <%= activity.status === 'success' ? 'bg-green-100 text-green-800' : 
+                                                                activity.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-gray-100 text-gray-800' %>">
+                                                        <%= activity.status === 'success' ? 'Thành công' : 
+                                                           activity.status === 'warning' ? 'Cảnh báo' : 'Bình thường' %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div class="text-center py-12">
+                                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <i class="fas fa-history text-gray-400 text-2xl"></i>
+                                            </div>
+                                            <h3 class="text-lg font-medium text-gray-900 mb-2">Chưa có hoạt động</h3>
+                                            <p class="text-gray-500">Người dùng này chưa có hoạt động nào được ghi nhận.</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                
+                                <!-- Load More Button -->
+                                <div class="text-center mt-8">
+                                    <button onclick="loadMoreActivities()" 
+                                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-chevron-down mr-2"></i>
+                                        Xem thêm hoạt động
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Courses Tab -->
+                            <div id="coursesTab" class="tab-content hidden">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900">Khóa học đã tham gia</h3>
+                                    <div class="text-sm text-gray-500">
+                                        Tổng cộng: <span class="font-semibold text-gray-900">12 khóa học</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <!-- Course cards would be generated here -->
+                                    <div class="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                                        <div class="w-full h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg mb-4"></div>
+                                        <h4 class="font-semibold text-gray-900 mb-2">Tiếng Hàn cơ bản</h4>
+                                        <p class="text-sm text-gray-600 mb-3">Đã hoàn thành 87%</p>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-blue-600 h-2 rounded-full" style="width: 87%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Progress Tab -->
+                            <div id="progressTab" class="tab-content hidden">
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Biểu đồ tiến độ học tập</h3>
+                                    <div class="bg-white rounded-lg border border-gray-200 p-6">
+                                        <canvas id="progressChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Settings Tab -->
+                            <div id="settingsTab" class="tab-content hidden">
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Cài đặt tài khoản</h3>
+                                        <div class="space-y-4">
+                                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                <div>
+                                                    <h4 class="font-medium text-gray-900">Thông báo email</h4>
+                                                    <p class="text-sm text-gray-600">Nhận thông báo qua email</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Modals -->
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+        <div class="modal-content max-w-md w-full mx-4 p-6 animate-fade-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-key text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Đặt lại mật khẩu</h3>
+                <p class="text-sm text-gray-500 mb-6">
+                    Bạn có chắc chắn muốn đặt lại mật khẩu cho tài khoản này? Mật khẩu mới sẽ được gửi qua email.
+                </p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeResetPasswordModal()" 
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 background-white hover:bg-gray-50 transition-colors">
+                    Hủy
+                </button>
+                <button onclick="confirmResetPassword()" 
+                        class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <i class="fas fa-key mr-2"></i>Đặt lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="fixed inset-0 modal-overlay flex items-center justify-center z-50 hidden">
+        <div class="modal-content max-w-lg w-full mx-4 p-6 animate-fade-in">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-envelope text-blue-600"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Gửi tin nhắn</h3>
+            </div>
+            <form id="messageForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tiêu đề</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nhập tiêu đề tin nhắn">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nội dung</label>
+                    <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Nhập nội dung tin nhắn"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeMessageModal()" 
+                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-paper-plane mr-2"></i>Gửi tin nhắn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">Đang xử lý...</span>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-action w-14 h-14 rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+<script>
+// Enhanced JavaScript functionality
+class UserProfileManager {
+    constructor() {
+        this.currentTab = 'activity';
+        this.userId = '<%= viewUser._id %>';  // Thay đổi từ user._id thành viewUser._id
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.initializeCharts();
+        this.loadUserData();
+    }
+    
+    bindEvents() {
+        // Toggle status form
+        document.getElementById('toggleStatusForm').addEventListener('submit', this.handleToggleStatus.bind(this));
+        
+        // Close modals when clicking outside
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', this.handleKeydown.bind(this));
+    }
+    
+    async handleToggleStatus(e) {
+        e.preventDefault();
+        const form = e.target;
+        const button = form.querySelector('button');
+        
+        try {
+            this.showLoading(true);
+            button.disabled = true;
+            
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Lỗi server');
+            }
+            
+            if (data.success) {
+                this.updateStatusUI(data.isActive);
+                this.showToast(data.message, 'success');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showToast(error.message || 'Có lỗi xảy ra khi thay đổi trạng thái', 'error');
+        } finally {
+            this.showLoading(false);
+            button.disabled = false;
+        }
+    }
+    
+    updateStatusUI(isActive) {
+        // Update status badge
+        const statusBadge = document.getElementById('statusBadge');
+        statusBadge.className = `px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`;
+        statusBadge.innerHTML = `
+            <i class="fas ${isActive ? 'fa-check-circle' : 'fa-times-circle'} mr-1"></i>
+            ${isActive ? 'Hoạt động' : 'Vô hiệu'}
+        `;
+        
+        // Update toggle button
+        const toggleButton = document.querySelector('#toggleStatusForm button');
+        toggleButton.className = `action-button w-full px-6 py-3 rounded-lg font-medium transition-all ${
+            isActive ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-500 text-white hover:bg-green-600'
+        }`;
+        toggleButton.innerHTML = `
+            <i class="fas ${isActive ? 'fa-user-slash' : 'fa-user-check'} mr-2"></i>
+            ${isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
+        `;
+        
+        // Update profile avatar indicator
+        const avatarIndicator = document.querySelector('.profile-avatar').nextElementSibling;
+        avatarIndicator.className = `absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${
+            isActive ? 'bg-green-500' : 'bg-red-500'
+        } text-white text-sm`;
+        avatarIndicator.innerHTML = `<i class="fas ${isActive ? 'fa-check' : 'fa-times'}"></i>`;
+    }
+    
+    initializeCharts() {
+        // Progress Chart
+        const ctx = document.getElementById('progressChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    datasets: [{
+                        label: 'Tiến độ học tập',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        if (show) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+    
+    showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        
+        const toast = document.createElement('div');
+        toast.className = `
+            max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 transform transition-all duration-500 ease-in-out
+            ${type === 'success' ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}
+        `;
+        
+        toast.innerHTML = `
+            <div class="flex-1 w-0 p-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'} text-xl"></i>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex border-l border-gray-200">
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        class="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-gray-500 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 5000);
+    }
+    
+    handleOutsideClick(event) {
+        // Close modals when clicking outside
+        const modals = ['resetPasswordModal', 'messageModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (!modal.classList.contains('hidden') && event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
+    
+    handleKeydown(event) {
+        // Escape key to close modals
+        if (event.key === 'Escape') {
+            document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+    }
+    
+    async loadUserData() {
+        // Load additional user data if needed
+        try {
+            // Fetch additional data...
+        } catch (error) {
+            console.error('Error loading user data:', error);
+        }
+    }
+}
+
+// Tab switching functionality
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active', 'text-gray-900', 'border-blue-500');
+        button.classList.add('text-gray-500', 'border-transparent', 'hover:text-gray-700');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + 'Tab').classList.remove('hidden');
+    
+    // Add active class to clicked tab button
+    event.target.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-700');
+    event.target.classList.add('active', 'text-gray-900');
+}
+
+// Modal functions
+function resetPassword() {
+    document.getElementById('resetPasswordModal').classList.remove('hidden');
+}
+
+function closeResetPasswordModal() {
+    document.getElementById('resetPasswordModal').classList.add('hidden');
+}
+
+async function confirmResetPassword() {
+    try {
+        userProfileManager.showLoading(true);
+        
+        const response = await fetch(`/account-management/reset-password/${userProfileManager.userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Lỗi server');
+        }
+        
+        if (data.success) {
+            userProfileManager.showToast(data.message, 'success');
+            closeResetPasswordModal();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        userProfileManager.showToast(error.message || 'Có lỗi xảy ra khi đặt lại mật khẩu', 'error');
+    } finally {
+        userProfileManager.showLoading(false);
+    }
+}
+
+function sendMessage() {
+    document.getElementById('messageModal').classList.remove('hidden');
+}
+
+function closeMessageModal() {
+    document.getElementById('messageModal').classList.add('hidden');
+    document.getElementById('messageForm').reset();
+}
+
+function viewLoginHistory() {
+    userProfileManager.showToast('Tính năng này đang được phát triển', 'info');
+}
+
+async function exportUserData() {
+    try {
+        userProfileManager.showLoading(true);
+        
+        const response = await fetch(`/account-management/export-user/${userProfileManager.userId}`, {
+            method: 'GET'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Không thể xuất dữ liệu');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `user-data-${userProfileManager.userId}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        userProfileManager.showToast('Xuất dữ liệu thành công', 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        userProfileManager.showToast('Có lỗi xảy ra khi xuất dữ liệu', 'error');
+    } finally {
+        userProfileManager.showLoading(false);
+    }
+}
+
+function loadMoreActivities() {
+    userProfileManager.showToast('Đang tải thêm hoạt động...', 'info');
+    // Implement load more functionality
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Initialize the manager
+let userProfileManager;
+document.addEventListener('DOMContentLoaded', function() {
+    userProfileManager = new UserProfileManager();
+});
+
+// Enhanced JavaScript functionality
+class UserProfileManager {
+    constructor() {
+        this.currentTab = 'activity';
+        this.userId = '<%= viewUser._id %>';  // Thay đổi từ user._id thành viewUser._id
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.initializeCharts();
+        this.loadUserData();
+    }
+    
+    bindEvents() {
+        // Toggle status form
+        document.getElementById('toggleStatusForm').addEventListener('submit', this.handleToggleStatus.bind(this));
+        
+        // Close modals when clicking outside
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', this.handleKeydown.bind(this));
+    }
+    
+    async handleToggleStatus(e) {
+        e.preventDefault();
+        const form = e.target;
+        const button = form.querySelector('button');
+        
+        try {
+            this.showLoading(true);
+            button.disabled = true;
+            
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Lỗi server');
+            }
+            
+            if (data.success) {
+                this.updateStatusUI(data.isActive);
+                this.showToast(data.message, 'success');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showToast(error.message || 'Có lỗi xảy ra khi thay đổi trạng thái', 'error');
+        } finally {
+            this.showLoading(false);
+            button.disabled = false;
+        }
+    }
+    
+    updateStatusUI(isActive) {
+        // Update status badge
+        const statusBadge = document.getElementById('statusBadge');
+        statusBadge.className = `px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`;
+        statusBadge.innerHTML = `
+            <i class="fas ${isActive ? 'fa-check-circle' : 'fa-times-circle'} mr-1"></i>
+            ${isActive ? 'Hoạt động' : 'Vô hiệu'}
+        `;
+        
+        // Update toggle button
+        const toggleButton = document.querySelector('#toggleStatusForm button');
+        toggleButton.className = `action-button w-full px-6 py-3 rounded-lg font-medium transition-all ${
+            isActive ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-500 text-white hover:bg-green-600'
+        }`;
+        toggleButton.innerHTML = `
+            <i class="fas ${isActive ? 'fa-user-slash' : 'fa-user-check'} mr-2"></i>
+            ${isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
+        `;
+        
+        // Update profile avatar indicator
+        const avatarIndicator = document.querySelector('.profile-avatar').nextElementSibling;
+        avatarIndicator.className = `absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${
+            isActive ? 'bg-green-500' : 'bg-red-500'
+        } text-white text-sm`;
+        avatarIndicator.innerHTML = `<i class="fas ${isActive ? 'fa-check' : 'fa-times'}"></i>`;
+    }
+    
+    initializeCharts() {
+        // Progress Chart
+        const ctx = document.getElementById('progressChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    datasets: [{
+                        label: 'Tiến độ học tập',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        if (show) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+    
+    showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        
+        const toast = document.createElement('div');
+        toast.className = `
+            max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 transform transition-all duration-500 ease-in-out
+            ${type === 'success' ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}
+        `;
+        
+        toast.innerHTML = `
+            <div class="flex-1 w-0 p-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'} text-xl"></i>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex border-l border-gray-200">
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        class="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-gray-500 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 5000);
+    }
+    
+    handleOutsideClick(event) {
+        // Close modals when clicking outside
+        const modals = ['resetPasswordModal', 'messageModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (!modal.classList.contains('hidden') && event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
+    
+    handleKeydown(event) {
+        // Escape key to close modals
+        if (event.key === 'Escape') {
+            document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+    }
+    
+    async loadUserData() {
+        // Load additional user data if needed
+        try {
+            // Fetch additional data...
+        } catch (error) {
+            console.error('Error loading user data:', error);
+        }
+    }
+}
+
+// Tab switching functionality
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active', 'text-gray-900', 'border-blue-500');
+        button.classList.add('text-gray-500', 'border-transparent', 'hover:text-gray-700');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + 'Tab').classList.remove('hidden');
+    
+    // Add active class to clicked tab button
+    event.target.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-700');
+    event.target.classList.add('active', 'text-gray-900');
+}
+
+// Modal functions
+function resetPassword() {
+    document.getElementById('resetPasswordModal').classList.remove('hidden');
+}
+
+function closeResetPasswordModal() {
+    document.getElementById('resetPasswordModal').classList.add('hidden');
+}
+
+async function confirmResetPassword() {
+    try {
+        userProfileManager.showLoading(true);
+        
+        const response = await fetch(`/account-management/reset-password/${userProfileManager.userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Lỗi server');
+        }
+        
+        if (data.success) {
+            userProfileManager.showToast(data.message, 'success');
+            closeResetPasswordModal();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        userProfileManager.showToast(error.message || 'Có lỗi xảy ra khi đặt lại mật khẩu', 'error');
+    } finally {
+        userProfileManager.showLoading(false);
+    }
+}
+
+function sendMessage() {
+    document.getElementById('messageModal').classList.remove('hidden');
+}
+
+function closeMessageModal() {
+    document.getElementById('messageModal').classList.add('hidden');
+    document.getElementById('messageForm').reset();
+}
+
+function viewLoginHistory() {
+    userProfileManager.showToast('Tính năng này đang được phát triển', 'info');
+}
+
+async function exportUserData() {
+    try {
+        userProfileManager.showLoading(true);
+        
+        const response = await fetch(`/account-management/export-user/${userProfileManager.userId}`, {
+            method: 'GET'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Không thể xuất dữ liệu');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `user-data-${userProfileManager.userId}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        userProfileManager.showToast('Xuất dữ liệu thành công', 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        userProfileManager.showToast('Có lỗi xảy ra khi xuất dữ liệu', 'error');
+    } finally {
+        userProfileManager.showLoading(false);
+    }
+}
+
+function loadMoreActivities() {
+    userProfileManager.showToast('Đang tải thêm hoạt động...', 'info');
+    // Implement load more functionality
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Initialize the manager
+let userProfileManager;
+document.addEventListener('DOMContentLoaded', function() {
+    userProfileManager = new UserProfileManager();
+});

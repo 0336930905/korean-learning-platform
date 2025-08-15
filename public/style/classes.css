@@ -1,0 +1,53 @@
+.classes-container {
+    padding: 20px;
+}
+
+.classes-count {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.class-level {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.9em;
+}
+
+.class-level.beginner {
+    background-color: #28a745;
+}
+
+.class-level.intermediate {
+    background-color: #ffc107;
+}
+
+.class-level.advanced {
+    background-color: #dc3545;
+}
+
+.no-classes {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.no-data-icon {
+    font-size: 48px;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.schedule-item .day {
+    font-weight: bold;
+    color: #495057;
+}
+
+.schedule-item .time {
+    color: #6c757d;
+} 

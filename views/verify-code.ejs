@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận mã - Korea_DB</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <%- include('partials/Header') %>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .verify-container {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+        }
+
+        .verify-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .verification-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .verification-info {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .verification-email {
+            color: #667eea;
+            font-weight: 600;
+            word-break: break-all;
+            margin: 0.5rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.4rem;
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1f2937;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .verification-code {
+            letter-spacing: 8px;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn-verify {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-verify:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .back-link:hover {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem 1.25rem;
+                margin: 1rem;
+            }
+            
+            .verification-title {
+                font-size: 1.25rem;
+            }
+
+            .verification-code {
+                letter-spacing: 4px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="verify-container">
+        <div class="form-container">
+            <div class="verify-icon">
+                <i class="fas fa-<%= !email ? 'envelope' : 'shield-alt' %>"></i>
+            </div>
+            
+            <h2 class="verification-title">
+                <%= !email ? 'Khôi phục mật khẩu' : 'Xác nhận mã' %>
+            </h2>
+
+            <% if (error) { %>
+                
+            <% } %>
+            
+            <% if (message) { %>
+                
+            <% } %>
+
+            <% if (!email) { %>
+                <!-- Email Form -->
+                <form action="/forgot-password" method="POST">
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            Email của bạn
+                        </label>
+                        <input type="email" 
+                               id="email"
+                               class="form-control" 
+                               name="email" 
+                               required 
+                               placeholder="Nhập email đã đăng ký">
+                    </div>
+                    <button type="submit" class="btn-verify">
+                        <i class="fas fa-paper-plane"></i>
+                        Gửi mã xác nhận
+                    </button>
+                </form>
+            <% } else { %>
+                <!-- Verification Code Form -->
+                <div class="verification-info">
+                    <p>Chúng tôi đã gửi mã xác nhận đến:</p>
+                    <div class="verification-email"><%= email %></div>
+                </div>
+                <form action="/verify-code" method="POST">
+                    <input type="hidden" name="email" value="<%= email %>">
+                    <div class="form-group">
+                        <input type="text" 
+                               class="form-control verification-code" 
+                               name="code" 
+                               required 
+                               maxlength="6" 
+                               pattern="[0-9]{6}"
+                               autocomplete="off"
+                               placeholder="------">
+                    </div>
+                    <button type="submit" class="btn-verify">
+                        <i class="fas fa-key"></i>
+                        Xác nhận mã
+                    </button>
+                </form>
+            <% } %>
+
+            <a href="/login" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại đăng nhập
+            </a>
+        </div>
+    </section>
+
+    <%- include('partials/Footer') %>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto focus and format verification code input
+        const codeInput = document.querySelector('input[name="code"]');
+        if (codeInput) {
+            codeInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            codeInput.focus();
+        }
+
+        // Form submission handling
+        document.querySelector('form[action="/verify-code"]')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                const email = form.querySelector('input[name="email"]').value;
+                const code = form.querySelector('input[name="code"]').value;
+
+                const response = await fetch('/verify-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, code })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to reset password page instead of showing modal
+                    window.location.href = `/reset-password?email=${email}&code=${code}`;
+                } else {
+                    throw new Error(data.error || 'Mã xác nhận không hợp lệ');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

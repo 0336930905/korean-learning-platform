@@ -1,0 +1,314 @@
+<div class="flex-1 flex overflow-hidden">
+    <!-- Contact List -->
+    <div class="w-1/3 border-r border-gray-200 bg-white">
+        <!-- Search Header -->
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">Tin nhắn</h2>
+            <div class="mt-4 relative">
+                <input type="text" 
+                       id="search-contacts"
+                       placeholder="Tìm kiếm người dùng..." 
+                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
+        </div>
+
+        <!-- Contacts List -->
+        <div class="overflow-y-auto" style="height: calc(100vh - 200px);">
+            <div class="divide-y">
+                <% contacts.forEach(function(contact) { %>
+                    <div class="contact-item p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                         onclick="loadChat('<%= contact.user._id %>', '<%= contact.user.role %>')"
+                         data-user-id="<%= contact.user._id %>"
+                         data-search="<%= contact.user.fullName.toLowerCase() %>">
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <img src="<%= contact.user.profileImage || '/images/default-avatar.png' %>"
+                                     alt="<%= contact.user.fullName %>"
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
+                                <% if (contact.unreadCount > 0) { %>
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items
+center justify-center">
+                                        <%= contact.unreadCount %>
+                                    </span>
+                                <% } %>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-medium text-gray-900"><%= contact.user.fullName %></p>
+                                        <p class="text-xs text-gray-500">
+                                            <%= contact.user.role === 'admin' ? 'Quản trị viên' :
+                                                contact.user.role === 'teacher' ? 'Giáo viên' : 'Học viên' %>
+                                        </p>
+                                    </div>
+                                    <% if (contact.lastMessage) { %>
+                                        <span class="text-xs text-gray-500">
+                                            <%= new Date(contact.lastMessage.createdAt).toLocaleTimeString('vi-VN', {
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %>
+                                        </span>
+                                    <% } %>
+                                </div>
+                                <% if (contact.lastMessage) { %>
+                                    <p class="text-sm text-gray-500 truncate mt-1">
+                                        <%= contact.lastMessage.content %>
+                                    </p>
+                                <% } else { %>
+                                    <p class="text-sm text-gray-400 mt-1">Chưa có tin nhắn</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="flex-1 flex flex-col bg-gray-50">
+        <!-- Default State -->
+        <div id="default-state" class="h-full flex items-center justify-center">
+            <div class="text-center">
+                <i class="fas fa-comments text-gray-300 text-6xl mb-4"></i>
+                <p class="text-gray-500">Chọn một người để bắt đầu cuộc trò chuyện</p>
+            </div>
+        </div>
+
+        <!-- Active Chat -->
+        <div id="chat-area" class="h-full flex flex-col hidden">
+            <!-- Chat Header -->
+            <div class="p-4 bg-white border-b">
+                <div class="flex items-center">
+                    <img id="chat-avatar" src="" alt="" class="w-10 h-10 rounded-full object-cover border-2 border-gray-200">
+                    <div class="ml-3">
+                        <h3 id="chat-name" class="font-medium text-gray-900"></h3>
+                        <p id="chat-role" class="text-sm text-gray-500"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+            <!-- Message Input -->
+            <div class="p-4 bg-white border-t">
+                <form id="message-form" class="flex space-x-4">
+                    <input type="text" 
+                           id="message-input"
+                           placeholder="Nhập tin nhắn..." 
+                           class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentChatId = null;
+let refreshInterval;
+
+function startAutoRefresh() {
+    if (currentChatId) {
+        refreshInterval = setInterval(() => {
+            loadChat(currentChatId);
+        }, 10000); // Refresh every 10 seconds
+    }
+}
+
+function stopAutoRefresh() {
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+}
+
+// Add this function at the start of the script section
+function moveContactToTop(userId) {
+    const contactEl = document.querySelector(`[data-user-id="${userId}"]`);
+    if (contactEl) {
+        const parentList = contactEl.parentElement;
+        parentList.insertBefore(contactEl, parentList.firstChild);
+        
+        // Add animation class
+        contactEl.classList.add('animate-slide-down');
+        setTimeout(() => {
+            contactEl.classList.remove('animate-slide-down');
+        }, 300);
+    }
+}
+
+// Update the loadChat function
+async function loadChat(userId, userRole) {
+    try {
+        stopAutoRefresh();
+        
+        currentChatId = userId;
+        
+        // Move clicked contact to top
+        moveContactToTop(userId);
+        
+        document.getElementById('default-state').classList.add('hidden');
+        document.getElementById('chat-area').classList.remove('hidden');
+
+        const contactEl = document.querySelector(`[data-user-id="${userId}"]`);
+        if (!contactEl) {
+            throw new Error('Contact element not found');
+        }
+
+        const avatar = contactEl.querySelector('img').src;
+        const name = contactEl.querySelector('.font-medium').textContent;
+        const role = userRole === 'admin' ? 'Quản trị viên' : 
+                    userRole === 'teacher' ? 'Giáo viên' : 'Học viên';
+
+        document.getElementById('chat-avatar').src = avatar;
+        document.getElementById('chat-name').textContent = name;
+        document.getElementById('chat-role').textContent = role;
+
+        const response = await fetch(`/api/chat/${userId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch messages');
+        }
+        
+        const messages = await response.json();
+        const currentUserId = '<%= user._id %>';
+
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.innerHTML = messages.map(msg => {
+            const isCurrentUser = msg.sender.toString() === currentUserId.toString();
+            return `
+                <div class="flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-4">
+                    <div class="${isCurrentUser 
+                        ? 'bg-blue-500 text-white' 
+                        : 'bg-gray-100 text-gray-900'} 
+                        rounded-lg px-4 py-2 max-w-xs lg:max-w-md shadow">
+                        <div class="flex items-center gap-2 mb-1">
+                            ${!isCurrentUser ? `<span class="text-xs text-gray-600">${msg.senderName}</span>` : ''}
+                        </div>
+                        <p class="break-words">${msg.content}</p>
+                        <p class="text-xs ${isCurrentUser ? 'text-blue-100' : 'text-gray-500'} mt-1">
+                            ${new Date(msg.createdAt).toLocaleTimeString('vi-VN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Mark messages as read
+        await fetch(`/api/chat/${userId}/read`, { method: 'POST' });
+        
+        const badge = contactEl.querySelector('.bg-red-500');
+        if (badge) badge.remove();
+
+        startAutoRefresh();
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi tải tin nhắn');
+    }
+}
+
+// Update the message form submission
+document.getElementById('message-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!currentChatId) {
+        alert('Vui lòng chọn người nhận tin nhắn');
+        return;
+    }
+
+    const input = document.getElementById('message-input');
+    const content = input.value.trim();
+    
+    if (!content) return;
+
+    try {
+        const response = await fetch('/api/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                receiverId: currentChatId,
+                content: content
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send message');
+        }
+
+        input.value = '';
+        await loadChat(currentChatId);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi gửi tin nhắn');
+    }
+});
+
+// Search functionality
+document.getElementById('search-contacts').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.contact-item').forEach(contact => {
+        const searchText = contact.dataset.search;
+        contact.style.display = searchText.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+    stopAutoRefresh();
+});
+
+// Update the socket.io event listener
+socket.on('new_message', async (data) => {
+    console.log('New message received:', data);
+    
+    if (data.receiverId === '<%= user._id %>') {
+        const contactEl = document.querySelector(`[data-user-id="${data.senderId}"]`);
+        if (contactEl) {
+            // Update unread badge
+            let badge = contactEl.querySelector('.bg-red-500');
+            if (!badge && data.senderId !== currentChatId) {
+                const imgContainer = contactEl.querySelector('.relative');
+                badge = document.createElement('span');
+                badge.className = 'absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center';
+                imgContainer.appendChild(badge);
+                badge.textContent = '1';
+            } else if (badge && data.senderId !== currentChatId) {
+                badge.textContent = parseInt(badge.textContent || 0) + 1;
+            }
+
+            // Update last message preview and time
+            const preview = contactEl.querySelector('.text-sm.text-gray-500.truncate');
+            const timestamp = contactEl.querySelector('.text-xs.text-gray-500');
+            if (preview) {
+                preview.textContent = data.content;
+            }
+            if (timestamp) {
+                timestamp.textContent = new Date(data.createdAt).toLocaleTimeString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            // Move contact to top
+            moveContactToTop(data.senderId);
+
+            // If chat is open with this sender, update chat
+            if (currentChatId === data.senderId) {
+                await loadChat(data.senderId);
+            }
+        }
+    }
+});
+</script>

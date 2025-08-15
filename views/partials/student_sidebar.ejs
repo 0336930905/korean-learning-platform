@@ -1,0 +1,109 @@
+<!-- Include Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="flex-none w-64 bg-white shadow-md">
+    <div class="flex flex-col h-full">
+        <!-- Logo Section -->
+        <div class="flex items-center justify-center h-16 border-b">
+            <a href="/dashboard/student" class="text-xl font-bold text-gray-800">
+                <i class="fas fa-graduation-cap mr-2"></i>
+                Student Portal
+            </a>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-2 px-4">
+                <!-- Dashboard -->
+                <li>
+                    <a href="/dashboard/student" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 
+                              <%= locals.path === 'dashboard/student' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-home w-5 h-5 mr-2"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+
+                <!-- Courses -->
+                <li>
+                    <a href="/student" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/courses' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-book w-5 h-5 mr-2"></i>
+                        <span>Khóa học</span>
+                    </a>
+                </li>
+
+                <!-- Assignments -->
+                <li>
+                    <a href="/student/assignments/submit" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/student/assignments' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-tasks w-5 h-5 mr-2"></i>
+                        <span>Bài tập</span>
+                    </a>
+                </li>
+
+                <!-- Grades -->
+                <li>
+                    <a href="/student/grades" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/student/grades' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-graduation-cap w-5 h-5 mr-2"></i>
+                        <span>Xem điểm</span>
+                    </a>
+                </li>
+
+                <!-- Learning Materials -->
+                <li>
+                    <a href="/student/resources" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/student/resources' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-folder-open w-5 h-5 mr-2"></i>
+                        <span>Tài liệu học tập</span>
+                    </a>
+                </li>
+
+                <!-- Forum -->
+                <li>
+                    <a href="/student/forum" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/student/forum' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-comments w-5 h-5 mr-2"></i>
+                        <span>Diễn đàn</span>
+                    </a>
+                </li>
+
+                <!-- Messages -->
+                <li>
+                    <a href="/student/messages" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.path === '/student/messages' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-comments w-5 h-5 mr-2"></i>
+                        <span>Tin nhắn</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/student/account" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.currentUrl === '/student/account' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-user-cog w-5 h-5 mr-2"></i>
+                        <span>Quản lý tài khoản</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/student/thematic-vocabulary" 
+                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100
+                              <%= locals.currentUrl === '/student/account' ? 'bg-gray-100' : '' %>">
+                        <i class="fas fa-user-cog w-5 h-5 mr-2"></i>
+                        <span>tự vựng theo chủ đề</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+
+        <!-- User Profile Section -->
+
+    </div>
+</div>

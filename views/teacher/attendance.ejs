@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống điểm danh - Korea_DB</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style/headerall.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px) rotateX(5deg);
+        }
+        
+        .pulse-ring {
+            position: relative;
+        }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            transform: translate(-50%, -50%) scale(1);
+            animation: pulse-ring 2s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .tab-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .progress-bar {
+            position: relative;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 8px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .status-indicator {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        
+        .status-active::after {
+            background: #10b981;
+        }
+        
+        .status-pending::after {
+            background: #f59e0b;
+        }
+        
+        .status-ended::after {
+            background: #ef4444;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .attendance-table {
+            font-size: 0.9rem;
+        }
+        
+        .attendance-table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-align: center;
+            padding: 1rem 0.75rem;
+        }
+        
+        .attendance-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+            text-align: center;
+        }
+        
+        .student-info {
+            min-width: 250px;
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 5;
+            text-align: left !important;
+            border-right: 2px solid #dee2e6;
+        }
+        
+        .student-info-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .student-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+        
+        .student-email {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .date-column {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            min-width: 80px;
+            font-size: 0.85rem;
+        }
+        
+        .attendance-select {
+            width: 100px;
+            padding: 0.4rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .attendance-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+        }
+        
+        .attendance-present { 
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #155724;
+            border-color: #28a745;
+        }
+        
+        .attendance-absent { 
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+            border-color: #dc3545;
+        }
+        
+        .attendance-late { 
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border-color: #ffc107;
+        }
+        
+        .attendance-excused { 
+            background-color: rgba(23, 162, 184, 0.1);
+            color: #0c5460;
+            border-color: #17a2b8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-wrapper {
+            display: none;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .loading-content {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .attendance-content {
+            display: none;
+        }
+
+        .attendance-content.show {
+            display: block;
+        }
+        
+        /* Thêm styles cho button "Đi đến ngày hiện tại" */
+        .today-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .today-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .today-button.show {
+            display: block;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Highlight current date column */
+        .current-date-column {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+            color: white !important;
+            position: relative;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .current-date-column::before {
+            content: '📅';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 14px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        /* Smooth scroll to current date */
+        .table-container {
+            scroll-behavior: smooth;
+        }
+
+        /* Go to Today Button trong header */
+        #goToTodayHeaderBtn {
+            transition: all 0.3s ease;
+        }
+
+        #goToTodayHeaderBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        /* Highlight animation khi scroll đến */
+        .highlight-column {
+            animation: highlightFlash 1.5s ease-in-out;
+        }
+
+        .today-highlight-header {
+            animation: highlightPulse 2s ease-in-out;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+            color: white !important;
+        }
+
+        .today-highlight-cell {
+            animation: highlightPulse 2s ease-in-out;
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%) !important;
+        }
+
+        @keyframes highlightFlash {
+            0% { background: inherit; }
+            50% { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important; }
+            100% { background: inherit; }
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.3); }
+        }
+
+        /* Today indicator badge */
+        .today-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-left: 3px;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Success notification styles */
+        .go-to-today-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+            animation: fadeInOut 3s ease-in-out;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInOut {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.7) rotateY(-15deg); 
+            }
+            15% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.05) rotateY(0deg); 
+            }
+            25% { 
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg); 
+            }
+            75% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.7) rotateY(15deg); 
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section with Attendance Header -->
+                <div class="mb-8">
+                    <div class="gradient-bg rounded-3xl p-8 text-white relative overflow-hidden slide-in">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8 floating-animation"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full transform -translate-x-4 translate-y-4 floating-animation" style="animation-delay: 1s;"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-4">
+                                        <i class="fas fa-clipboard-check mr-4"></i>
+                                        Hệ thống điểm danh
+                                    </h1>
+                                    <p class="text-xl opacity-90 mb-4">Quản lý điểm danh học viên cho các lớp học</p>
+                                </div>
+                                
+                                <div class="text-right">
+                  
+                                    <button onclick="refreshClassList()" class="btn-3d bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-opacity-30 transition-all duration-300">
+                                        <i class="fas fa-sync-alt mr-2"></i>
+                                        Làm mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Selector Section -->
+                <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in">
+                    <div class="flex items-center mb-6">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 floating-animation mr-4">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">Chọn lớp học để điểm danh</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                        <div class="md:col-span-4">
+                            <select id="classSelector" onchange="loadClassAttendance()" 
+                                    class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg">
+                                <option value="">-- Chọn lớp học --</option>
+                                <% classes.forEach(cls => { %>
+                                    <option value="<%= cls._id %>" <%= selectedClassId === cls._id.toString() ? 'selected' : '' %>>
+                                        <%= cls.name %> - <%= cls.course.title %> 
+                                        (<%= cls.students.length %> học viên)
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="md:col-span-1">
+                            <button onclick="refreshClassList()" 
+                                    class="btn-3d w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                <i class="fas fa-sync-alt text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+
+                <!-- Loading Spinner -->
+                <div class="loading-wrapper" id="loadingSpinner">
+                    <div class="loading-content glass-card">
+                        <div class="spinner"></div>
+                        <p class="text-gray-600 font-semibold">Đang tải dữ liệu điểm danh...</p>
+                    </div>
+                </div>
+
+                <!-- No Class Selected -->
+                <div class="glass-card rounded-2xl" id="noClassSelected">
+                    <div class="empty-state">
+                        <div class="empty-state-icon floating-animation">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-600 mb-4">Vui lòng chọn lớp học</h3>
+                        <p class="text-gray-400 text-lg">Hãy chọn một lớp học từ dropdown phía trên để bắt đầu điểm danh</p>
+                    </div>
+                </div>
+
+                <!-- Attendance Content -->
+                <div class="attendance-content" id="attendanceContent">
+                    <!-- Class Info Card -->
+                    <div class="glass-card rounded-2xl mb-8 card-hover slide-in" id="classInfoCard">
+                        <!-- Class info will be loaded here -->
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="glass-card rounded-2xl p-6 mb-8 card-hover slide-in">
+                        <div class="flex items-center mb-6">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600 floating-animation mr-4">
+                                <i class="fas fa-tools text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold gradient-text">Hành động nhanh</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="actionButtons">
+                            <!-- Action buttons will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Attendance Table Card -->
+                    <div class="glass-card rounded-2xl card-hover slide-in">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-purple-100 text-purple-600 floating-animation mr-4">
+                                        <i class="fas fa-table text-2xl"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold gradient-text">Bảng điểm danh</h3>
+                                </div>
+                                <div class="flex gap-3">
+                                    <!-- Button đi đến hôm nay -->
+                                    <button onclick="goToTodayColumn()" 
+                                            id="goToTodayHeaderBtn"
+                                            class="btn-3d bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                                            title="Di chuyển đến cột ngày hôm nay (Alt + T)">
+                                        <i class="fas fa-calendar-day mr-2"></i>
+                                        Đi đến hôm nay
+                                    </button>
+                                    
+                                    <!-- Button làm mới -->
+                                    <button onclick="refreshAttendanceData()" 
+                                            class="btn-3d bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                        <i class="fas fa-sync-alt mr-2"></i>
+                                        Làm mới
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto" style="max-height: 600px;">
+                            <table class="w-full attendance-table" id="attendanceTable">
+                                <!-- Table will be loaded here -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-6xl mx-4 modal-enter max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold gradient-text">
+                    <i class="fas fa-chart-bar mr-3"></i>
+                    Thống kê điểm danh
+                </h2>
+                <button onclick="closeStatsModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="statsContent">
+                <!-- Stats content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating "Go to Today" Button -->
+    <button id="goToTodayBtn" class="today-button" onclick="goToTodayColumn()">
+        <i class="fas fa-calendar-day mr-2"></i>
+        Hôm nay
+    </button>
+    
+    <script>
+        let currentClassId = '<%= selectedClassId || "" %>';
+        let currentClassData = null;
+        let currentAttendanceData = null;
+        let currentDateColumn = null; // Track current date column
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentClassId) {
+                loadClassAttendance();
+            }
+            
+            // Add keyboard shortcut for "Go to Today" (Alt + T)
+            document.addEventListener('keydown', function(event) {
+                if (event.altKey && event.key === 't') {
+                    event.preventDefault();
+                    goToTodayColumn();
+                }
+            });
+        });
+
+        async function loadClassAttendance() {
+            const selector = document.getElementById('classSelector');
+            const classId = selector.value;
+            
+            if (!classId) {
+                showNoClassSelected();
+                return;
+            }
+
+            try {
+                showLoading(true);
+                hideNoClassSelected();
+                
+                const url = new URL(window.location);
+                url.searchParams.set('classId', classId);
+                window.history.pushState({}, '', url);
+                
+                const response = await fetch(`/attendance/class/${classId}/data`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentClassId = classId;
+                    currentClassData = result.classData;
+                    currentAttendanceData = result.attendanceData;
+                    
+                    renderClassInfo();
+                    renderActionButtons();
+                    renderAttendanceTable();
+                    showAttendanceContent();
+                    
+                    showNotification('Tải dữ liệu thành công!', 'success');
+                } else {
+                    showNotification(result.message || 'Có lỗi xảy ra khi tải dữ liệu', 'error');
+                    showNoClassSelected();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi tải dữ liệu điểm danh', 'error');
+                showNoClassSelected();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderClassInfo() {
+            const classInfoCard = document.getElementById('classInfoCard');
+            const startDate = new Date(currentClassData.startDate).toLocaleDateString('vi-VN');
+            const endDate = new Date(currentClassData.endDate).toLocaleDateString('vi-VN');
+            
+            classInfoCard.innerHTML = `
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600 floating-animation mr-4">
+                            <i class="fas fa-info-circle text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold gradient-text">Thông tin lớp học</h3>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="md:col-span-3">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                                <i class="fas fa-users mr-3"></i>
+                                ${currentClassData.name}
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-center p-4 bg-blue-50 rounded-xl">
+                                    <i class="fas fa-book text-blue-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Khóa học</p>
+                                        <p class="text-gray-600">${currentClassData.course.title}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-green-50 rounded-xl">
+                                    <i class="fas fa-calendar text-green-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Từ ${startDate}</p>
+                                        <p class="text-gray-600">đến ${endDate}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-purple-50 rounded-xl">
+                                    <i class="fas fa-user-graduate text-purple-500 text-xl mr-4"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Học viên</p>
+                                        <p class="text-gray-600">${currentClassData.students.length} người</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <div class="text-center p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl">
+                                <div class="text-4xl font-bold mb-2">${currentAttendanceData.attendanceDates.length}</div>
+                                <div class="text-lg opacity-90">Ngày học</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActionButtons() {
+            const actionButtons = document.getElementById('actionButtons');
+            
+            actionButtons.innerHTML = `
+                <button onclick="markAllPresentToday()" class="btn-3d bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center">
+                    <i class="fas fa-check-circle text-2xl mb-2"></i>
+                    <span>Điểm danh có mặt hôm nay</span>
+                </button>
+                <button onclick="autoMarkAbsentToday()" class="btn-3d bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center">
+                    <i class="fas fa-calendar-check text-2xl mb-2"></i>
+                    <span>Điểm danh vắng hôm nay</span>
+                </button>
+                <button onclick="exportReport()" class="btn-3d bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center">
+                    <i class="fas fa-file-excel text-2xl mb-2"></i>
+                    <span>Xuất báo cáo Excel</span>
+                </button>
+                <button onclick="showStats()" class="btn-3d bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center">
+                    <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                    <span>Xem thống kê</span>
+                </button>
+            `;
+        }
+
+        function renderAttendanceTable() {
+            const table = document.getElementById('attendanceTable');
+            const today = new Date().toISOString().split('T')[0];
+            
+            let headerHtml = `
+                <thead>
+                    <tr>
+                        <th class="student-info">Học viên</th>
+            `;
+            
+            let todayColumnIndex = -1;
+            currentAttendanceData.attendanceDates.forEach((date, index) => {
+                const dateObj = new Date(date);
+                const dateStr = dateObj.toISOString().split('T')[0];
+                const formattedDate = dateObj.toLocaleDateString('vi-VN', { 
+                    weekday: 'short',
+                    day: '2-digit',
+                    month: '2-digit'
+                });
+                
+                // Check if this is today's date
+                const isToday = dateStr === today;
+                if (isToday) {
+                    todayColumnIndex = index + 1; // +1 because first column is student info
+                }
+                
+                headerHtml += `<th class="date-column ${isToday ? 'current-date-column' : ''}" 
+                                   data-date="${dateStr}" 
+                                   data-column-index="${index + 1}">
+                                   ${formattedDate}
+                                   ${isToday ? '<span class="today-badge">HÔM NAY</span>' : ''}
+                               </th>`;
+            });
+            
+            headerHtml += `
+                        <th>Có mặt</th>
+                        <th>Tỷ lệ (%)</th>
+                    </tr>
+                </thead>
+            `;
+
+            let bodyHtml = '<tbody>';
+            
+            currentAttendanceData.students.forEach(student => {
+                bodyHtml += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="student-info">
+                            <div class="student-info-content">
+                                <img src="${student.avatar || '/images/default-avatar.png'}" 
+                                     alt="Avatar" class="student-avatar">
+                                <div class="student-details">
+                                    <div class="student-name">${student.fullName}</div>
+                                    <div class="student-email">${student.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                `;
+                
+                currentAttendanceData.attendanceDates.forEach(date => {
+                    const dateKey = `${student._id}_${new Date(date).toISOString().split('T')[0]}`;
+                    const attendance = currentAttendanceData.attendanceMap[dateKey];
+                    // Thay đổi từ 'absent' thành 'present' làm mặc định
+                    const status = attendance ? attendance.status : 'present';
+                    const dateStr = new Date(date).toISOString().split('T')[0];
+                    const isToday = dateStr === today;
+                    
+                    bodyHtml += `
+                        <td class="${isToday ? 'current-date-column' : ''}">
+                            <select class="attendance-select attendance-${status}" 
+                                    onchange="updateAttendance('${student._id}', '${dateStr}', this.value)"
+                                    data-student="${student._id}"
+                                    data-date="${dateStr}">
+                                <option value="present" ${status === 'present' ? 'selected' : ''}>Có mặt</option>
+                                <option value="absent" ${status === 'absent' ? 'selected' : ''}>Vắng</option>
+                                <option value="late" ${status === 'late' ? 'selected' : ''}>Muộn</option>
+                                <option value="excused" ${status === 'excused' ? 'selected' : ''}>Có phép</option>
+                            </select>
+                        </td>
+                    `;
+                });
+                
+                const stats = student.attendanceStats;
+                const badgeClass = stats.attendanceRate >= 80 ? 'bg-green-100 text-green-800' : 
+                                   stats.attendanceRate >= 60 ? 'bg-yellow-100 text-yellow-800' : 
+                                   'bg-red-100 text-red-800';
+                
+                bodyHtml += `
+                        <td><strong class="text-lg">${stats.present}/${stats.total}</strong></td>
+                        <td>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold ${badgeClass}">
+                                ${stats.attendanceRate}%
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            bodyHtml += '</tbody>';
+            table.innerHTML = headerHtml + bodyHtml;
+            
+            // Show/Hide "Go to Today" button based on today's column existence
+            const headerButton = document.getElementById('goToTodayHeaderBtn');
+            const floatingButton = document.getElementById('goToTodayBtn');
+            
+            if (todayColumnIndex > 0) {
+                // Show buttons if today's column exists
+                if (headerButton) {
+                    headerButton.style.display = 'inline-flex';
+                    headerButton.title = 'Di chuyển đến cột ngày hôm nay (Alt + T)';
+                }
+                if (floatingButton) {
+                    showGoToTodayButton();
+                }
+                currentDateColumn = todayColumnIndex;
+                
+                // Check initial visibility to decide floating button state
+                setTimeout(() => {
+                    checkCurrentDateVisibility();
+                }, 500);
+            } else {
+                // Hide buttons if today's column doesn't exist
+                if (headerButton) {
+                    headerButton.style.display = 'none';
+                }
+                if (floatingButton) {
+                    hideGoToTodayButton();
+                }
+            }
+        }
+
+        // Function chính để scroll đến cột ngày hiện tại
+        function goToTodayColumn() {
+            const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại (YYYY-MM-DD)
+            
+            // Tìm cột có data-date = ngày hiện tại
+            const todayColumn = document.querySelector(`th[data-date="${today}"]`);
+            
+            if (todayColumn) {
+                scrollToColumn(todayColumn, today);
+            } else {
+                showTodayNotification('⚠️ Không tìm thấy cột ngày hôm nay trong lịch học!', 'warning');
+            }
+        }
+        
+        // Function để scroll đến cột cụ thể
+        function scrollToColumn(columnElement, dateStr) {
+            const tableContainer = document.querySelector('.overflow-x-auto');
+            if (!tableContainer) {
+                showTodayNotification('❌ Không tìm thấy bảng điểm danh!', 'error');
+                return;
+            }
+            
+            // Lấy vị trí của cột
+            const columnRect = columnElement.getBoundingClientRect();
+            const containerRect = tableContainer.getBoundingClientRect();
+            
+            // Tính toán vị trí scroll để căn giữa cột
+            const columnCenterX = columnElement.offsetLeft + (columnElement.offsetWidth / 2);
+            const containerCenterX = tableContainer.offsetWidth / 2;
+            const scrollLeft = columnCenterX - containerCenterX;
+            
+            // Smooth scroll đến vị trí tính toán
+            tableContainer.scrollTo({
+                left: Math.max(0, scrollLeft),
+                behavior: 'smooth'
+            });
+            
+            // Highlight cột và hiển thị thông báo
+            highlightTodayColumn(dateStr);
+            showTodayNotification('✅ Đã di chuyển đến cột ngày hôm nay!', 'success');
+            
+            // Tự động ẩn floating button vì đã scroll đến today
+            setTimeout(() => {
+                checkCurrentDateVisibility();
+            }, 1000);
+        }
+        
+        // Function để highlight cột ngày hiện tại
+        function highlightTodayColumn(dateStr) {
+            // Xóa highlight cũ
+            document.querySelectorAll('.today-highlight-header, .today-highlight-cell').forEach(el => {
+                el.classList.remove('today-highlight-header', 'today-highlight-cell');
+            });
+            
+            // Highlight header cột
+            const todayHeader = document.querySelector(`th[data-date="${dateStr}"]`);
+            if (todayHeader) {
+                todayHeader.classList.add('today-highlight-header');
+                
+                // Lấy index cột để highlight tất cả cells trong cột đó
+                const columnIndex = parseInt(todayHeader.getAttribute('data-column-index'));
+                if (columnIndex > 0) {
+                    // Highlight tất cả các ô trong cột (columnIndex + 1 vì student-info là cột đầu tiên)
+                    const columnCells = document.querySelectorAll(`tbody tr td:nth-child(${columnIndex + 1})`);
+                    columnCells.forEach(cell => {
+                        cell.classList.add('today-highlight-cell');
+                    });
+                }
+                
+                // Xóa highlight sau 3 giây
+                setTimeout(() => {
+                    todayHeader.classList.remove('today-highlight-header');
+                    document.querySelectorAll('.today-highlight-cell').forEach(cell => {
+                        cell.classList.remove('today-highlight-cell');
+                    });
+                }, 3000);
+            }
+        }
+        
+        // Function hiển thị thông báo đặc biệt cho chức năng "Đi đến hôm nay"
+        function showTodayNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = 'go-to-today-notification';
+            
+            // Tùy chỉnh màu sắc theo loại thông báo
+            let bgGradient = 'linear-gradient(135deg, #22c55e, #16a34a)'; // success - green
+            if (type === 'error') {
+                bgGradient = 'linear-gradient(135deg, #ef4444, #dc2626)'; // error - red
+            } else if (type === 'warning') {
+                bgGradient = 'linear-gradient(135deg, #f59e0b, #d97706)'; // warning - amber
+            }
+            
+            notification.style.background = bgGradient;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-times-circle' : 
+                                   'fa-exclamation-triangle'} mr-2 text-lg"></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Tự động xóa thông báo sau 3 giây
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Show/Hide Go to Today button
+        function showGoToTodayButton() {
+            const button = document.getElementById('goToTodayBtn');
+            if (button) {
+                button.classList.add('show');
+            }
+        }
+
+        function hideGoToTodayButton() {
+            const button = document.getElementById('goToTodayBtn');
+            if (button) {
+                button.classList.remove('show');
+            }
+        }
+
+        // Check if current date column is visible
+        function checkCurrentDateVisibility() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayColumn = document.querySelector(`th[data-date="${today}"]`);
+            
+            if (todayColumn) {
+                const tableContainer = document.querySelector('.overflow-x-auto');
+                if (!tableContainer) return;
+                
+                const containerRect = tableContainer.getBoundingClientRect();
+                const columnRect = todayColumn.getBoundingClientRect();
+                
+                // Check if the column is fully visible (with some margin)
+                const isVisible = columnRect.left >= containerRect.left + 50 && 
+                                 columnRect.right <= containerRect.right - 50;
+                
+                const floatingButton = document.getElementById('goToTodayBtn');
+                if (floatingButton) {
+                    if (isVisible) {
+                        hideGoToTodayButton();
+                    } else {
+                        showGoToTodayButton();
+                    }
+                }
+            }
+        }
+
+        // Monitor scroll to show/hide floating button
+        let scrollTimeout;
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainer = document.querySelector('.overflow-x-auto');
+            if (tableContainer) {
+                tableContainer.addEventListener('scroll', function() {
+                    // Debounce scroll event for better performance
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(checkCurrentDateVisibility, 150);
+                });
+            }
+        });
+
+        async function updateAttendance(studentId, date, status) {
+            try {
+                const response = await fetch('/attendance/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        classId: currentClassId,
+                        studentId,
+                        date,
+                        status
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const select = document.querySelector(`select[data-student="${studentId}"][data-date="${date}"]`);
+                    if (select) {
+                        select.className = `attendance-select attendance-${status}`;
+                    }
+                    
+                    showNotification('Cập nhật điểm danh thành công!', 'success');
+                    
+                    if (result.studentStats) {
+                        updateStudentStatsInTable(studentId, result.studentStats);
+                    }
+                } else {
+                    showNotification(result.message || 'Có lỗi xảy ra', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi cập nhật điểm danh', 'error');
+            }
+        }
+
+        function updateStudentStatsInTable(studentId, stats) {
+            const studentRow = document.querySelector(`tr:has(select[data-student="${studentId}"])`);
+            if (studentRow) {
+                const cells = studentRow.cells;
+                const presentCell = cells[cells.length - 2];
+                const rateCell = cells[cells.length - 1];
+                
+                presentCell.innerHTML = `<strong class="text-lg">${stats.present}/${stats.total}</strong>`;
+                
+                const badgeClass = stats.attendanceRate >= 80 ? 'bg-green-100 text-green-800' : 
+                                   stats.attendanceRate >= 60 ? 'bg-yellow-100 text-yellow-800' : 
+                                   'bg-red-100 text-red-800';
+                rateCell.innerHTML = `<span class="px-3 py-1 rounded-full text-sm font-semibold ${badgeClass}">${stats.attendanceRate}%</span>`;
+            }
+        }
+
+        async function autoMarkAbsentToday() {
+            if (!currentClassId) {
+                showNotification('Vui lòng chọn lớp học trước', 'warning');
+                return;
+            }
+
+            if (!confirm('Bạn có chắc muốn tự động điểm danh vắng cho tất cả học viên chưa được điểm danh hôm nay?')) {
+                return;
+            }
+
+            try {
+                showLoading(true);
+                
+                const currentDate = new Date().toISOString().split('T')[0];
+                const response = await fetch(`/attendance/auto-mark-absent/${currentClassId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ date: currentDate })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    setTimeout(() => loadClassAttendance(), 1000);
+                } else {
+                    showNotification(result.message || 'Có lỗi xảy ra', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi tự động điểm danh', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function exportReport() {
+            if (!currentClassId) {
+                showNotification('Vui lòng chọn lớp học trước', 'warning');
+                return;
+            }
+            
+            showLoading(true);
+            window.location.href = `/attendance/export/${currentClassId}`;
+            setTimeout(() => showLoading(false), 2000);
+        }
+
+        async function showStats() {
+            if (!currentClassId) {
+                showNotification('Vui lòng chọn lớp học trước', 'warning');
+                return;
+            }
+
+            try {
+                showLoading(true);
+                
+                const response = await fetch(`/attendance/stats/${currentClassId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayStatsModal(result.totalStats, result.dailyStats);
+                } else {
+                    showNotification('Không thể tải thống kê', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi tải thống kê', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayStatsModal(totalStats, dailyStats) {
+            const statsContent = document.getElementById('statsContent');
+            
+            statsContent.innerHTML = `
+                <div class="mb-8">
+                    <h4 class="text-xl font-bold mb-4">Tổng quan điểm danh - ${currentClassData.name}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        ${totalStats.map(stat => `
+                            <div class="text-center p-4 rounded-xl" style="background: linear-gradient(135deg, 
+                                ${stat._id === 'present' ? '#10b981, #34d399' : 
+                                  stat._id === 'absent' ? '#ef4444, #f87171' : 
+                                  stat._id === 'late' ? '#f59e0b, #fbbf24' : 
+                                  '#3b82f6, #60a5fa'});">
+                                <div class="text-3xl font-bold text-white mb-2">${stat.count}</div>
+                                <div class="text-white opacity-90">${getStatusText(stat._id)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <h4 class="text-xl font-bold mb-4">Thống kê theo ngày</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-3 text-left font-semibold">Ngày</th>
+                                <th class="border border-gray-300 px-4 py-3 text-center font-semibold">Có mặt</th>
+                                <th class="border border-gray-300 px-4 py-3 text-center font-semibold">Vắng</th>
+                                <th class="border border-gray-300 px-4 py-3 text-center font-semibold">Muộn</th>
+                                <th class="border border-gray-300 px-4 py-3 text-center font-semibold">Có phép</th>
+                                <th class="border border-gray-300 px-4 py-3 text-center font-semibold">Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${dailyStats.map(day => {
+                                const total = day.present + day.absent + day.late + day.excused;
+                                return `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="border border-gray-300 px-4 py-3 font-medium">${new Date(day._id.date).toLocaleDateString('vi-VN')}</td>
+                                    <td class="border border-gray-300 px-4 py-3 text-center">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">${day.present}</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-3 text-center">
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm font-semibold">${day.absent}</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-3 text-center">
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-semibold">${day.late}</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-3 text-center">
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">${day.excused}</span>
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-3 text-center">
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">${total}</span>
+                                    </td>
+                                </tr>
+                            `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="flex justify-end gap-4 mt-8">
+                    <button onclick="closeStatsModal()" 
+                            class="px-6 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                        Đóng
+                    </button>
+                    <button onclick="exportReport()" 
+                            class="btn-3d bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-download mr-2"></i>Xuất báo cáo
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('statsModal').classList.remove('hidden');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.add('hidden');
+        }
+
+        function refreshAttendanceData() {
+            if (currentClassId) {
+                showNotification('Đang làm mới dữ liệu...', 'info');
+                loadClassAttendance();
+            }
+        }
+
+        function refreshClassList() {
+            showNotification('Đang làm mới danh sách lớp...', 'info');
+            window.location.reload();
+        }
+
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        function showNoClassSelected() {
+            document.getElementById('noClassSelected').style.display = 'block';
+            document.getElementById('attendanceContent').classList.remove('show');
+        }
+
+        function hideNoClassSelected() {
+            document.getElementById('noClassSelected').style.display = 'none';
+        }
+
+        function showAttendanceContent() {
+            document.getElementById('attendanceContent').classList.add('show');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 
+                           type === 'error' ? 'from-red-500 to-red-600' : 
+                           type === 'warning' ? 'from-yellow-500 to-yellow-600' :
+                           'from-blue-500 to-blue-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'error' ? 'fa-exclamation-circle' : 
+                        type === 'warning' ? 'fa-exclamation-triangle' : 
+                        'fa-info-circle';
+            
+            notification.className = `fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} text-xl mr-3"></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'present': 'Có mặt',
+                'absent': 'Vắng',
+                'late': 'Muộn',
+                'excused': 'Có phép'
+            };
+            return statusMap[status] || status;
+        }
+    </script>
+</body>
+ <%- include('../partials/teacher_footer') %>
+</html>

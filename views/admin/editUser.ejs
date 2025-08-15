@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+    <!-- Thay đổi title để phù hợp -->
+    <title>Chỉnh Sửa Tài Khoản - <%= userToEdit.fullName %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Enhanced modern UI styles */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-floating {
+            position: relative;
+        }
+        
+        .form-floating > input,
+        .form-floating > select,
+        .form-floating > textarea {
+            padding-top: 1.625rem;
+            padding-bottom: 0.625rem;
+        }
+        
+        .form-floating > label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            padding: 1rem 0.75rem;
+            pointer-events: none;
+            border: 1px solid transparent;
+            transform-origin: 0 0;
+            transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+        }
+        
+        .form-floating > input:focus ~ label,
+        .form-floating > input:not(:placeholder-shown) ~ label,
+        .form-floating > select:focus ~ label,
+        .form-floating > select:not([value=""]) ~ label,
+        .form-floating > textarea:focus ~ label,
+        .form-floating > textarea:not(:placeholder-shown) ~ label {
+            opacity: 0.65;
+            transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+        
+        .tab-button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        
+        .tab-button.active::before {
+            width: 100%;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: #6b7280;
+            z-index: 10;
+        }
+        
+        .input-group input {
+            padding-left: 40px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-inactive {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .role-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .role-admin {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .role-teacher {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .role-student {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
+        .section-divider {
+            position: relative;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .section-divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .activity-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+        
+        .activity-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                <!-- Enhanced Page Header -->
+                <div class="gradient-bg py-8 px-8 text-white">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">
+                                    <i class="fas fa-user-edit mr-3"></i>
+                                    Chỉnh Sửa Tài Khoản
+                                </h1>
+                                <p class="text-indigo-100">Cập nhật thông tin chi tiết cho tài khoản: <strong><%= userToEdit.fullName %></strong></p>
+                            </div>
+                            
+                            <!-- User Status Badge -->
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-circle text-sm <%= userToEdit.isActive ? 'text-green-400' : 'text-red-400' %>"></i>
+                                        <span class="text-sm font-medium">
+                                            <%= userToEdit.isActive ? 'Hoạt động' : 'Tạm khóa' %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="role-badge <%= userToEdit.role === 'admin' ? 'role-admin' : userToEdit.role === 'teacher' ? 'role-teacher' : 'role-student' %>">
+                                    <%= userToEdit.role === 'admin' ? '👑 Admin' : userToEdit.role === 'teacher' ? '🎓 Giáo viên' : '📚 Học viên' %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Breadcrumb -->
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                <li class="inline-flex items-center">
+                                    <a href="/dashboard/admin" class="text-indigo-100 hover:text-white transition-colors">
+                                        <i class="fas fa-home mr-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <a href="/account-management" class="text-indigo-100 hover:text-white transition-colors">
+                                        Quản lý tài khoản
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <span class="text-white font-medium">Chỉnh sửa tài khoản</span>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="p-8">
+                    <div class="max-w-7xl mx-auto">
+                        <!-- Progress Bar -->
+                        <div class="mb-8">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Đang chỉnh sửa thông tin tài khoản</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                            <!-- Main Content -->
+                            <div class="lg:col-span-3">
+                                <!-- Enhanced Edit Form Card -->
+                                <div class="glass-card rounded-xl shadow-lg overflow-hidden animate-fade-in">
+                                    <!-- Card Header -->
+                                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h2 class="text-xl font-bold text-gray-900 mb-1">
+                                                    <i class="fas fa-edit text-blue-600 mr-2"></i>
+                                                    Thông tin tài khoản
+                                                </h2>
+                                                <p class="text-sm text-gray-600">Cập nhật thông tin chi tiết và cài đặt tài khoản</p>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <button type="button" onclick="resetForm()" class="tooltip px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all" data-tooltip="Đặt lại form">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                                <button type="button" onclick="previewChanges()" class="tooltip px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all" data-tooltip="Xem trước thay đổi">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab Navigation -->
+                                    <div class="border-b border-gray-200">
+                                        <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                                            <button class="tab-button active py-4 px-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700" onclick="switchTab('basic')">
+                                                <i class="fas fa-user mr-2"></i>Thông tin cơ bản
+                                            </button>
+                                            <button class="tab-button py-4 px-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700" onclick="switchTab('contact')">
+                                                <i class="fas fa-address-book mr-2"></i>Liên hệ
+                                            </button>
+                                            <button class="tab-button py-4 px-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700" onclick="switchTab('academic')">
+                                                <i class="fas fa-graduation-cap mr-2"></i>Học tập
+                                            </button>
+                                            <button class="tab-button py-4 px-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700" onclick="switchTab('settings')">
+                                                <i class="fas fa-cog mr-2"></i>Cài đặt
+                                            </button>
+                                        </nav>
+                                    </div>
+
+                                    <!-- Form Content -->
+                                    <form id="editUserForm" action="/account-management/edit/<%= userToEdit._id %>" method="POST" enctype="multipart/form-data" class="p-6">
+                                        <!-- CSRF Token -->
+                                        <% if (typeof csrfToken !== 'undefined') { %>
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <% } %>
+                                        
+                                        <!-- Basic Information Tab -->
+                                        <div id="basicTab" class="tab-content">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <!-- Profile Photo Section -->
+                                                <div class="md:col-span-2 mb-6">
+                                                    <h3 class="text-lg font-medium text-gray-900 mb-4">
+                                                        <i class="fas fa-camera text-blue-600 mr-2"></i>
+                                                        Ảnh đại diện
+                                                    </h3>
+                                                    <div class="flex items-center space-x-6">
+                                                        <div class="relative">
+                                                            <div id="profilePreview" class="w-20 h-20 rounded-full overflow-hidden border-4 border-gray-200">
+                                                                <% if (userToEdit.profilePicture) { %>
+                                                                    <img src="<%= userToEdit.profilePicture %>" alt="Profile" class="w-full h-full object-cover">
+                                                                <% } else { %>
+                                                                    <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                                                        <i class="fas fa-user text-white text-2xl"></i>
+                                                                    </div>
+                                                                <% } %>
+                                                            </div>
+                                                            <label class="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors">
+                                                                <i class="fas fa-camera text-xs"></i>
+                                                                <input type="file" name="profilePicture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                                            </label>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-sm text-gray-600">Tải lên ảnh đại diện mới</p>
+                                                            <p class="text-xs text-gray-500">JPG, PNG tối đa 2MB</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-envelope input-icon"></i>
+                                                    <input type="email" 
+                                                           id="email" 
+                                                           name="email" 
+                                                           value="<%= userToEdit.email %>" 
+                                                           required
+                                                           placeholder=" "
+                                                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                    <label for="email" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Email</label>
+                                                </div>
+
+                                                <!-- Full Name -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-user input-icon"></i>
+                                                    <input type="text" 
+                                                           id="fullName" 
+                                                           name="fullName" 
+                                                           value="<%= userToEdit.fullName %>" 
+                                                           required
+                                                           placeholder=" "
+                                                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                    <label for="fullName" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Họ và tên</label>
+                                                </div>
+
+                                                <!-- Role -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-user-tag input-icon"></i>
+                                                    <select id="role" 
+                                                            name="role" 
+                                                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                        <option value="student" <%= userToEdit.role === 'student' ? 'selected' : '' %>>📚 Học viên</option>
+                                                        <option value="teacher" <%= userToEdit.role === 'teacher' ? 'selected' : '' %>>🎓 Giáo viên</option>
+                                                        <option value="admin" <%= userToEdit.role === 'admin' ? 'selected' : '' %>>👑 Admin</option>
+                                                    </select>
+                                                    <label for="role" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Vai trò</label>
+                                                </div>
+
+                                                <!-- Date of Birth -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-birthday-cake input-icon"></i>
+                                                    <input type="date" 
+                                                           id="dateOfBirth" 
+                                                           name="dateOfBirth" 
+                                                           value="<%= userToEdit.dateOfBirth ? userToEdit.dateOfBirth.toISOString().split('T')[0] : '' %>"
+                                                           placeholder=" "
+                                                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                    <label for="dateOfBirth" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Ngày sinh</label>
+                                                </div>
+
+                                                <!-- Gender -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-venus-mars input-icon"></i>
+                                                    <select id="gender" 
+                                                            name="gender" 
+                                                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                        <option value="">Chọn giới tính</option>
+                                                        <option value="male" <%= userToEdit.gender === 'male' ? 'selected' : '' %>>👨 Nam</option>
+                                                        <option value="female" <%= userToEdit.gender === 'female' ? 'selected' : '' %>>👩 Nữ</option>
+                                                        <option value="other" <%= userToEdit.gender === 'other' ? 'selected' : '' %>>🤝 Khác</option>
+                                                    </select>
+                                                    <label for="gender" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Giới tính</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact Information Tab -->
+                                        <div id="contactTab" class="tab-content hidden">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <!-- Phone -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-phone input-icon"></i>
+                                                    <input type="tel" 
+                                                           id="phone" 
+                                                           name="phone" 
+                                                           value="<%= userToEdit.phone || '' %>"
+                                                           placeholder=" "
+                                                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                    <label for="phone" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Số điện thoại</label>
+                                                </div>
+
+                                                <!-- Emergency Contact -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-phone-square input-icon"></i>
+                                                    <input type="tel" 
+                                                           id="emergencyContact" 
+                                                           name="emergencyContact" 
+                                                           value="<%= userToEdit.emergencyContact || '' %>"
+                                                           placeholder=" "
+                                                           class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                    <label for="emergencyContact" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Liên hệ khẩn cấp</label>
+                                                </div>
+
+                                                <!-- Address -->
+                                                <div class="md:col-span-2">
+                                                    <div class="form-floating input-group">
+                                                        <i class="fas fa-map-marker-alt input-icon"></i>
+                                                        <textarea id="address" 
+                                                                  name="address" 
+                                                                  rows="3" 
+                                                                  placeholder=" "
+                                                                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all"><%= userToEdit.address || '' %></textarea>
+                                                        <label for="address" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Địa chỉ</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Social Media -->
+                                                <div class="md:col-span-2">
+                                                    <h4 class="text-md font-medium text-gray-900 mb-4">
+                                                        <i class="fas fa-share-alt text-purple-600 mr-2"></i>
+                                                        Mạng xã hội
+                                                    </h4>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div class="form-floating input-group">
+                                                            <i class="fab fa-facebook input-icon text-blue-600"></i>
+                                                            <input type="url" 
+                                                                   id="facebookUrl" 
+                                                                   name="socialMedia.facebook" 
+                                                                   value="<%= userToEdit.socialMedia?.facebook || '' %>"
+                                                                   placeholder=" "
+                                                                   class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                            <label for="facebookUrl" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Facebook</label>
+                                                        </div>
+                                                        
+                                                        <div class="form-floating input-group">
+                                                            <i class="fab fa-instagram input-icon text-pink-600"></i>
+                                                            <input type="url" 
+                                                                   id="instagramUrl" 
+                                                                   name="socialMedia.instagram" 
+                                                                   value="<%= userToEdit.socialMedia?.instagram || '' %>"
+                                                                   placeholder=" "
+                                                                   class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                            <label for="instagramUrl" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Instagram</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Academic Information Tab -->
+                                        <div id="academicTab" class="tab-content hidden">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <!-- Level -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-layer-group input-icon"></i>
+                                                    <select id="level" 
+                                                            name="level" 
+                                                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                        <option value="beginner" <%= userToEdit.level === 'beginner' ? 'selected' : '' %>>🟢 Sơ cấp</option>
+                                                        <option value="intermediate" <%= userToEdit.level === 'intermediate' ? 'selected' : '' %>>🔵 Trung cấp</option>
+                                                        <option value="advanced" <%= userToEdit.level === 'advanced' ? 'selected' : '' %>>🟣 Cao cấp</option>
+                                                    </select>
+                                                    <label for="level" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Trình độ</label>
+                                                </div>
+
+                                                <!-- Korean Level -->
+                                                <div class="form-floating input-group">
+                                                    <i class="fas fa-certificate input-icon"></i>
+                                                    <select id="koreanLevel" 
+                                                            name="koreanLevel" 
+                                                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                                        <option value="" <%= !userToEdit.koreanLevel ? 'selected' : '' %>>Chọn trình độ TOPIK</option>
+                                                        <option value="TOPIK 1" <%= userToEdit.koreanLevel === 'TOPIK 1' ? 'selected' : '' %>>🏆 TOPIK 1</option>
+                                                        <option value="TOPIK 2" <%= userToEdit.koreanLevel === 'TOPIK 2' ? 'selected' : '' %>>🏆 TOPIK 2</option>
+                                                        <option value="TOPIK 3" <%= userToEdit.koreanLevel === 'TOPIK 3' ? 'selected' : '' %>>🏆 TOPIK 3</option>
+                                                        <option value="TOPIK 4" <%= userToEdit.koreanLevel === 'TOPIK 4' ? 'selected' : '' %>>🏆 TOPIK 4</option>
+                                                        <option value="TOPIK 5" <%= userToEdit.koreanLevel === 'TOPIK 5' ? 'selected' : '' %>>🏆 TOPIK 5</option>
+                                                        <option value="TOPIK 6" <%= userToEdit.koreanLevel === 'TOPIK 6' ? 'selected' : '' %>>🏆 TOPIK 6</option>
+                                                    </select>
+                                                    <label for="koreanLevel" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Trình độ tiếng Hàn</label>
+                                                </div>
+
+                                                <!-- Learning Goal -->
+                                                <div class="md:col-span-2">
+                                                    <div class="form-floating input-group">
+                                                        <i class="fas fa-bullseye input-icon"></i>
+                                                        <textarea id="learningGoal" 
+                                                                  name="learningGoal" 
+                                                                  rows="3" 
+                                                                  placeholder=" "
+                                                                  class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all"><%= userToEdit.learningGoal || '' %></textarea>
+                                                        <label for="learningGoal" class="absolute top-2 left-10 text-gray-500 text-sm transition-all">Mục tiêu học tập</label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Learning Interests -->
+                                                <div class="md:col-span-2">
+                                                    <h4 class="text-md font-medium text-gray-900 mb-4">
+                                                        <i class="fas fa-heart text-red-600 mr-2"></i>
+                                                        Sở thích học tập
+                                                    </h4>
+                                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                        <% 
+                                                        const interests = ['Ngữ pháp', 'Từ vựng', 'Nghe nói', 'Đọc viết', 'Văn hóa', 'Âm nhạc', 'Phim ảnh', 'Du lịch'];
+                                                        interests.forEach(function(interest) { 
+                                                        %>
+                                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                                            <input type="checkbox" 
+                                                                   name="interests" 
+                                                                   value="<%= interest %>" 
+                                                                   <%= userToEdit.interests && userToEdit.interests.includes(interest) ? 'checked' : '' %>
+                                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-2">
+                                                            <span class="text-sm"><%= interest %></span>
+                                                        </label>
+                                                        <% }); %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Settings Tab -->
+                                        <div id="settingsTab" class="tab-content hidden">
+                                            <div class="space-y-6">
+                                                <!-- Subscription -->
+                                                <h4 class="text-md font-medium text-gray-900 mb-4">
+                                                    <i class="fas fa-crown text-yellow-600 mr-2"></i>
+                                                    Gói đăng ký
+                                                </h4>
+                                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                    <label class="subscription-card flex flex-col p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors <%= userToEdit.subscription?.type === 'free' ? 'border-blue-500 bg-blue-50' : '' %>">
+                                                        <input type="radio" 
+                                                               name="subscription.type" 
+                                                               value="free" 
+                                                               <%= userToEdit.subscription?.type === 'free' ? 'checked' : '' %>
+                                                               class="sr-only">
+                                                        <div class="flex items-center justify-between mb-2">
+                                                            <span class="font-medium">🆓 Miễn phí</span>
+                                                            <span class="text-sm text-gray-500">0đ/tháng</span>
+                                                        </div>
+                                                        <ul class="text-xs text-gray-600 space-y-1">
+                                                            <li>✓ Truy cập bài học cơ bản</li>
+                                                            <li>✓ 3 bài test/tháng</li>
+                                                        </ul>
+                                                    </label>
+                                                    
+                                                    <label class="subscription-card flex flex-col p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors <%= userToEdit.subscription?.type === 'basic' ? 'border-blue-500 bg-blue-50' : '' %>">
+                                                        <input type="radio" 
+                                                               name="subscription.type" 
+                                                               value="basic" 
+                                                               <%= userToEdit.subscription?.type === 'basic' ? 'checked' : '' %>
+                                                               class="sr-only">
+                                                        <div class="flex items-center justify-between mb-2">
+                                                            <span class="font-medium">⭐ Cơ bản</span>
+                                                            <span class="text-sm text-gray-500">199k/tháng</span>
+                                                        </div>
+                                                        <ul class="text-xs text-gray-600 space-y-1">
+                                                            <li>✓ Tất cả bài học</li>
+                                                            <li>✓ Test không giới hạn</li>
+                                                            <li>✓ Hỗ trợ chat</li>
+                                                        </ul>
+                                                    </label>
+                                                    
+                                                    <label class="subscription-card flex flex-col p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 transition-colors <%= userToEdit.subscription?.type === 'premium' ? 'border-blue-500 bg-blue-50' : '' %>">
+                                                        <input type="radio" 
+                                                               name="subscription.type" 
+                                                               value="premium" 
+                                                               <%= userToEdit.subscription?.type === 'premium' ? 'checked' : '' %>
+                                                               class="sr-only">
+                                                        <div class="flex items-center justify-between mb-2">
+                                                            <span class="font-medium">👑 Premium</span>
+                                                            <span class="text-sm text-gray-500">399k/tháng</span>
+                                                        </div>
+                                                        <ul class="text-xs text-gray-600 space-y-1">
+                                                            <li>✓ Tất cả tính năng Basic</li>
+                                                            <li>✓ 1-on-1 với giáo viên</li>
+                                                            <li>✓ Chứng chỉ hoàn thành</li>
+                                                        </ul>
+                                                    </label>
+                                                </div>
+
+                                                <div class="section-divider">
+                                                    <span>Cài đặt thông báo</span>
+                                                </div>
+
+                                                <!-- Notification Settings -->
+                                                <div class="space-y-4">
+                                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                        <div>
+                                                            <h5 class="font-medium text-gray-900">Email thông báo</h5>
+                                                            <p class="text-sm text-gray-600">Nhận thông báo về khóa học và cập nhật qua email</p>
+                                                        </div>
+                                                        <label class="relative inline-flex items-center cursor-pointer">
+                                                            <input type="checkbox" 
+                                                                   name="notifications.email" 
+                                                                   <%= userToEdit.notifications?.email ? 'checked' : '' %>
+                                                                   class="sr-only peer">
+                                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                                        <div>
+                                                            <h5 class="font-medium text-gray-900">Push notifications</h5>
+                                                            <p class="text-sm text-gray-600">Nhận thông báo đẩy trên thiết bị</p>
+                                                        </div>
+                                                        <label class="relative inline-flex items-center cursor-pointer">
+                                                            <input type="checkbox" 
+                                                                   name="notifications.push" 
+                                                                   <%= userToEdit.notifications?.push ? 'checked' : '' %>
+                                                                   class="sr-only peer">
+                                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="section-divider">
+                                                    <span>Security & Privacy</span>
+                                                </div>
+
+                                                <!-- Password Reset -->
+                                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                                    <div class="flex items-start">
+                                                        <i class="fas fa-exclamation-triangle text-yellow-600 mt-1 mr-3"></i>
+                                                        <div class="flex-1">
+                                                            <h5 class="font-medium text-yellow-800">Đặt lại mật khẩu</h5>
+                                                            <p class="text-sm text-yellow-700 mt-1">Gửi email đặt lại mật khẩu cho người dùng</p>
+                                                            <button type="button" 
+                                                                    onclick="sendPasswordReset()" 
+                                                                    class="mt-3 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm">
+                                                                <i class="fas fa-key mr-2"></i>Gửi email đặt lại
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Form Actions -->
+                                        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                                            <div class="flex items-center space-x-3">
+                                                <button type="button" 
+                                                        onclick="saveDraft()" 
+                                                        class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                                                    <i class="fas fa-save mr-2"></i>Lưu nháp
+                                                </button>
+                                                <span id="draftStatus" class="text-sm text-gray-500 hidden">
+                                                    <i class="fas fa-check text-green-500 mr-1"></i>Đã lưu nháp
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="flex items-center space-x-3">
+                                                <a href="/account-management" 
+                                                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                                    <i class="fas fa-times mr-2"></i>Hủy
+                                                </a>
+                                                <button type="submit"
+                                                        id="submitBtn"
+                                                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                                    <i class="fas fa-save mr-2"></i>Cập nhật tài khoản
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="lg:col-span-1">
+                                <!-- User Stats Card -->
+                                <div class="glass-card rounded-xl shadow-lg p-6 mb-6 animate-fade-in" style="animation-delay: 0.2s">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                        <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                                        Thống kê
+                                    </h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Ngày tham gia</span>
+                                            <span class="text-sm font-medium"><%= new Date(userToEdit.createdAt).toLocaleDateString('vi-VN') %></span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Lần đăng nhập cuối</span>
+                                            <span class="text-sm font-medium">
+                                                <%= userToEdit.lastLogin ? new Date(userToEdit.lastLogin).toLocaleDateString('vi-VN') : 'Chưa có' %>
+                                            </span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Khóa học đã tham gia</span>
+                                            <span class="text-sm font-medium">
+                                                <%= userToEdit.enrolledCourses ? userToEdit.enrolledCourses.length : 0 %>
+                                            </span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Điểm trung bình</span>
+                                            <span class="text-sm font-medium text-green-600">
+                                                <%= userToEdit.averageScore || 'N/A' %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Recent Activity -->
+                                <div class="glass-card rounded-xl shadow-lg p-6 animate-fade-in" style="animation-delay: 0.3s">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                        <i class="fas fa-history text-blue-600 mr-2"></i>
+                                        Hoạt động gần đây
+                                    </h3>
+                                    <div class="activity-timeline">
+                                        <div class="activity-item">
+                                            <div class="text-sm">
+                                                <p class="font-medium text-gray-900">Đăng nhập hệ thống</p>
+                                                <p class="text-gray-500">2 giờ trước</p>
+                                            </div>
+                                        </div>
+                                        <div class="activity-item">
+                                            <div class="text-sm">
+                                                <p class="font-medium text-gray-900">Hoàn thành bài test</p>
+                                                <p class="text-gray-500">1 ngày trước</p>
+                                            </div>
+                                        </div>
+                                        <div class="activity-item">
+                                            <div class="text-sm">
+                                                <p class="font-medium text-gray-900">Tham gia khóa học mới</p>
+                                                <p class="text-gray-500">3 ngày trước</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+            <div class="loading-spinner"></div>
+            <span class="text-gray-700">Đang cập nhật...</span>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Enhanced Edit User Manager
+        class EditUserManager {
+            constructor() {
+                this.currentTab = 'basic';
+                this.hasUnsavedChanges = false;
+                this.originalFormData = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.storeOriginalData();
+                this.initializeFormValidation();
+            }
+            
+            bindEvents() {
+                // Tab switching
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const tabName = e.currentTarget.getAttribute('onclick').match(/'(\w+)'/)[1];
+                        this.switchTab(tabName);
+                    });
+                });
+                
+                // Form change detection
+                document.getElementById('editUserForm').addEventListener('input', () => {
+                    this.hasUnsavedChanges = true;
+                    this.showDraftStatus();
+                });
+                
+                // Subscription card selection
+                document.querySelectorAll('.subscription-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.subscription-card').forEach(c => {
+                            c.classList.remove('border-blue-500', 'bg-blue-50');
+                        });
+                        card.classList.add('border-blue-500', 'bg-blue-50');
+                    });
+                });
+                
+                // Form submission
+                document.getElementById('editUserForm').addEventListener('submit', (e) => {
+                    this.handleFormSubmit(e);
+                });
+                
+                // Prevent leaving page with unsaved changes
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.hasUnsavedChanges) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                    }
+                });
+            }
+            
+            switchTab(tabName) {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                    button.classList.add('text-gray-500');
+                    button.classList.remove('text-blue-600');
+                });
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Show active tab
+                document.getElementById(tabName + 'Tab').classList.remove('hidden');
+                
+                // Update active button
+                const activeButton = document.querySelector(`[onclick*="${tabName}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                    activeButton.classList.remove('text-gray-500');
+                    activeButton.classList.add('text-blue-600');
+                }
+                
+                this.currentTab = tabName;
+            }
+            
+            storeOriginalData() {
+                const form = document.getElementById('editUserForm');
+                this.originalFormData = new FormData(form);
+            }
+            
+            initializeFormValidation() {
+                const form = document.getElementById('editUserForm');
+                const inputs = form.querySelectorAll('input, select, textarea');
+                
+                inputs.forEach(input => {
+                    input.addEventListener('blur', () => {
+                        this.validateField(input);
+                    });
+                });
+            }
+            
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let message = '';
+                
+                // Email validation
+                if (field.name === 'email') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        isValid = false;
+                        message = 'Email không hợp lệ';
+                    }
+                }
+                
+                // Phone validation
+                if (field.name === 'phone' && value) {
+                    const phoneRegex = /^[0-9+\-\s()]+$/;
+                    if (!phoneRegex.test(value)) {
+                        isValid = false;
+                        message = 'Số điện thoại không hợp lệ';
+                    }
+                }
+                
+                // Required field validation
+                if (field.required && !value) {
+                    isValid = false;
+                    message = 'Trường này là bắt buộc';
+                }
+                
+                this.showFieldValidation(field, isValid, message);
+                return isValid;
+            }
+            
+            showFieldValidation(field, isValid, message) {
+                const existingError = field.parentNode.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                if (!isValid) {
+                    field.classList.add('border-red-500');
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message text-red-500 text-xs mt-1';
+                    errorDiv.textContent = message;
+                    field.parentNode.appendChild(errorDiv);
+                } else {
+                    field.classList.remove('border-red-500');
+                    field.classList.add('border-green-500');
+                }
+            }
+            
+            async handleFormSubmit(e) {
+                e.preventDefault();
+                
+                console.log('=== FORM SUBMIT DEBUG ===');
+                
+                // Validate all fields
+                const form = e.target;
+                console.log('Form action:', form.action);
+                console.log('Form method:', form.method);
+                
+                const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+                let isFormValid = true;
+                
+                inputs.forEach(input => {
+                    if (!this.validateField(input)) {
+                        isFormValid = false;
+                    }
+                });
+                
+                console.log('Form validation passed:', isFormValid);
+                
+                if (!isFormValid) {
+                    this.showToast('Vui lòng kiểm tra lại thông tin đã nhập', 'error');
+                    return;
+                }
+                
+                this.showLoading(true);
+                
+                try {
+                    const formData = new FormData(form);
+                    console.log('FormData entries:');
+                    for (let [key, value] of formData.entries()) {
+                        console.log(`  ${key}: ${value}`);
+                    }
+                    
+                    // Validate required fields
+                    const email = formData.get('email');
+                    const fullName = formData.get('fullName');
+                    
+                    if (!email || !fullName) {
+                        throw new Error('Email và Họ tên là bắt buộc');
+                    }
+                    
+                    // Add CSRF token to headers if available
+                    const headers = {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    };
+                    
+                    // Add CSRF token if exists
+                    const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+                    if (csrfTokenElement) {
+                        headers['X-CSRF-Token'] = csrfTokenElement.getAttribute('content');
+                    }
+                    
+                    console.log('Making fetch request to:', form.action);
+                    console.log('Request headers:', headers);
+                    
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: headers,
+                        body: formData
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    console.log('Response content-type:', response.headers.get('content-type'));
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.log('Error response:', errorText);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Response data:', data);
+                    
+                    if (data.success) {
+                        this.hasUnsavedChanges = false;
+                        this.showToast('Cập nhật tài khoản thành công!', 'success');
+                        
+                        // Redirect after 2 seconds
+                        setTimeout(() => {
+                            window.location.href = '/account-management';
+                        }, 2000);
+                    } else {
+                        this.showToast(data.message || 'Có lỗi xảy ra khi cập nhật', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showToast('Không thể kết nối với server. Vui lòng thử lại.', 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                if (show) {
+                    overlay.classList.remove('hidden');
+                } else {
+                    overlay.classList.add('hidden');
+                }
+            }
+            
+            showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                
+                const toast = document.createElement('div');
+                toast.className = `
+                    max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 transform transition-all duration-500 ease-in-out
+                    ${type === 'success' ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}
+                `;
+                
+                toast.innerHTML = `
+                    <div class="flex-1 w-0 p-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas ${type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'} text-xl"></i>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-gray-900">${message}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex border-l border-gray-200">
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                class="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-gray-500 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(toast);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translateX(100%)';
+                        setTimeout(() => toast.remove(), 300);
+                    }
+                }, 5000);
+            }
+            
+            showDraftStatus() {
+                const status = document.getElementById('draftStatus');
+                status.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    status.classList.add('hidden');
+                }, 3000);
+            }
+        }
+        
+        // Global functions
+        function switchTab(tabName) {
+            editUserManager.switchTab(tabName);
+        }
+        
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('#profilePreview img').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function resetForm() {
+            if (confirm('Bạn có chắc chắn muốn đặt lại form? Tất cả thay đổi sẽ bị mất.')) {
+                document.getElementById('editUserForm').reset();
+                editUserManager.hasUnsavedChanges = false;
+            }
+        }
+        
+        function previewChanges() {
+            editUserManager.showToast('Tính năng xem trước đang được phát triển', 'info');
+        }
+        
+        function saveDraft() {
+            const formData = new FormData(document.getElementById('editUserForm'));
+            localStorage.setItem('editUserDraft', JSON.stringify(Object.fromEntries(formData)));
+            editUserManager.showDraftStatus();
+            editUserManager.showToast('Đã lưu nháp thành công', 'success');
+        }
+        
+        async function sendPasswordReset() {
+            if (!confirm('Bạn có chắc chắn muốn gửi email đặt lại mật khẩu cho người dùng này không?')) {
+                return;
+            }
+            
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/admin/send-password-reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': '<%= csrfToken %>'
+                    },
+                    body: JSON.stringify({ userId: '<%= userToEdit._id %>' })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến.');
+                } else {
+                    alert('Có lỗi xảy ra: ' + (data.message || 'Không thể gửi email'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Không thể kết nối với server');
+            } finally {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+        
+        // Initialize EditUserManager when page loads
+        let editUserManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            editUserManager = new EditUserManager();
+            console.log('EditUserManager initialized successfully');
+        });
+    </script>
+</body>
+</html>

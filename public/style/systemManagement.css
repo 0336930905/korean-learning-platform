@@ -1,0 +1,268 @@
+/* Base styles */
+.container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  /* System settings form styles */
+  .system-settings {
+    flex: 1;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 1.5rem;
+  }
+  
+  .system-settings h2 {
+    color: #3e64ff;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-control:focus {
+    border-color: #3e64ff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(62, 100, 255, 0.2);
+  }
+  
+  /* Checkbox styles */
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox-wrapper input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+  
+  .checkbox-label {
+    font-weight: normal;
+    color: #555;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox-item input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+  
+  /* Toggle switch */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-switch label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .toggle-switch label:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  .toggle-switch input:checked + label {
+    background-color: #3e64ff;
+  }
+  
+  .toggle-switch input:checked + label:before {
+    transform: translateX(26px);
+  }
+  
+  /* Button styles */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  
+  .btn-primary {
+    background-color: #3e64ff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2a4cdb;
+  }
+  
+  /* Table styles */
+  .table-container {
+    flex: 1;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 1.5rem;
+  }
+  
+  .table-container h2 {
+    color: #3e64ff;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 0.5rem;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  table th,
+  table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  table th {
+    background-color: #f8f9fa;
+    color: #555;
+    font-weight: 500;
+  }
+  
+  table tr:hover {
+    background-color: #f5f8ff;
+  }
+  
+  /* Badge styles */
+  .badge {
+    padding: 0.35rem 0.65rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  
+  .bg-success {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .bg-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  /* Sidebar styles (assuming it's included from partials) */
+  .admin-sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 1.5rem 0;
+    min-height: 100vh;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .container {
+      flex-direction: column;
+    }
+    
+    .admin-sidebar {
+      width: 100%;
+      min-height: auto;
+    }
+    
+    .system-settings,
+    .table-container {
+      margin: 1rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .system-settings,
+    .table-container {
+      padding: 1rem;
+    }
+    
+    .checkbox-group {
+      gap: 0.5rem;
+    }
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+    color: #333;
+    margin: 0;
+    font-size: 1.8rem;
+}
+.main-content {
+  flex: 1;
+  padding: 20px;
+}

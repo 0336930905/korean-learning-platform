@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Xem điểm' %> | Học viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .grade-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+        
+        .grade-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .grade-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+        }
+        
+        .summary-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 24px;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .score-excellent {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(101, 163, 13, 0.1));
+            border-left: 4px solid #22c55e;
+        }
+        
+        .score-good {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .score-average {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .score-poor {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            border-left: 4px solid #ef4444;
+        }
+        
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .score-label {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .progress-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 8;
+            cx: 60;
+            cy: 60;
+            r: 52;
+        }
+        
+        .progress-circle .bg-circle {
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-circle .progress-ring {
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .progress-excellent {
+            stroke: #22c55e;
+        }
+        
+        .progress-good {
+            stroke: #3b82f6;
+        }
+        
+        .progress-average {
+            stroke: #f59e0b;
+        }
+        
+        .progress-poor {
+            stroke: #ef4444;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .progress-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+        }
+        
+        .progress-label {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .class-selector {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 16px 20px;
+            font-size: 16px;
+            color: #374151;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .class-selector:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+            background: white;
+        }
+        
+        .grade-table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .grade-table-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .grade-table th {
+            padding: 20px 24px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 14px;
+        }
+        
+        .grade-table td {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+        
+        .grade-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .grade-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: translateX(8px);
+        }
+        
+        .grade-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grade-badge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .grade-badge:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .grade-excellent {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(101, 163, 13, 0.1));
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .grade-good {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .grade-average {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .grade-poor {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .achievement-gold {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+            color: #d97706;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        .achievement-silver {
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.1), rgba(100, 116, 139, 0.1));
+            color: #64748b;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        
+        .achievement-bronze {
+            background: linear-gradient(135deg, rgba(180, 83, 9, 0.1), rgba(154, 52, 18, 0.1));
+            color: #b45309;
+            border: 1px solid rgba(180, 83, 9, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-radius: 25px;
+            border: 2px dashed rgba(102, 126, 234, 0.2);
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .notification.info {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 12px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .header-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .grade-card,
+            .summary-card,
+            .chart-container {
+                margin: 16px;
+                border-radius: 16px;
+            }
+            
+            .score-display {
+                font-size: 32px;
+            }
+            
+            .progress-circle {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .progress-circle circle {
+                cx: 40;
+                cy: 40;
+                r: 32;
+            }
+            
+            .progress-score {
+                font-size: 16px;
+            }
+            
+            .grade-table th,
+            .grade-table td {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Include Student Sidebar -->
+        <%- include('../partials/student_sidebar', { 
+            user: locals.user, 
+            path: '/student/grades' 
+        }) %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Include Header -->
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto">
+                <div class="container mx-auto px-4 py-8">
+                    <!-- Hero Section -->
+                    <div class="text-center mb-8 slide-in">
+                        <div class="header-icon floating-animation mx-auto">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h1 class="text-5xl font-bold gradient-text mb-4">Bảng điểm</h1>
+                        <p class="text-xl text-gray-600">Theo dõi kết quả học tập và tiến độ của bạn</p>
+                    </div>
+
+                    <!-- Class Selector -->
+                    <% if (enrolledClasses && enrolledClasses.length > 0) { %>
+                        <div class="grade-card slide-in fade-in mb-8">
+                            <div class="p-8">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-school text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-gray-800">Chọn lớp học</h2>
+                                        <p class="text-gray-600">Xem điểm số theo từng lớp học</p>
+                                    </div>
+                                </div>
+                                
+                                <select id="classSelector" 
+                                        class="class-selector"
+                                        onchange="showClassGrades(this.value)">
+                                    <option value="">-- Chọn lớp học để xem điểm --</option>
+                                    <% enrolledClasses.forEach((classItem, index) => { %>
+                                        <option value="<%= classItem._id %>">
+                                            <%= classItem.course.title %> - <%= classItem.name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Grade Content For Each Class -->
+                        <% enrolledClasses.forEach((classItem, index) => { %>
+                            <div id="grade-content-<%= classItem._id %>" class="grade-content hidden">
+                                <!-- Summary Cards -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 slide-in fade-in">
+                                    <!-- Test Average -->
+                                    <div class="summary-card score-<%= classItem.testAverage >= 8 ? 'excellent' : classItem.testAverage >= 6.5 ? 'good' : classItem.testAverage >= 5 ? 'average' : 'poor' %>">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-clipboard-check text-white"></i>
+                                            </div>
+                                            <div class="progress-circle" style="width: 60px; height: 60px;">
+                                                <svg>
+                                                    <circle class="bg-circle" stroke="rgba(0,0,0,0.1)" stroke-width="4" cx="30" cy="30" r="26"></circle>
+                                                    <circle class="progress-ring progress-<%= classItem.testAverage >= 8 ? 'excellent' : classItem.testAverage >= 6.5 ? 'good' : classItem.testAverage >= 5 ? 'average' : 'poor' %>" 
+                                                            stroke-width="4" cx="30" cy="30" r="26"
+                                                            stroke-dasharray="163.36" 
+                                                            stroke-dashoffset="<%= 163.36 - (163.36 * (classItem.testAverage || 0) / 10) %>">
+                                                    </circle>
+                                                </svg>
+                                                <div class="progress-text">
+                                                    <div class="progress-score" style="font-size: 12px;">
+                                                        <%= classItem.testAverage ? classItem.testAverage.toFixed(1) : 'N/A' %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="score-label text-blue-600">Điểm kiểm tra</div>
+                                        <div class="score-display text-blue-700" style="font-size: 24px;">
+                                            <%= classItem.testAverage ? classItem.testAverage.toFixed(1) : 'N/A' %>/10
+                                        </div>
+                                    </div>
+
+                                    <!-- Assignment Average -->
+                                    <div class="summary-card score-<%= classItem.assignmentAverage >= 8 ? 'excellent' : classItem.assignmentAverage >= 6.5 ? 'good' : classItem.assignmentAverage >= 5 ? 'average' : 'poor' %>">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-tasks text-white"></i>
+                                            </div>
+                                            <div class="progress-circle" style="width: 60px; height: 60px;">
+                                                <svg>
+                                                    <circle class="bg-circle" stroke="rgba(0,0,0,0.1)" stroke-width="4" cx="30" cy="30" r="26"></circle>
+                                                    <circle class="progress-ring progress-<%= classItem.assignmentAverage >= 8 ? 'excellent' : classItem.assignmentAverage >= 6.5 ? 'good' : classItem.assignmentAverage >= 5 ? 'average' : 'poor' %>" 
+                                                            stroke-width="4" cx="30" cy="30" r="26"
+                                                            stroke-dasharray="163.36" 
+                                                            stroke-dashoffset="<%= 163.36 - (163.36 * (classItem.assignmentAverage || 0) / 10) %>">
+                                                    </circle>
+                                                </svg>
+                                                <div class="progress-text">
+                                                    <div class="progress-score" style="font-size: 12px;">
+                                                        <%= classItem.assignmentAverage ? classItem.assignmentAverage.toFixed(1) : 'N/A' %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="score-label text-green-600">Điểm bài tập</div>
+                                        <div class="score-display text-green-700" style="font-size: 24px;">
+                                            <%= classItem.assignmentAverage ? classItem.assignmentAverage.toFixed(1) : 'N/A' %>/10
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-2">
+                                            <%= classItem.submissions?.length || 0 %> bài đã chấm
+                                        </div>
+                                    </div>
+
+                                    <!-- Final Grade -->
+                                    <div class="summary-card score-<%= classItem.finalGrade >= 8 ? 'excellent' : classItem.finalGrade >= 6.5 ? 'good' : classItem.finalGrade >= 5 ? 'average' : 'poor' %>">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-trophy text-white"></i>
+                                            </div>
+                                            <div class="progress-circle" style="width: 60px; height: 60px;">
+                                                <svg>
+                                                    <circle class="bg-circle" stroke="rgba(0,0,0,0.1)" stroke-width="4" cx="30" cy="30" r="26"></circle>
+                                                    <circle class="progress-ring progress-<%= classItem.finalGrade >= 8 ? 'excellent' : classItem.finalGrade >= 6.5 ? 'good' : classItem.finalGrade >= 5 ? 'average' : 'poor' %>" 
+                                                            stroke-width="4" cx="30" cy="30" r="26"
+                                                            stroke-dasharray="163.36" 
+                                                            stroke-dashoffset="<%= 163.36 - (163.36 * (classItem.finalGrade || 0) / 10) %>">
+                                                    </circle>
+                                                </svg>
+                                                <div class="progress-text">
+                                                    <div class="progress-score" style="font-size: 12px;">
+                                                        <%= classItem.finalGrade ? classItem.finalGrade.toFixed(1) : 'N/A' %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="score-label text-purple-600">Điểm tổng kết</div>
+                                        <div class="score-display text-purple-700" style="font-size: 24px;">
+                                            <%= classItem.finalGrade ? classItem.finalGrade.toFixed(1) : 'N/A' %>/10
+                                        </div>
+                                    </div>
+
+                                    <!-- Attendance -->
+                                    <div class="summary-card score-excellent">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                                <i class="fas fa-calendar-check text-white"></i>
+                                            </div>
+                                            <div class="progress-circle" style="width: 60px; height: 60px;">
+                                                <svg>
+                                                    <circle class="bg-circle" stroke="rgba(0,0,0,0.1)" stroke-width="4" cx="30" cy="30" r="26"></circle>
+                                                    <circle class="progress-ring progress-excellent" 
+                                                            stroke-width="4" cx="30" cy="30" r="26"
+                                                            stroke-dasharray="163.36" 
+                                                            stroke-dashoffset="<%= 163.36 - (163.36 * 0.85) %>">
+                                                    </circle>
+                                                </svg>
+                                                <div class="progress-text">
+                                                    <div class="progress-score" style="font-size: 12px;">85%</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="score-label text-orange-600">Điểm danh</div>
+                                        <div class="score-display text-orange-700" style="font-size: 24px;">
+                                            85%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Chart Section -->
+                                <div class="chart-container slide-in fade-in">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-6">
+                                        <i class="fas fa-chart-area mr-3 text-blue-500"></i>
+                                        Biểu đồ tiến độ học tập
+                                    </h3>
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div>
+                                            <canvas id="progressChart-<%= classItem._id %>" width="400" height="200"></canvas>
+                                        </div>
+                                        <div>
+                                            <canvas id="gradeChart-<%= classItem._id %>" width="400" height="200"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Achievements Section -->
+                                <div class="grade-card slide-in fade-in mb-8">
+                                    <div class="p-8">
+                                        <h3 class="text-xl font-bold text-gray-800 mb-6">
+                                            <i class="fas fa-medal mr-3 text-yellow-500"></i>
+                                            Thành tích đạt được
+                                        </h3>
+                                        <div class="flex flex-wrap gap-3">
+                                            <% if (classItem.finalGrade >= 9) { %>
+                                                <div class="achievement-badge achievement-gold">
+                                                    <i class="fas fa-trophy"></i>
+                                                    <span>Học sinh xuất sắc</span>
+                                                </div>
+                                            <% } else if (classItem.finalGrade >= 8) { %>
+                                                <div class="achievement-badge achievement-silver">
+                                                    <i class="fas fa-award"></i>
+                                                    <span>Học sinh giỏi</span>
+                                                </div>
+                                            <% } else if (classItem.finalGrade >= 6.5) { %>
+                                                <div class="achievement-badge achievement-bronze">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>Học sinh khá</span>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <% if (classItem.testAverage >= 8) { %>
+                                                <div class="achievement-badge achievement-gold">
+                                                    <i class="fas fa-clipboard-check"></i>
+                                                    <span>Kiểm tra giỏi</span>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <% if (classItem.assignmentAverage >= 8) { %>
+                                                <div class="achievement-badge achievement-silver">
+                                                    <i class="fas fa-tasks"></i>
+                                                    <span>Bài tập tốt</span>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div class="achievement-badge achievement-bronze">
+                                                <i class="fas fa-calendar-check"></i>
+                                                <span>Chuyên cần</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Test Scores Table -->
+                                <div class="grade-table slide-in fade-in mb-8">
+                                    <div class="grade-table-header">
+                                        <h3 class="text-xl font-bold p-6">
+                                            <i class="fas fa-clipboard-list mr-3 text-blue-500"></i>
+                                            Điểm kiểm tra chi tiết
+                                        </h3>
+                                    </div>
+                                    <% const classTests = classItem.tests || []; %>
+                                    <% if (classTests.length > 0) { %>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full">
+                                                <thead class="grade-table-header">
+                                                    <tr>
+                                                        <th class="text-left">Bài kiểm tra</th>
+                                                        <th class="text-center">Ngày kiểm tra</th>
+                                                        <th class="text-center">Điểm số</th>
+                                                        <th class="text-left">Nhận xét</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% classTests.forEach(test => { %>
+                                                        <% const score = test.scores.find(s => s.student.toString() === user._id.toString()); %>
+                                                        <tr>
+                                                            <td class="font-semibold text-gray-800">
+                                                                <i class="fas fa-file-alt mr-2 text-blue-500"></i>
+                                                                <%= test.testName %>
+                                                            </td>
+                                                            <td class="text-center text-gray-600">
+                                                                <%= new Date(test.testDate).toLocaleDateString('vi-VN') %>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <% if (score) { %>
+                                                                    <span class="grade-badge grade-<%= score.score >= 8 ? 'excellent' : score.score >= 6.5 ? 'good' : score.score >= 5 ? 'average' : 'poor' %>">
+                                                                        <i class="fas fa-star mr-1"></i>
+                                                                        <%= score.score %>/10
+                                                                    </span>
+                                                                <% } else { %>
+                                                                    <span class="grade-badge grade-poor">
+                                                                        <i class="fas fa-minus mr-1"></i>
+                                                                        N/A
+                                                                    </span>
+                                                                <% } %>
+                                                            </td>
+                                                            <td class="text-gray-600">
+                                                                <%= score ? (score.notes || 'Không có nhận xét') : 'Chưa có điểm' %>
+                                                            </td>
+                                                        </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    <% } else { %>
+                                        <div class="text-center py-12">
+                                            <div class="text-gray-400 text-5xl mb-4">
+                                                <i class="fas fa-clipboard-list"></i>
+                                            </div>
+                                            <p class="text-gray-500 text-lg">Chưa có bài kiểm tra nào</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+
+                                <!-- Assignment Scores Table -->
+                                <div class="grade-table slide-in fade-in">
+                                    <div class="grade-table-header">
+                                        <h3 class="text-xl font-bold p-6">
+                                            <i class="fas fa-tasks mr-3 text-green-500"></i>
+                                            Điểm bài tập chi tiết
+                                        </h3>
+                                    </div>
+                                    <% const classSubmissions = submissions.filter(sub => sub.assignment.class._id.toString() === classItem._id.toString()) %>
+                                    <% if (classSubmissions.length > 0) { %>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full">
+                                                <thead class="grade-table-header">
+                                                    <tr>
+                                                        <th class="text-left">Bài tập</th>
+                                                        <th class="text-center">Ngày nộp</th>
+                                                        <th class="text-center">Điểm số</th>
+                                                        <th class="text-left">Nhận xét</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% classSubmissions.forEach(submission => { %>
+                                                        <tr>
+                                                            <td class="font-semibold text-gray-800">
+                                                                <i class="fas fa-file-text mr-2 text-green-500"></i>
+                                                                <%= submission.assignment.title %>
+                                                            </td>
+                                                            <td class="text-center text-gray-600">
+                                                                <%= new Date(submission.submittedAt).toLocaleDateString('vi-VN') %>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="grade-badge grade-<%= submission.grade.score >= 8 ? 'excellent' : submission.grade.score >= 6.5 ? 'good' : submission.grade.score >= 5 ? 'average' : 'poor' %>">
+                                                                    <i class="fas fa-star mr-1"></i>
+                                                                    <%= submission.grade.score %>/10
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-gray-600">
+                                                                <%= submission.grade.feedback || 'Không có nhận xét' %>
+                                                            </td>
+                                                        </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    <% } else { %>
+                                        <div class="text-center py-12">
+                                            <div class="text-gray-400 text-5xl mb-4">
+                                                <i class="fas fa-tasks"></i>
+                                            </div>
+                                            <p class="text-gray-500 text-lg">Chưa có bài tập nào được chấm điểm</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="empty-state slide-in fade-in">
+                            <div class="empty-icon">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-600 mb-4">Chưa có lớp học nào</h3>
+                            <p class="text-xl text-gray-500 mb-8">
+                                Bạn chưa đăng ký học lớp nào. Hãy đăng ký khóa học để bắt đầu học tập!
+                            </p>
+                            <a href="/courses" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
+                                <i class="fas fa-graduation-cap mr-2"></i>
+                                Khám phá khóa học
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function showClassGrades(classId) {
+            // Hide all grade content with fade effect
+            document.querySelectorAll('.grade-content').forEach(content => {
+                content.classList.add('hidden');
+                content.style.opacity = '0';
+            });
+            
+            // Show selected class content if classId is provided
+            if (classId) {
+                const selectedContent = document.getElementById(`grade-content-${classId}`);
+                if (selectedContent) {
+                    selectedContent.classList.remove('hidden');
+                    
+                    // Animate fade in
+                    setTimeout(() => {
+                        selectedContent.style.opacity = '1';
+                    }, 50);
+                    
+                    // Initialize charts for this class
+                    initializeCharts(classId);
+                    
+                    // Show notification
+                    showNotification('Đã tải dữ liệu điểm số', 'success');
+                }
+            }
+        }
+
+        function initializeCharts(classId) {
+            // Progress Chart
+            const progressCtx = document.getElementById(`progressChart-${classId}`);
+            if (progressCtx) {
+                new Chart(progressCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4', 'Tuần 5', 'Tuần 6'],
+                        datasets: [{
+                            label: 'Điểm kiểm tra',
+                            data: [6, 7, 8, 7.5, 8.5, 9],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Điểm bài tập',
+                            data: [7, 7.5, 8, 8.5, 8, 9],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Tiến độ học tập theo thời gian'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Grade Distribution Chart
+            const gradeCtx = document.getElementById(`gradeChart-${classId}`);
+            if (gradeCtx) {
+                new Chart(gradeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Kiểm tra', 'Bài tập', 'Điểm danh'],
+                        datasets: [{
+                            data: [40, 50, 10],
+                            backgroundColor: [
+                                '#3b82f6',
+                                '#10b981',
+                                '#f59e0b'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Phân bố điểm số'
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} text-xl mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add staggered animations
+            const elements = document.querySelectorAll('.slide-in');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Add intersection observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Animate progress circles
+            const progressRings = document.querySelectorAll('.progress-ring');
+            progressRings.forEach(ring => {
+                const circumference = 2 * Math.PI * parseFloat(ring.getAttribute('r'));
+                ring.style.strokeDasharray = circumference + ' ' + circumference;
+                ring.style.strokeDashoffset = circumference;
+                
+                setTimeout(() => {
+                    ring.style.strokeDashoffset = ring.getAttribute('stroke-dashoffset');
+                }, 500);
+            });
+        });
+
+        // Smooth scrolling for tables
+        document.querySelectorAll('.grade-table tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(8px)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body>
+</html>

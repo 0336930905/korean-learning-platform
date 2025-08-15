@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="/style/style.css">
+<link rel="stylesheet" href="/style/teacher.css">
+<nav class="sidebar">
+    <div class="sidebar-brand">
+        <span>TEACHER PORTAL</span>
+    </div>
+
+    <div class="sidebar-heading">
+        Chức năng chính
+    </div>
+
+    <ul class="nav" style="list-style: none;">
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/dashboard/teacher' ? 'active' : '' %>" href="/dashboard/teacher">
+                <i>📊</i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/classes') ? 'active' : '' %>" href="/teacher/classes">
+                <i>👨‍👩‍👧‍👦</i>
+                <span>Lớp học</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/assignments') ? 'active' : '' %>" href="/teacher/assignments">
+                <i>📝</i>
+                <span>Bài tập</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/grading') ? 'active' : '' %>" href="/teacher/grading">
+                <i>🎯</i>
+                <span>Tạo bài kiểm tra</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/grade-list') ? 'active' : '' %>" href="/teacher/grade-list">
+                <i>📋</i>
+                <span>Bảng điểm</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/teacher/academic-stats" class="nav-link <%= currentPath.includes('/teacher/academic-stats') ? 'active' : '' %>">
+                <i class="fas fa-chart-line"></i>
+                <span>Thống kê học lực</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">
+        Công cụ
+    </div>
+
+    <ul class="nav" style="list-style: none;">
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/materials') ? 'active' : '' %>" href="/teacher/materials">
+                <i>📚</i>
+                <span>Tài liệu dạy học</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/messages') ? 'active' : '' %>" href="/teacher/messages">
+                <i>💬</i>
+                <span>Tin nhắn</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <%= currentPath.includes('/teacher/thematic-vocabulary') ? 'active' : '' %>" href="/teacher/thematic-vocabulary">
+                <i>💬</i>
+                <span>Từ vựng theo chủ đề</span>
+            </a>
+        </li>
+        <li>
+            <a href="/attendance" class="btn btn-primary <%= currentPath.includes('/attendance') ? 'active' : '' %>">
+                <i class="fas fa-clipboard-check me-2"></i>
+                Điểm danh
+            </a>
+        </li>
+    </ul>
+</nav>

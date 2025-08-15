@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm bài tập mới | Giảng viên</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px) rotateX(5deg);
+        }
+        
+        .input-3d {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .input-3d:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-section {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .preview-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .preview-card:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+        }
+        
+        .success-animation {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .success-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .success-animation:hover::before {
+            left: 100%;
+        }
+        
+        .pulse-ring {
+            position: relative;
+        }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            transform: translate(-50%, -50%) scale(1);
+            animation: pulse-ring 2s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .step-indicator {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: translateY(-50%);
+            opacity: 0.3;
+        }
+        
+        .step-indicator.active::after {
+            opacity: 1;
+            animation: progressLine 0.8s ease-out;
+        }
+        
+        @keyframes progressLine {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* File Upload Styles */
+        .upload-area {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover .upload-icon i {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        #filePreview {
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .file-type-pdf .fa-file {
+            color: #ef4444;
+        }
+        
+        .file-type-audio .fa-file {
+            color: #8b5cf6;
+        }
+        
+        .file-type-doc .fa-file {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section -->
+                <div class="mb-8">
+                    <div class="gradient-bg rounded-3xl p-8 text-white relative overflow-hidden slide-in">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8 floating-animation"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full transform -translate-x-4 translate-y-4 floating-animation" style="animation-delay: 1s;"></div>
+                        
+                        <div class="relative z-10">
+                            <!-- Breadcrumb -->
+                            <nav class="flex items-center text-white text-opacity-80 mb-6">
+                                <a href="/teacher/assignments" class="hover:text-white transition-colors">
+                                    <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách bài tập
+                                </a>
+                            </nav>
+                            
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-4">Tạo bài tập mới</h1>
+                                    <p class="text-xl opacity-90">Thiết kế bài tập phù hợp cho học viên của bạn</p>
+                                </div>
+                                
+                                <!-- Progress Steps -->
+                                <div class="hidden md:flex items-center space-x-4">
+                                    <div class="step-indicator active flex items-center justify-center w-12 h-12 bg-white bg-opacity-20 rounded-full">
+                                        <i class="fas fa-edit text-lg"></i>
+                                    </div>
+                                    <div class="step-indicator flex items-center justify-center w-12 h-12 bg-white bg-opacity-10 rounded-full">
+                                        <i class="fas fa-eye text-lg"></i>
+                                    </div>
+                                    <div class="step-indicator flex items-center justify-center w-12 h-12 bg-white bg-opacity-10 rounded-full">
+                                        <i class="fas fa-check text-lg"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Form -->
+                    <div class="lg:col-span-2">
+                        <div class="glass-card rounded-3xl p-8 card-hover slide-in" style="animation-delay: 0.2s;">
+                            <div class="mb-8">
+                                <h2 class="text-3xl font-bold gradient-text mb-2">Thông tin bài tập</h2>
+                                <p class="text-gray-600">Điền đầy đủ thông tin để tạo bài tập hiệu quả</p>
+                            </div>
+
+                            <form id="assignmentForm" action="/teacher/assignments/add" method="POST" enctype="multipart/form-data" class="space-y-8">
+                                <!-- Class Selection -->
+                                <div class="form-section" style="animation-delay: 0.3s;">
+                                    <label for="class" class="block text-lg font-semibold text-gray-800 mb-3">
+                                        <i class="fas fa-chalkboard-teacher text-purple-500 mr-2"></i>
+                                        Chọn lớp học
+                                    </label>
+                                    <select name="classId" 
+                                            id="class" 
+                                            class="input-3d w-full p-4 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none bg-white text-lg"
+                                            required>
+                                        <option value="">🎯 Chọn lớp học cho bài tập</option>
+                                        <% classes.forEach(classItem => { %>
+                                            <option value="<%= classItem._id %>">
+                                                📚 <%= classItem.name %> (<%= classItem.students.length %> học viên)
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+
+                                <!-- Title -->
+                                <div class="form-section" style="animation-delay: 0.4s;">
+                                    <label for="title" class="block text-lg font-semibold text-gray-800 mb-3">
+                                        <i class="fas fa-heading text-blue-500 mr-2"></i>
+                                        Tiêu đề bài tập
+                                    </label>
+                                    <input type="text" 
+                                           id="title" 
+                                           name="title" 
+                                           placeholder="VD: Bài tập về ngữ pháp tiếng Hàn cơ bản"
+                                           class="input-3d w-full p-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none bg-white text-lg"
+                                           required>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="form-section" style="animation-delay: 0.5s;">
+                                    <label for="description" class="block text-lg font-semibold text-gray-800 mb-3">
+                                        <i class="fas fa-align-left text-green-500 mr-2"></i>
+                                        Mô tả chi tiết
+                                    </label>
+                                    <textarea id="description" 
+                                              name="description" 
+                                              rows="6"
+                                              placeholder="Mô tả chi tiết về bài tập, yêu cầu, hướng dẫn làm bài..."
+                                              class="input-3d w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none bg-white text-lg resize-none"
+                                              required></textarea>
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        <span id="charCount">0</span> / 500 ký tự
+                                    </div>
+                                </div>
+
+                                <!-- File Attachment -->
+                                <div class="form-section" style="animation-delay: 0.55s;">
+                                    <label for="attachmentFile" class="block text-lg font-semibold text-gray-800 mb-3">
+                                        <i class="fas fa-paperclip text-indigo-500 mr-2"></i>
+                                        Đính kèm tệp (Tùy chọn)
+                                    </label>
+                                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                                        <input type="file" 
+                                               id="attachmentFile" 
+                                               name="attachmentFile" 
+                                               accept=".pdf,.mp3,.wav,.m4a,.doc,.docx"
+                                               class="hidden">
+                                        <label for="attachmentFile" class="cursor-pointer block text-center">
+                                            <div class="upload-icon mb-4">
+                                                <i class="fas fa-cloud-upload-alt text-4xl text-indigo-400"></i>
+                                            </div>
+                                            <div class="upload-text">
+                                                <p class="text-lg font-medium text-gray-700 mb-2">Nhấp để chọn tệp hoặc kéo thả vào đây</p>
+                                                <p class="text-sm text-gray-500">Hỗ trợ: PDF, Audio (MP3, WAV, M4A), Word (DOC, DOCX)</p>
+                                                <p class="text-xs text-gray-400 mt-1">Kích thước tối đa: 30MB</p>
+                                            </div>
+                                        </label>
+                                        <div id="filePreview" class="hidden mt-4 p-3 bg-white rounded-lg border">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center">
+                                                    <i id="fileIcon" class="fas fa-file text-2xl text-gray-600 mr-3"></i>
+                                                    <div>
+                                                        <p id="fileName" class="font-medium text-gray-800"></p>
+                                                        <p id="fileSize" class="text-sm text-gray-500"></p>
+                                                    </div>
+                                                </div>
+                                                <button type="button" id="removeFile" class="text-red-500 hover:text-red-700">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        💡 Tip: Đính kèm file audio để tạo bài tập nghe, hoặc PDF cho tài liệu tham khảo
+                                    </div>
+                                </div>
+
+                                <!-- Due Date -->
+                                <div class="form-section" style="animation-delay: 0.6s;">
+                                    <label for="dueDate" class="block text-lg font-semibold text-gray-800 mb-3">
+                                        <i class="fas fa-calendar-alt text-red-500 mr-2"></i>
+                                        Hạn nộp bài
+                                    </label>
+                                    <input type="datetime-local" 
+                                           id="dueDate" 
+                                           name="dueDate" 
+                                           class="input-3d w-full p-4 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:outline-none bg-white text-lg"
+                                           required>
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        💡 Khuyến nghị: Cho học viên ít nhất 3 ngày để hoàn thành bài tập
+                                    </div>
+                                </div>
+
+                                <!-- Additional Options -->
+                                <div class="form-section" style="animation-delay: 0.7s;">
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                                        <i class="fas fa-cogs text-purple-500 mr-2"></i>
+                                        Tùy chọn bổ sung
+                                    </h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="glass-card p-4 rounded-xl">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="checkbox" name="allowLateSubmission" class="w-5 h-5 text-purple-500 rounded">
+                                                <span class="ml-3 text-gray-700">Cho phép nộp trễ</span>
+                                            </label>
+                                        </div>
+                                        
+                                      
+                                    </div>
+                                </div>
+
+                                <!-- Submit Buttons -->
+                                <div class="flex justify-between pt-8">
+                                    <a href="/teacher/assignments"
+                                       class="btn-3d flex items-center px-8 py-4 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-all duration-300">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Hủy bỏ
+                                    </a>
+                                    
+                                    <div class="flex space-x-4">
+                                        <button type="button" id="previewBtn"
+                                                class="btn-3d flex items-center px-8 py-4 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300">
+                                            <i class="fas fa-eye mr-2"></i>
+                                            Xem trước
+                                        </button>
+                                        
+                                        <button type="submit" id="submitBtn"
+                                                class="btn-3d success-animation flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                            <div class="loading-spinner mr-2"></div>
+                                            <i class="fas fa-plus mr-2"></i>
+                                            Tạo bài tập
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preview Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="sticky top-6 space-y-6">
+                            <!-- Preview Card -->
+                            <div class="preview-card rounded-3xl p-6 slide-in" style="animation-delay: 0.8s;">
+                                <h3 class="text-xl font-bold gradient-text mb-4">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Xem trước bài tập
+                                </h3>
+                                
+                                <div id="previewContent" class="space-y-4">
+                                    <div class="preview-item">
+                                        <h4 class="font-semibold text-gray-600 text-sm">Lớp học:</h4>
+                                        <p id="previewClass" class="text-gray-400 italic">Chưa chọn lớp học</p>
+                                    </div>
+                                    
+                                    <div class="preview-item">
+                                        <h4 class="font-semibold text-gray-600 text-sm">Tiêu đề:</h4>
+                                        <p id="previewTitle" class="text-gray-400 italic">Chưa nhập tiêu đề</p>
+                                    </div>
+                                    
+                                    <div class="preview-item">
+                                        <h4 class="font-semibold text-gray-600 text-sm">Mô tả:</h4>
+                                        <p id="previewDescription" class="text-gray-400 italic">Chưa nhập mô tả</p>
+                                    </div>
+                                    
+                                    <div class="preview-item">
+                                        <h4 class="font-semibold text-gray-600 text-sm">Hạn nộp:</h4>
+                                        <p id="previewDueDate" class="text-gray-400 italic">Chưa chọn hạn nộp</p>
+                                    </div>
+                                    
+                                    <div class="preview-item">
+                                        <h4 class="font-semibold text-gray-600 text-sm">File đính kèm:</h4>
+                                        <p id="previewFile" class="text-gray-400 italic">Chưa đính kèm file</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tips Card -->
+                            <div class="glass-card rounded-3xl p-6 slide-in" style="animation-delay: 1s;">
+                                <h3 class="text-xl font-bold gradient-text mb-4">
+                                    <i class="fas fa-lightbulb mr-2"></i>
+                                    Gợi ý tạo bài tập
+                                </h3>
+                                
+                                <div class="space-y-3 text-sm text-gray-600">
+                                    <div class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                        <span>Tiêu đề nên ngắn gọn và mô tả rõ nội dung</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                        <span>Mô tả chi tiết yêu cầu và hướng dẫn làm bài</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                        <span>Đặt hạn nộp hợp lý để học viên có thời gian chuẩn bị</span>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                        <span>Kiểm tra lại thông tin trước khi tạo bài tập</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Statistics Card -->
+                            <div class="glass-card rounded-3xl p-6 slide-in" style="animation-delay: 1.2s;">
+                                <h3 class="text-xl font-bold gradient-text mb-4">
+                                    <i class="fas fa-chart-bar mr-2"></i>
+                                    Thống kê
+                                </h3>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center p-3 bg-blue-50 rounded-xl">
+                                        <i class="fas fa-chalkboard-teacher text-blue-500 text-2xl mb-2"></i>
+                                        <p class="text-2xl font-bold text-gray-800"><%= classes.length %></p>
+                                        <p class="text-sm text-gray-600">Lớp học</p>
+                                    </div>
+                                    
+                                    <div class="text-center p-3 bg-green-50 rounded-xl">
+                                        <i class="fas fa-users text-green-500 text-2xl mb-2"></i>
+                                        <p class="text-2xl font-bold text-gray-800">
+                                            <% 
+                                            let totalStudents = 0;
+                                            classes.forEach(classItem => {
+                                                totalStudents += classItem.students.length;
+                                            });
+                                            %>
+                                            <%= totalStudents %>
+                                        </p>
+                                        <p class="text-sm text-gray-600">Học viên</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl max-w-md mx-4 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-green-500 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Tạo bài tập thành công!</h3>
+            <p class="text-gray-600 mb-8">Bài tập đã được tạo và gửi đến học viên.</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="window.location.href='/teacher/assignments'" 
+                        class="btn-3d bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition-all duration-300">
+                    Xem danh sách
+                </button>
+                <button onclick="location.reload()" 
+                        class="btn-3d bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition-all duration-300">
+                    Tạo bài tập khác
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time preview updates
+        function updatePreview() {
+            const classSelect = document.getElementById('class');
+            const selectedClass = classSelect.options[classSelect.selectedIndex].text;
+            document.getElementById('previewClass').textContent = 
+                classSelect.value ? selectedClass.replace('📚 ', '').split(' (')[0] : 'Chưa chọn lớp học';
+            
+            const title = document.getElementById('title').value;
+            document.getElementById('previewTitle').textContent = title || 'Chưa nhập tiêu đề';
+            
+            const description = document.getElementById('description').value;
+            document.getElementById('previewDescription').textContent = 
+                description || 'Chưa nhập mô tả';
+            
+            const dueDate = document.getElementById('dueDate').value;
+            if (dueDate) {
+                const date = new Date(dueDate);
+                document.getElementById('previewDueDate').textContent = 
+                    date.toLocaleString('vi-VN');
+            } else {
+                document.getElementById('previewDueDate').textContent = 'Chưa chọn hạn nộp';
+            }
+        }
+
+        // Character counter
+        function updateCharCount() {
+            const description = document.getElementById('description');
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = description.value.length;
+            
+            if (description.value.length > 450) {
+                charCount.style.color = '#ef4444';
+            } else {
+                charCount.style.color = '#6b7280';
+            }
+        }
+
+        // Form validation
+        function validateForm() {
+            const classId = document.getElementById('class').value;
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const dueDate = document.getElementById('dueDate').value;
+
+            if (!classId) {
+                showNotification('Vui lòng chọn lớp học', 'error');
+                return false;
+            }
+
+            if (!title) {
+                showNotification('Vui lòng nhập tiêu đề bài tập', 'error');
+                return false;
+            }
+
+            if (!description) {
+                showNotification('Vui lòng nhập mô tả bài tập', 'error');
+                return false;
+            }
+
+            if (!dueDate) {
+                showNotification('Vui lòng chọn hạn nộp bài', 'error');
+                return false;
+            }
+
+            const dueDateObj = new Date(dueDate);
+            const now = new Date();
+            if (dueDateObj <= now) {
+                showNotification('Hạn nộp bài phải sau thời điểm hiện tại', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            notification.className = `fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} text-xl mr-3"></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Form submission
+        document.getElementById('assignmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = submitBtn.querySelector('.loading-spinner');
+            const icon = submitBtn.querySelector('.fas');
+            
+            // Show loading state
+            spinner.style.display = 'inline-block';
+            icon.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang tạo...';
+
+            try {
+                const formData = new FormData(this);
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    document.getElementById('successModal').classList.remove('hidden');
+                } else {
+                    throw new Error('Có lỗi xảy ra');
+                }
+            } catch (error) {
+                showNotification('Có lỗi xảy ra khi tạo bài tập. Vui lòng thử lại.', 'error');
+            } finally {
+                // Reset button state
+                spinner.style.display = 'none';
+                icon.style.display = 'inline';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Tạo bài tập';
+            }
+        });
+
+        // File upload handling
+        function initFileUpload() {
+            const fileInput = document.getElementById('attachmentFile');
+            const uploadArea = document.querySelector('.upload-area');
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileIcon = document.getElementById('fileIcon');
+            const removeFileBtn = document.getElementById('removeFile');
+
+            // File input change handler
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+            
+            // Remove file handler
+            removeFileBtn.addEventListener('click', removeFile);
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    displayFile(file);
+                }
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            }
+
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            }
+
+            function handleFileDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    fileInput.files = files;
+                    displayFile(file);
+                }
+            }
+
+            function displayFile(file) {
+                // Validate file type
+                const allowedTypes = ['.pdf', '.mp3', '.wav', '.m4a', '.doc', '.docx'];
+                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedTypes.includes(fileExtension)) {
+                    showNotification('Loại file không được hỗ trợ. Vui lòng chọn PDF, Audio hoặc Word.', 'error');
+                    return;
+                }
+
+                // Validate file size (30MB)
+                if (file.size > 30 * 1024 * 1024) {
+                    showNotification('File quá lớn. Kích thước tối đa là 30MB.', 'error');
+                    return;
+                }
+
+                // Set file icon based on type
+                fileIcon.className = 'fas fa-file text-2xl mr-3';
+                if (fileExtension === '.pdf') {
+                    fileIcon.className += ' text-red-500';
+                } else if (['.mp3', '.wav', '.m4a'].includes(fileExtension)) {
+                    fileIcon.className += ' text-purple-500';
+                } else if (['.doc', '.docx'].includes(fileExtension)) {
+                    fileIcon.className += ' text-blue-500';
+                }
+
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                filePreview.classList.remove('hidden');
+                
+                // Update preview
+                updateFilePreview(file.name);
+            }
+
+            function removeFile() {
+                fileInput.value = '';
+                filePreview.classList.add('hidden');
+                updateFilePreview(null);
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+
+        function updateFilePreview(filename) {
+            const previewFile = document.getElementById('previewFile');
+            if (previewFile) {
+                previewFile.textContent = filename || 'Chưa đính kèm file';
+            }
+        }
+
+        // Preview button
+        document.getElementById('previewBtn').addEventListener('click', function() {
+            if (!validateForm()) return;
+            
+            // Show preview in modal or expand current preview
+            showNotification('Xem trước bài tập ở sidebar bên phải', 'success');
+        });
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize file upload
+            initFileUpload();
+            
+            // Update preview on input
+            document.getElementById('class').addEventListener('change', updatePreview);
+            document.getElementById('title').addEventListener('input', updatePreview);
+            document.getElementById('description').addEventListener('input', function() {
+                updatePreview();
+                updateCharCount();
+            });
+            document.getElementById('dueDate').addEventListener('change', updatePreview);
+
+            // Set minimum date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('dueDate').min = tomorrow.toISOString().slice(0, 16);
+
+            // Initialize animations
+            const formSections = document.querySelectorAll('.form-section');
+            formSections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateX(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<%- include('../partials/dashboards_header') %>
+<div class="container">
+    <%- include('../partials/admin_sidebar') %>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <h1>Quản Lý Khóa Học</h1>
+        </div>
+        <form action="/course-management/courses/<%= course._id %>/manage" method="POST">
+            <div class="course-details">
+                <p><strong>Tên khóa học:</strong> <input type="text" name="title" value="<%= course.title %>" /></p>
+                <p><strong>Mô tả:</strong> <input type="text" name="description" value="<%= course.description %>" /></p>
+                <p><strong>Giảng viên:</strong> <input type="text" name="instructor" value="<%= course.instructor %>" /></p>
+                <p><strong>Thời lượng:</strong> <input type="text" name="duration" value="<%= course.duration %>" /></p>
+                <p><strong>Giá:</strong> <input type="text" name="price" value="<%= course.price %>" /> VND</p>
+                <p><strong>Đánh giá:</strong> <input type="text" name="rating" value="<%= course.rating %>" /></p>
+                <p><strong>Cập nhật:</strong> <input type="text" value="<%= new Date(course.updatedAt).toLocaleDateString() %>" disabled /></p>
+            </div>
+            <div class="course-actions">
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                <a href="/course-management/delete/<%= course._id %>" class="btn btn-danger">Xóa khóa học</a>
+            </div>
+        </form>
+    </div>
+</div>
+<%- include('../partials/admin_footer') %>

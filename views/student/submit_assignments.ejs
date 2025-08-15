@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nộp bài tập | Korean Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card.total::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-card.submitted::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .stat-card.pending::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-card.late::before {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .stat-card.total .stat-icon {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-card.submitted .stat-icon {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .stat-card.pending .stat-icon {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-card.late .stat-icon {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover .stat-number {
+            transform: scale(1.1);
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .filters-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filters-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .filters-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .filters-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        .filters-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        
+        .filter-field {
+            position: relative;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+            background: white;
+        }
+        
+        .filter-field::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b5cf6;
+            pointer-events: none;
+            margin-top: 12px;
+        }
+        
+        .assignments-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .assignments-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .assignments-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+            padding: 32px;
+        }
+        
+        .assignments-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .assignments-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .assignments-table {
+            overflow-x: auto;
+        }
+        
+        .table-wrapper {
+            min-width: 800px;
+        }
+        
+        .assignments-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .assignments-table th {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+            padding: 20px 24px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+        }
+        
+        .assignments-table td {
+            padding: 24px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .assignments-table tr {
+            transition: all 0.3s ease;
+        }
+        
+        .assignments-table tr:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(96, 165, 250, 0.02));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.1);
+        }
+        
+        .assignment-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .assignment-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        
+        .class-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .course-name {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .due-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .due-time {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .status-submitted {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        
+        .status-late {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            color: #3b82f6;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn-view:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(96, 165, 250, 0.2));
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #3b82f6;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .empty-state {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 32px;
+        }
+        
+        .empty-state::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .empty-icon i {
+            font-size: 48px;
+            color: #667eea;
+        }
+        
+        .empty-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+        
+        .empty-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .notification {
+            animation: slideInRight 0.3s ease-out;
+            z-index: 1000;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .progress-ring {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+        
+        .progress-ring .bg {
+            stroke: rgba(59, 130, 246, 0.1);
+        }
+        
+        .progress-ring .progress {
+            stroke: #3b82f6;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        
+        .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 24px;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-content {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .stat-number {
+                font-size: 24px;
+            }
+            
+            .filters-section {
+                padding: 24px;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .assignments-header {
+                padding: 24px;
+            }
+            
+            .assignments-title {
+                font-size: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .assignments-table th,
+            .assignments-table td {
+                padding: 16px 12px;
+            }
+            
+            .assignment-title {
+                font-size: 14px;
+            }
+            
+            .assignment-description {
+                font-size: 12px;
+            }
+            
+            .action-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Include Student Sidebar -->
+        <%- include('../partials/student_sidebar', { 
+            user: locals.user, 
+            path: '/student/assignments' 
+        }) %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- Hero Section -->
+                    <div class="hero-section slide-in">
+                        <div class="hero-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h1 class="hero-title">Nộp bài tập</h1>
+                        <p class="hero-subtitle">Quản lý và nộp bài tập các môn học một cách hiệu quả</p>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="stats-grid slide-in fade-in" style="animation-delay: 0.1s;">
+                        <div class="stat-card total">
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-stat="total"><%= assignments.length %></div>
+                                    <div class="stat-label">Tổng số bài tập</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card submitted">
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-stat="submitted">
+                                        <%= assignments.filter(a => a.status === 'submitted').length %>
+                                    </div>
+                                    <div class="stat-label">Đã nộp</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card pending">
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                    <% if (assignments.filter(a => a.status === 'pending').length > 0) { %>
+                                        <span class="badge-count"><%= assignments.filter(a => a.status === 'pending').length %></span>
+                                    <% } %>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-stat="pending">
+                                        <%= assignments.filter(a => a.status === 'pending').length %>
+                                    </div>
+                                    <div class="stat-label">Chưa nộp</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card late">
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <% if (assignments.filter(a => a.isLate).length > 0) { %>
+                                        <span class="badge-count"><%= assignments.filter(a => a.isLate).length %></span>
+                                    <% } %>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-stat="late">
+                                        <%= assignments.filter(a => a.isLate).length %>
+                                    </div>
+                                    <div class="stat-label">Quá hạn</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Section -->
+                    <div class="filters-section slide-in fade-in" style="animation-delay: 0.2s;">
+                        <div class="filters-header">
+                            <div class="filters-icon">
+                                <i class="fas fa-filter"></i>
+                            </div>
+                            <div class="filters-title">Bộ lọc</div>
+                        </div>
+                        
+                        <div class="filters-grid">
+                            <div class="filter-field">
+                                <label class="filter-label">
+                                    <i class="fas fa-graduation-cap mr-2"></i>
+                                    Lớp học
+                                </label>
+                                <select id="classFilter" class="filter-select">
+                                    <option value="all">Tất cả lớp</option>
+                                    <% 
+                                    const uniqueClasses = [...new Set(assignments.map(a => a.className))].filter(Boolean);
+                                    uniqueClasses.forEach(className => { 
+                                    %>
+                                        <option value="<%= className %>"><%= className %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+
+                            <div class="filter-field">
+                                <label class="filter-label">
+                                    <i class="fas fa-tags mr-2"></i>
+                                    Trạng thái
+                                </label>
+                                <select id="statusFilter" class="filter-select">
+                                    <option value="all">Tất cả trạng thái</option>
+                                    <option value="pending">Chưa nộp</option>
+                                    <option value="submitted">Đã nộp</option>
+                                    <option value="late">Quá hạn</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-field">
+                                <label class="filter-label">
+                                    <i class="fas fa-sort mr-2"></i>
+                                    Sắp xếp theo
+                                </label>
+                                <select id="sortFilter" class="filter-select">
+                                    <option value="dueDate">Hạn nộp</option>
+                                    <option value="title">Tên bài tập</option>
+                                    <option value="className">Lớp học</option>
+                                    <option value="status">Trạng thái</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignments Section -->
+                    <div class="assignments-section slide-in fade-in" style="animation-delay: 0.3s;">
+                        <div class="assignments-header">
+                            <div class="assignments-title">
+                                <div class="assignments-icon">
+                                    <i class="fas fa-list-alt"></i>
+                                </div>
+                                Danh sách bài tập
+                            </div>
+                        </div>
+
+                        <div class="assignments-table">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Bài tập</th>
+                                            <th>Lớp học</th>
+                                            <th>Hạn nộp</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% assignments.forEach((assignment, index) => { %>
+                                            <tr class="fade-in" style="animation-delay: <%= 0.4 + (index * 0.05) %>s;">
+                                                <td>
+                                                    <div class="assignment-title">
+                                                        <%= assignment.title %>
+                                                    </div>
+                                                    <div class="assignment-description">
+                                                        <%= assignment.description %>
+                                                    </div>
+                                                    <% if (assignment.attachmentFile) { %>
+                                                    <div class="attachment-file mt-2">
+                                                        <% 
+                                                        let fileIcon = 'fa-file';
+                                                        let fileColor = 'text-gray-600';
+                                                        if (assignment.attachmentFile.mimeType && assignment.attachmentFile.mimeType.includes('pdf')) {
+                                                            fileIcon = 'fa-file-pdf';
+                                                            fileColor = 'text-red-500';
+                                                        } else if (assignment.attachmentFile.mimeType && assignment.attachmentFile.mimeType.includes('audio')) {
+                                                            fileIcon = 'fa-file-audio';
+                                                            fileColor = 'text-purple-500';
+                                                        } else if (assignment.attachmentFile.mimeType && (assignment.attachmentFile.mimeType.includes('word') || assignment.attachmentFile.mimeType.includes('document'))) {
+                                                            fileIcon = 'fa-file-word';
+                                                            fileColor = 'text-blue-500';
+                                                        }
+                                                        %>
+                                                        <a href="/uploads/<%= assignment.attachmentFile.fileName %>" 
+                                                           target="_blank"
+                                                           class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                                                            <i class="fas <%= fileIcon %> <%= fileColor %> mr-1"></i>
+                                                            <%= assignment.attachmentFile.originalName %>
+                                                        </a>
+                                                    </div>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <div class="class-name">
+                                                        <%= assignment.courseName %>
+                                                    </div>
+                                                    <div class="course-name">
+                                                        <%= assignment.className %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="due-date">
+                                                        <%= new Date(assignment.dueDate).toLocaleDateString('vi-VN') %>
+                                                    </div>
+                                                    <div class="due-time">
+                                                        <%= new Date(assignment.dueDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% if (assignment.status === 'submitted') { %>
+                                                        <span class="status-badge status-submitted">
+                                                            <i class="fas fa-check-circle"></i>
+                                                            Đã nộp
+                                                        </span>
+                                                    <% } else if (assignment.isLate) { %>
+                                                        <span class="status-badge status-late">
+                                                            <i class="fas fa-exclamation-triangle"></i>
+                                                            Quá hạn
+                                                        </span>
+                                                    <% } else { %>
+                                                        <span class="status-badge status-pending">
+                                                            <i class="fas fa-clock"></i>
+                                                            Chưa nộp
+                                                        </span>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <div class="flex gap-2">
+                                                        <% if (assignment.status === 'submitted') { %>
+                                                            <a href="/student/assignments/<%= assignment._id %>/view" 
+                                                               class="action-btn btn-view">
+                                                                <i class="fas fa-eye"></i>
+                                                                <span>Xem bài nộp</span>
+                                                            </a>
+                                                        <% } else { %>
+                                                            <a href="/student/assignments/<%= assignment._id %>/Exercise" 
+                                                               class="action-btn btn-submit">
+                                                                <i class="fas fa-upload"></i>
+                                                                <span>Nộp bài tập</span>
+                                                            </a>
+                                                        <% } %>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state hidden" id="emptyState">
+                        <div class="empty-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3 class="empty-title">Không tìm thấy bài tập</h3>
+                        <p class="empty-description">
+                            Không có bài tập nào phù hợp với bộ lọc của bạn. 
+                            Hãy thử điều chỉnh tiêu chí tìm kiếm.
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let originalStats = {
+            total: <%= assignments.length %>,
+            submitted: <%= assignments.filter(a => a.status === 'submitted').length %>,
+            pending: <%= assignments.filter(a => a.status === 'pending').length %>,
+            late: <%= assignments.filter(a => a.isLate).length %>
+        };
+
+        // Main filter function
+        function filterRows() {
+            const statusFilter = document.getElementById('statusFilter');
+            const classFilter = document.getElementById('classFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const tableRows = document.querySelectorAll('tbody tr');
+            const emptyState = document.getElementById('emptyState');
+
+            const selectedStatus = statusFilter.value;
+            const selectedClass = classFilter.value;
+            const selectedSort = sortFilter.value;
+
+            let visibleRows = [];
+            let stats = { total: 0, submitted: 0, pending: 0, late: 0 };
+
+            tableRows.forEach(row => {
+                // Get the class name from the second column
+                const classCell = row.querySelector('td:nth-child(2) .course-name');
+                const className = classCell.textContent.trim();
+                
+                // Get status from the fourth column
+                const statusCell = row.querySelector('td:nth-child(4) span');
+                const statusText = statusCell.textContent.trim().toLowerCase();
+
+                // Check if row matches both filters
+                const matchesClass = selectedClass === 'all' || className === selectedClass;
+                const matchesStatus = selectedStatus === 'all' || 
+                    (selectedStatus === 'late' && statusText.includes('quá hạn')) ||
+                    (selectedStatus === 'pending' && statusText.includes('chưa nộp')) ||
+                    (selectedStatus === 'submitted' && statusText.includes('đã nộp'));
+
+                if (matchesClass && matchesStatus) {
+                    row.style.display = '';
+                    visibleRows.push(row);
+                    
+                    // Count statistics
+                    stats.total++;
+                    if (statusText.includes('đã nộp')) stats.submitted++;
+                    else if (statusText.includes('chưa nộp')) stats.pending++;
+                    else if (statusText.includes('quá hạn')) stats.late++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Sort visible rows if needed
+            if (selectedSort !== 'dueDate') {
+                sortRows(visibleRows, selectedSort);
+            }
+
+            // Update statistics
+            updateStatistics(stats);
+
+            // Show/hide empty state
+            if (visibleRows.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Show notification
+            if (selectedStatus !== 'all' || selectedClass !== 'all') {
+                showNotification(
+                    visibleRows.length > 0 ? 
+                    `Hiển thị ${visibleRows.length} bài tập` : 
+                    'Không tìm thấy bài tập phù hợp',
+                    visibleRows.length > 0 ? 'info' : 'warning'
+                );
+            }
+        }
+
+        // Sort function
+        function sortRows(rows, sortBy) {
+            const tbody = document.querySelector('tbody');
+            
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(sortBy) {
+                    case 'title':
+                        aValue = a.querySelector('.assignment-title').textContent.trim();
+                        bValue = b.querySelector('.assignment-title').textContent.trim();
+                        return aValue.localeCompare(bValue);
+                    
+                    case 'className':
+                        aValue = a.querySelector('.course-name').textContent.trim();
+                        bValue = b.querySelector('.course-name').textContent.trim();
+                        return aValue.localeCompare(bValue);
+                    
+                    case 'status':
+                        aValue = a.querySelector('td:nth-child(4) span').textContent.trim();
+                        bValue = b.querySelector('td:nth-child(4) span').textContent.trim();
+                        return aValue.localeCompare(bValue);
+                    
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+            
+            showNotification(`Đã sắp xếp theo ${getSortLabel(sortBy)}`, 'info');
+        }
+
+        // Get sort label
+        function getSortLabel(sortBy) {
+            const labels = {
+                'title': 'tên bài tập',
+                'className': 'lớp học',
+                'status': 'trạng thái',
+                'dueDate': 'hạn nộp'
+            };
+            return labels[sortBy] || 'mặc định';
+        }
+
+        // Update statistics with animation
+        function updateStatistics(stats) {
+            Object.keys(stats).forEach(key => {
+                const element = document.querySelector(`[data-stat="${key}"]`);
+                const currentValue = parseInt(element.textContent);
+                const newValue = stats[key];
+                
+                if (currentValue !== newValue) {
+                    animateNumber(element, currentValue, newValue);
+                }
+            });
+        }
+
+        // Animate number changes
+        function animateNumber(element, from, to) {
+            const duration = 500;
+            const start = Date.now();
+            
+            function update() {
+                const elapsed = Date.now() - start;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const current = Math.round(from + (to - from) * progress);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            update();
+        }
+
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification fixed top-6 right-6 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium transition-all duration-300`;
+            
+            switch (type) {
+                case 'success':
+                    notification.className += ' bg-gradient-to-r from-green-500 to-green-600';
+                    break;
+                case 'error':
+                    notification.className += ' bg-gradient-to-r from-red-500 to-red-600';
+                    break;
+                case 'info':
+                    notification.className += ' bg-gradient-to-r from-blue-500 to-blue-600';
+                    break;
+                case 'warning':
+                    notification.className += ' bg-gradient-to-r from-yellow-500 to-yellow-600';
+                    break;
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-exclamation-circle' : 
+                                   type === 'warning' ? 'fa-exclamation-triangle' :
+                                   'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusFilter = document.getElementById('statusFilter');
+            const classFilter = document.getElementById('classFilter');
+            const sortFilter = document.getElementById('sortFilter');
+
+            // Add event listeners
+            statusFilter.addEventListener('change', filterRows);
+            classFilter.addEventListener('change', filterRows);
+            sortFilter.addEventListener('change', filterRows);
+
+            // Add staggered animations
+            const elements = document.querySelectorAll('.slide-in, .fade-in');
+            elements.forEach((el, index) => {
+                if (!el.style.animationDelay) {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+
+            // Initialize progress rings (if any)
+            setTimeout(() => {
+                document.querySelectorAll('.progress-ring .progress').forEach(ring => {
+                    const percent = ring.dataset.percent || 0;
+                    const offset = 157 - (157 * percent / 100);
+                    ring.style.strokeDashoffset = offset;
+                });
+            }, 500);
+
+            // Add hover effects to table rows
+            document.querySelectorAll('tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // F for filter focus
+            if (e.key === 'f' || e.key === 'F') {
+                if (!e.ctrlKey && !e.altKey) {
+                    e.preventDefault();
+                    document.getElementById('statusFilter').focus();
+                }
+            }
+            
+            // R for reset filters
+            if (e.key === 'r' || e.key === 'R') {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    document.getElementById('statusFilter').value = 'all';
+                    document.getElementById('classFilter').value = 'all';
+                    document.getElementById('sortFilter').value = 'dueDate';
+                    filterRows();
+                    showNotification('Đã reset bộ lọc', 'info');
+                }
+            }
+        });
+    </script>
+
+    <%- include('../partials/student_footer') %>
+</body>
+</html>

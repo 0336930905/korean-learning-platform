@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn thanh toán | Korean Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .invoice-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 32px;
+        }
+        
+        .invoice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .success-banner {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(101, 163, 13, 0.1));
+            border: 2px solid rgba(34, 197, 94, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .success-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #22c55e, #65a30d);
+        }
+        
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #22c55e, #65a30d);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 20px;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .invoice-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+            padding: 32px;
+        }
+        
+        .invoice-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .invoice-id {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .status-badge {
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .status-badge:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .status-paid {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(101, 163, 13, 0.1));
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-failed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .course-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .course-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.1);
+        }
+        
+        .course-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .course-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .course-description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .payment-details {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-item:hover {
+            background: rgba(102, 126, 234, 0.02);
+            border-radius: 8px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .amount-display {
+            font-size: 24px;
+            font-weight: 700;
+            color: #22c55e;
+        }
+        
+        .method-badge {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .invoice-actions {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-3d:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-print {
+            background: rgba(107, 114, 128, 0.1);
+            color: #374151;
+            border: 2px solid rgba(107, 114, 128, 0.2);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-print:hover {
+            background: rgba(107, 114, 128, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.2);
+            text-decoration: none;
+            color: #374151;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            font-weight: 900;
+            color: rgba(102, 126, 234, 0.03);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .celebration-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                background: white;
+            }
+            
+            .invoice-card {
+                box-shadow: none;
+                border: 2px solid #e5e7eb;
+            }
+            
+            .invoice-card::before {
+                background: #667eea;
+            }
+            
+            .watermark {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .invoice-card {
+                margin: 16px;
+                border-radius: 20px;
+            }
+            
+            .invoice-header,
+            .invoice-actions {
+                padding: 20px 24px;
+            }
+            
+            .course-info,
+            .payment-details {
+                padding: 20px;
+                margin: 16px 0;
+            }
+            
+            .invoice-actions {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .detail-item {
+                padding: 12px 0;
+            }
+            
+            .amount-display {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <!-- Celebration Animation for Paid Invoices -->
+    <% if (invoice.status === 'paid') { %>
+        <div class="celebration-animation no-print" id="celebrationAnimation"></div>
+    <% } %>
+
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Hero Section -->
+            <div class="text-center mb-8 slide-in no-print">
+                <div class="header-icon floating-animation mx-auto">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h1 class="text-5xl font-bold gradient-text mb-4">Hóa đơn thanh toán</h1>
+                <p class="text-xl text-gray-600">Chi tiết giao dịch và thông tin khóa học</p>
+            </div>
+
+            <!-- Success Banner -->
+            <% if (invoice.status === 'paid') { %>
+                <div class="success-banner slide-in fade-in no-print">
+                    <div class="flex items-center">
+                        <div class="success-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-green-700 mb-2">
+                                🎉 Thanh toán thành công!
+                            </h2>
+                            <p class="text-green-600 text-lg">
+                                Chúc mừng bạn đã đăng ký khóa học thành công. Hãy bắt đầu hành trình học tập của bạn!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Invoice Card -->
+            <div class="invoice-card slide-in fade-in">
+                <!-- Watermark -->
+                <div class="watermark">PAID</div>
+                
+                <div class="content-wrapper">
+                    <!-- Invoice Header -->
+                    <div class="invoice-header">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h1 class="text-3xl font-bold gradient-text">Korean Learning</h1>
+                                        <p class="text-gray-600">Trung tâm học tiếng Hàn</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="invoice-number">Hóa đơn thanh toán</div>
+                                <div class="invoice-id">#<%= invoice._id %></div>
+                                <div class="text-gray-600 flex items-center gap-2">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Ngày tạo: <%= new Date(invoice.createdAt).toLocaleDateString('vi-VN', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }) %></span>
+                                </div>
+                                
+                                <% if (invoice.paidAt) { %>
+                                    <div class="text-gray-600 flex items-center gap-2 mt-2">
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                        <span>Thanh toán: <%= new Date(invoice.paidAt).toLocaleDateString('vi-VN', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+                            <div class="text-right">
+                                <div class="status-badge 
+                                    <%= invoice.status === 'paid' ? 'status-paid' : 
+                                       invoice.status === 'pending' ? 'status-pending' : 
+                                       'status-failed' %>">
+                                    <i class="fas <%= invoice.status === 'paid' ? 'fa-check-circle' :
+                                                   invoice.status === 'pending' ? 'fa-clock' :
+                                                   'fa-times-circle' %>"></i>
+                                    <%= invoice.status === 'paid' ? 'Đã thanh toán' :
+                                       invoice.status === 'pending' ? 'Chờ thanh toán' :
+                                       'Thanh toán thất bại' %>
+                                </div>
+                                
+                                <div class="mt-4 text-right">
+                                    <div class="text-sm text-gray-600 mb-1">Tổng tiền</div>
+                                    <div class="amount-display">
+                                        <%= new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        }).format(invoice.amount) %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Body -->
+                    <div class="p-8 space-y-8">
+                        <!-- Course Information -->
+                        <div class="course-info">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                                <div class="course-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                Thông tin khóa học
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="lg:col-span-2">
+                                    <div class="course-title"><%= course.title %></div>
+                                    <div class="course-description">
+                                        <%= course.description || 'Khóa học Korean chất lượng cao với phương pháp giảng dạy hiện đại.' %>
+                                    </div>
+                                    
+                                    <!-- Course Features -->
+                                    <div class="flex flex-wrap gap-2 mt-4">
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                            <i class="fas fa-signal mr-1"></i>
+                                            <%= course.level %>
+                                        </span>
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                            <i class="fas fa-clock mr-1"></i>
+                                            <%= course.duration || '12 tuần' %>
+                                        </span>
+                                        <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+                                            <i class="fas fa-certificate mr-1"></i>
+                                            Có chứng chỉ
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-center lg:justify-end">
+                                    <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-6xl text-blue-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Details -->
+                        <div class="payment-details">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                                <i class="fas fa-credit-card text-xl text-blue-500"></i>
+                                Chi tiết thanh toán
+                            </h3>
+                            
+                            <div class="space-y-0">
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-wallet text-blue-500"></i>
+                                        Phương thức thanh toán
+                                    </div>
+                                    <div class="method-badge">
+                                        <%= {
+                                            'zalopay_app': 'ZaloPay App',
+                                            'zalopay_qr': 'ZaloPay QR Code',
+                                            'zalopay_cc': 'Thẻ tín dụng/ghi nợ',
+                                            'zalopay_atm': 'Thẻ ATM nội địa',
+                                            'momo': 'MoMo Wallet',
+                                            'vnpay': 'VNPay'
+                                        }[invoice.paymentMethod] || 'Chuyển khoản' %>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-tag text-green-500"></i>
+                                        Giá khóa học
+                                    </div>
+                                    <div class="detail-value">
+                                        <%= new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        }).format(course.price) %>
+                                    </div>
+                                </div>
+                                
+                                <% if (invoice.discount && invoice.discount > 0) { %>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-percentage text-orange-500"></i>
+                                            Giảm giá
+                                        </div>
+                                        <div class="detail-value text-orange-600">
+                                            -<%= new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'  
+                                            }).format(invoice.discount) %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                                
+                                <div class="detail-item border-t-2 border-gray-200 pt-4">
+                                    <div class="detail-label text-lg">
+                                        <i class="fas fa-calculator text-purple-500"></i>
+                                        Tổng thanh toán
+                                    </div>
+                                    <div class="amount-display">
+                                        <%= new Intl.NumberFormat('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND'
+                                        }).format(invoice.amount) %>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-hashtag text-gray-500"></i>
+                                        Mã giao dịch
+                                    </div>
+                                    <div class="detail-value font-mono">
+                                        <%= invoice.transactionId || invoice._id %>
+                                    </div>
+                                </div>
+                                
+                                <% if (invoice.paidAt) { %>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-clock text-green-500"></i>
+                                            Thời gian thanh toán
+                                        </div>
+                                        <div class="detail-value">
+                                            <%= new Date(invoice.paidAt).toLocaleString('vi-VN', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                second: '2-digit'
+                                            }) %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Customer Info -->
+                        <div class="payment-details">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                                <i class="fas fa-user text-xl text-purple-500"></i>
+                                Thông tin khách hàng
+                            </h3>
+                            
+                            <div class="space-y-0">
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-id-card text-blue-500"></i>
+                                        Họ và tên
+                                    </div>
+                                    <div class="detail-value">
+                                        <%= invoice.student.fullName %>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        <i class="fas fa-envelope text-green-500"></i>
+                                        Email
+                                    </div>
+                                    <div class="detail-value">
+                                        <%= invoice.student.email %>
+                                    </div>
+                                </div>
+                                
+                                <% if (invoice.student.phone) { %>
+                                    <div class="detail-item">
+                                        <div class="detail-label">
+                                            <i class="fas fa-phone text-orange-500"></i>
+                                            Số điện thoại
+                                        </div>
+                                        <div class="detail-value">
+                                            <%= invoice.student.phone %>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="bg-gray-50 rounded-2xl p-6">
+                            <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                                Điều khoản và điều kiện
+                            </h4>
+                            <ul class="text-sm text-gray-600 space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Hóa đơn này là bằng chứng thanh toán hợp lệ cho việc đăng ký khóa học.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Khóa học sẽ được kích hoạt trong vòng 24 giờ sau khi thanh toán thành công.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Vui lòng liên hệ bộ phận hỗ trợ nếu có bất kỳ vấn đề nào.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Chính sách hoàn tiền áp dụng trong 7 ngày đầu tiên.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Actions -->
+                    <div class="invoice-actions no-print">
+                        <button onclick="printInvoice()" 
+                                class="btn-print btn-3d">
+                            <i class="fas fa-print mr-2"></i>
+                            In hóa đơn
+                        </button>
+                        
+                        <div class="flex items-center gap-4">
+                            <button onclick="downloadPDF()" 
+                                    class="btn-print btn-3d">
+                                <i class="fas fa-download mr-2"></i>
+                                Tải PDF
+                            </button>
+                            
+                            <% if (invoice.status === 'paid') { %>
+                                <a href="/student/my-courses" 
+                                   class="btn-primary btn-3d">
+                                    <i class="fas fa-graduation-cap mr-2"></i>
+                                    Đi đến khóa học
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            <% } else if (invoice.status === 'pending') { %>
+                                <a href="/student/payment/<%= invoice._id %>/retry" 
+                                   class="btn-primary btn-3d">
+                                    <i class="fas fa-redo mr-2"></i>
+                                    Thanh toán lại
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Support -->
+            <div class="text-center mt-8 no-print slide-in fade-in">
+                <div class="bg-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Cần hỗ trợ?</h3>
+                    <p class="text-gray-600 mb-4">
+                        Nếu bạn có bất kỳ thắc mắc nào về hóa đơn này, vui lòng liên hệ với chúng tôi.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                        <a href="mailto:support@koreanlearning.com" 
+                           class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-envelope"></i>
+                            <span>support@koreanlearning.com</span>
+                        </a>
+                        <a href="tel:+84123456789" 
+                           class="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
+                            <i class="fas fa-phone"></i>
+                            <span>+84 123 456 789</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printInvoice() {
+            // Show notification
+            showNotification('Đang chuẩn bị in hóa đơn...', 'info');
+            
+            // Add print styles
+            const printStyles = `
+                <style>
+                    @media print {
+                        body { 
+                            font-size: 12px; 
+                            line-height: 1.4;
+                        }
+                        .invoice-card {
+                            break-inside: avoid;
+                            page-break-inside: avoid;
+                        }
+                        .watermark {
+                            opacity: 0.1 !important;
+                        }
+                    }
+                </style>
+            `;
+            
+            document.head.insertAdjacentHTML('beforeend', printStyles);
+            
+            setTimeout(() => {
+                window.print();
+                showNotification('Đã gửi lệnh in!', 'success');
+            }, 500);
+        }
+
+        function downloadPDF() {
+            showNotification('Tính năng tải PDF đang được phát triển...', 'info');
+            // TODO: Implement PDF download functionality
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-exclamation-circle' : 
+                                   'fa-info-circle'} text-xl mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Celebration animation for paid invoices
+        function createCelebration() {
+            <% if (invoice.status === 'paid') { %>
+                const colors = ['#667eea', '#764ba2', '#22c55e', '#f59e0b', '#ef4444'];
+                const celebrationContainer = document.getElementById('celebrationAnimation');
+                
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + 'vw';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = Math.random() * 3 + 's';
+                        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                        celebrationContainer.appendChild(confetti);
+                        
+                        setTimeout(() => {
+                            confetti.remove();
+                        }, 5000);
+                    }, i * 100);
+                }
+                
+                // Remove celebration after 10 seconds
+                setTimeout(() => {
+                    celebrationContainer.style.display = 'none';
+                }, 10000);
+            <% } %>
+        }
+
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add staggered animations
+            const elements = document.querySelectorAll('.slide-in');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Start celebration for paid invoices
+            <% if (invoice.status === 'paid') { %>
+                setTimeout(createCelebration, 1000);
+            <% } %>
+
+            // Add intersection observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

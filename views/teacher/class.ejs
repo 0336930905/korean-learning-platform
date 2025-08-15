@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= classData.name %> - Chi tiết lớp học | Giảng viên
+    </title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style/headerall.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px) rotateX(5deg);
+        }
+        
+        .pulse-ring {
+            position: relative;
+        }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            transform: translate(-50%, -50%) scale(1);
+            animation: pulse-ring 2s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .tab-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .progress-bar {
+            position: relative;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 8px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .status-indicator {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        
+        .status-active::after {
+            background: #10b981;
+        }
+        
+        .status-pending::after {
+            background: #f59e0b;
+        }
+        
+        .status-ended::after {
+            background: #ef4444;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .student-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .student-card:hover {
+            border-left-color: #667eea;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+        }
+        
+        /* File Upload Styles */
+        .upload-area {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover .upload-icon i {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        #filePreview {
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section with Class Info -->
+                <div class="mb-8">
+                    <div class="gradient-bg rounded-3xl p-8 text-white relative overflow-hidden slide-in">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8 floating-animation"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full transform -translate-x-4 translate-y-4 floating-animation" style="animation-delay: 1s;"></div>
+                        
+                        <div class="relative z-10">
+                            <!-- Breadcrumb -->
+                            <nav class="flex items-center text-white text-opacity-80 mb-6">
+                                <a href="/teacher/classes" class="hover:text-white transition-colors">
+                                    <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách lớp học
+                                </a>
+                            </nav>
+                            
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <h1 class="text-4xl font-bold mb-4">
+                                        <span class="status-indicator <%= new Date() >= new Date(classData.startDate) && new Date() <= new Date(classData.endDate) ? 'status-active' : new Date() < new Date(classData.startDate) ? 'status-pending' : 'status-ended' %>">
+                                            <%= classData.name %>
+                                        </span>
+                                    </h1>
+                                    <p class="text-xl opacity-90 mb-4"><%= classData.description %></p>
+                                    
+                                    <!-- Status Badge -->
+                                    <% 
+                                    let statusClass = 'bg-green-500';
+                                    let statusText = 'Đang diễn ra';
+                                    let now = new Date();
+                                    let startDate = new Date(classData.startDate);
+                                    let endDate = new Date(classData.endDate);
+                                    
+                                    if (now < startDate) {
+                                        statusClass = 'bg-blue-500';
+                                        statusText = 'Sắp bắt đầu';
+                                    } else if (now > endDate) {
+                                        statusClass = 'bg-gray-500';
+                                        statusText = 'Đã kết thúc';
+                                    }
+                                    %>
+                                    <span class="<%= statusClass %> text-white px-4 py-2 rounded-full text-sm font-medium pulse-ring">
+                                        <i class="fas fa-circle mr-2"></i>
+                                        <%= statusText %>
+                                    </span>
+                                </div>
+                                
+                                <!-- Progress Bar -->
+                                <div class="text-right">
+                                    <div class="mb-2">
+                                        <span class="text-sm opacity-80">Tiến độ khóa học</span>
+                                    </div>
+                                    <div class="progress-bar w-32 mb-2">
+                                        <% 
+                                        let progress = 0;
+                                        if (now > endDate) progress = 100;
+                                        else if (now > startDate) {
+                                            let total = endDate - startDate;
+                                            let current = now - startDate;
+                                            progress = Math.round((current / total) * 100);
+                                        }
+                                        %>
+                                        <div class="progress-fill" style="width: <%= progress %>%"></div>
+                                    </div>
+                                    <span class="text-sm opacity-80"><%= progress %>% hoàn thành</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Stats Section -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card rounded-2xl p-6 card-hover slide-in" style="animation-delay: 0.1s;">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600 floating-animation">
+                                <i class="fas fa-users text-2xl"></i>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-bold text-gray-800"><%= classData.students.length %></p>
+                                <p class="text-sm text-gray-500">/ <%= classData.maxStudents %></p>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Học viên</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: <%= (classData.students.length / classData.maxStudents) * 100 %>%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card rounded-2xl p-6 card-hover slide-in" style="animation-delay: 0.2s;">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600 floating-animation" style="animation-delay: 0.5s;">
+                                <i class="fas fa-tasks text-2xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800"><%= assignments.length %></p>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700">Bài tập</h3>
+                        <p class="text-sm text-gray-500">Đã tạo</p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 card-hover slide-in" style="animation-delay: 0.3s;">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600 floating-animation" style="animation-delay: 1s;">
+                                <i class="fas fa-file-alt text-2xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800"><%= documents.length %></p>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700">Tài liệu</h3>
+                        <p class="text-sm text-gray-500">Đã tải lên</p>
+                    </div>
+                    
+                    <div class="glass-card rounded-2xl p-6 card-hover slide-in" style="animation-delay: 0.4s;">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 floating-animation" style="animation-delay: 1.5s;">
+                                <i class="fas fa-calendar-alt text-2xl"></i>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">
+                                <%= Math.ceil((new Date(classData.endDate) - new Date(classData.startDate)) / (1000 * 60 * 60 * 24 * 7)) %>
+                            </p>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700">Tuần học</h3>
+                        <p class="text-sm text-gray-500">Tổng cộng</p>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="glass-card rounded-2xl p-6 mb-8 slide-in">
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <button onclick="switchTab('info')" id="tab-info" class="tab-btn tab-active px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            <i class="fas fa-info-circle mr-2"></i>Thông tin
+                        </button>
+                        <button onclick="switchTab('students')" id="tab-students" class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            <i class="fas fa-users mr-2"></i>Học viên
+                        </button>
+                        <button onclick="switchTab('assignments')" id="tab-assignments" class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            <i class="fas fa-tasks mr-2"></i>Bài tập
+                        </button>
+                        <button onclick="switchTab('documents')" id="tab-documents" class="tab-btn px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+                            <i class="fas fa-file-alt mr-2"></i>Tài liệu
+                        </button>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div id="tab-content">
+                        <!-- Info Tab -->
+                        <div id="content-info" class="tab-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-6">
+                                    <h3 class="text-2xl font-bold gradient-text mb-4">Thông tin cơ bản</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center p-4 bg-blue-50 rounded-xl">
+                                            <i class="fas fa-book text-blue-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Khóa học</p>
+                                                <p class="text-gray-600"><%= classData.course.title %></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center p-4 bg-green-50 rounded-xl">
+                                            <i class="fas fa-users text-green-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Sức chứa</p>
+                                                <p class="text-gray-600"><%= classData.students.length %>/<%= classData.maxStudents %> học viên</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center p-4 bg-purple-50 rounded-xl">
+                                            <i class="fas fa-clock text-purple-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Lịch học</p>
+                                                <p class="text-gray-600"><%= classData.schedule.days.join(', ') %> - <%= classData.schedule.time %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-6">
+                                    <h3 class="text-2xl font-bold gradient-text mb-4">Thời gian</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center p-4 bg-yellow-50 rounded-xl">
+                                            <i class="fas fa-calendar-alt text-yellow-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Ngày bắt đầu</p>
+                                                <p class="text-gray-600"><%= new Date(classData.startDate).toLocaleDateString('vi-VN') %></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center p-4 bg-red-50 rounded-xl">
+                                            <i class="fas fa-calendar-alt text-red-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Ngày kết thúc</p>
+                                                <p class="text-gray-600"><%= new Date(classData.endDate).toLocaleDateString('vi-VN') %></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center p-4 bg-indigo-50 rounded-xl">
+                                            <i class="fas fa-hourglass-half text-indigo-500 text-xl mr-4"></i>
+                                            <div>
+                                                <p class="font-semibold text-gray-800">Thời lượng</p>
+                                                <p class="text-gray-600">
+                                                    <%= Math.ceil((new Date(classData.endDate) - new Date(classData.startDate)) / (1000 * 60 * 60 * 24)) %> ngày
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Students Tab -->
+                        <div id="content-students" class="tab-content hidden">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-2xl font-bold gradient-text">Danh sách học viên</h3>
+                                <div class="flex items-center space-x-4">
+                                    <input type="text" id="studentSearch" placeholder="Tìm kiếm học viên..." 
+                                           class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <span class="text-sm text-gray-500">
+                                        <%= classData.students.length %> / <%= classData.maxStudents %> học viên
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid gap-4 max-h-96 overflow-y-auto">
+                                <% if (classData.students && classData.students.length > 0) { %>
+                                    <% classData.students.forEach((student, index) => { %>
+                                        <div class="student-card glass-card p-4 rounded-xl flex justify-between items-center slide-in" style="animation-delay: <%= index * 0.1 %>s;">
+                                            <div class="flex items-center">
+                                                <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                                                    <%= student.fullName.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-semibold text-gray-800"><%= student.fullName %></h4>
+                                                    <p class="text-gray-500 text-sm"><%= student.email %></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                                    Đang học
+                                                </span>
+                                                <button onclick="removeStudent('<%= classData._id %>', '<%= student._id %>')"
+                                                        class="btn-3d bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-all duration-300">
+                                                    <i class="fas fa-user-minus mr-1"></i>
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <div class="text-center py-12">
+                                        <div class="floating-animation mb-4">
+                                            <i class="fas fa-user-graduate text-6xl text-gray-300"></i>
+                                        </div>
+                                        <h4 class="text-xl font-semibold text-gray-600 mb-2">Chưa có học viên nào</h4>
+                                        <p class="text-gray-400">Học viên sẽ xuất hiện ở đây sau khi đăng ký lớp học</p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <!-- Assignments Tab -->
+                        <div id="content-assignments" class="tab-content hidden">
+                            <div class="mb-8">
+                                <h3 class="text-2xl font-bold gradient-text mb-6">Thêm bài tập mới</h3>
+                                <form id="assignmentForm" action="/teacher/assignments/add" method="POST" enctype="multipart/form-data"
+                                      class="glass-card p-6 rounded-2xl">
+                                    <input type="hidden" name="classId" value="<%= classData._id.toString() %>">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label for="title" class="block text-gray-700 font-semibold mb-2">Tiêu đề bài tập</label>
+                                            <input type="text" id="title" name="title"
+                                                   class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                                        </div>
+                                        <div>
+                                            <label for="dueDate" class="block text-gray-700 font-semibold mb-2">Hạn nộp</label>
+                                            <input type="date" id="dueDate" name="dueDate"
+                                                   class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6">
+                                        <label for="description" class="block text-gray-700 font-semibold mb-2">Mô tả</label>
+                                        <textarea id="description" name="description" rows="4"
+                                                  class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                                    </div>
+                                    
+                                    <!-- File Attachment Section -->
+                                    <div class="mt-6">
+                                        <label for="attachmentFile" class="block text-gray-700 font-semibold mb-2">
+                                            <i class="fas fa-paperclip text-indigo-500 mr-2"></i>
+                                            File đính kèm (Tùy chọn)
+                                        </label>
+                                        <div class="upload-area border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50 hover:bg-gray-100 transition-all duration-300">
+                                            <input type="file" 
+                                                   id="attachmentFile" 
+                                                   name="attachmentFile" 
+                                                   accept=".pdf,.mp3,.wav,.m4a,.doc,.docx"
+                                                   class="hidden">
+                                            <label for="attachmentFile" class="cursor-pointer block text-center">
+                                                <div class="upload-icon mb-4">
+                                                    <i class="fas fa-cloud-upload-alt text-4xl text-indigo-400"></i>
+                                                </div>
+                                                <div class="upload-text">
+                                                    <p class="text-lg font-medium text-gray-700 mb-2">Nhấp để chọn file</p>
+                                                    <p class="text-sm text-gray-500">Hỗ trợ: PDF, Audio (MP3, WAV, M4A), Word (DOC, DOCX)</p>
+                                                    <p class="text-xs text-gray-400 mt-1">Kích thước tối đa: 30MB</p>
+                                                </div>
+                                            </label>
+                                            <div id="filePreview" class="hidden mt-4 p-3 bg-white rounded-lg border">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center">
+                                                        <i id="fileIcon" class="fas fa-file text-2xl text-gray-600 mr-3"></i>
+                                                        <div>
+                                                            <p id="fileName" class="font-medium text-gray-800"></p>
+                                                            <p id="fileSize" class="text-sm text-gray-500"></p>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" id="removeFile" class="text-red-500 hover:text-red-700">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 text-sm text-gray-500">
+                                            💡 Tip: Đính kèm file audio cho bài tập nghe, hoặc PDF cho tài liệu tham khảo
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-end mt-6">
+                                        <button type="submit" class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                            <i class="fas fa-plus mr-2"></i>Thêm bài tập
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-2xl font-bold gradient-text mb-6">Danh sách bài tập</h3>
+                                <div class="grid gap-4 max-h-96 overflow-y-auto">
+                                    <% if (assignments && assignments.length > 0) { %>
+                                        <% assignments.forEach((assignment, index) => { %>
+                                            <div class="glass-card p-6 rounded-2xl card-hover slide-in" style="animation-delay: <%= index * 0.1 %>s;">
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex-1">
+                                                        <h4 class="text-xl font-semibold text-gray-800 mb-2"><%= assignment.title %></h4>
+                                                        <p class="text-gray-600 mb-3"><%= assignment.description %></p>
+                                                        
+                                                        <!-- File attachment display -->
+                                                        <% if (assignment.attachmentFile) { %>
+                                                        <div class="mb-3">
+                                                            <div class="inline-flex items-center p-2 bg-indigo-50 rounded-lg">
+                                                                <% 
+                                                                let fileIcon = 'fa-file';
+                                                                let fileColor = 'text-gray-500';
+                                                                if (assignment.attachmentFile.mimeType && assignment.attachmentFile.mimeType.includes('pdf')) {
+                                                                    fileIcon = 'fa-file-pdf';
+                                                                    fileColor = 'text-red-500';
+                                                                } else if (assignment.attachmentFile.mimeType && assignment.attachmentFile.mimeType.includes('audio')) {
+                                                                    fileIcon = 'fa-file-audio';
+                                                                    fileColor = 'text-purple-500';
+                                                                } else if (assignment.attachmentFile.mimeType && (assignment.attachmentFile.mimeType.includes('word') || assignment.attachmentFile.mimeType.includes('document'))) {
+                                                                    fileIcon = 'fa-file-word';
+                                                                    fileColor = 'text-blue-500';
+                                                                }
+                                                                %>
+                                                                <i class="fas <%= fileIcon %> <%= fileColor %> mr-2"></i>
+                                                                <span class="text-sm text-gray-700 mr-2"><%= assignment.attachmentFile.originalName %></span>
+                                                                <a href="/uploads/<%= assignment.attachmentFile.fileName %>" 
+                                                                   target="_blank"
+                                                                   class="text-indigo-600 hover:text-indigo-700 text-xs">
+                                                                    <i class="fas fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                        
+                                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                            <span class="flex items-center">
+                                                                <i class="fas fa-calendar-alt mr-2"></i>
+                                                                Hạn nộp: <%= new Date(assignment.dueDate).toLocaleDateString('vi-VN') %>
+                                                            </span>
+                                                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                                                                Bài tập
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex space-x-2 ml-4">
+                                                        <button onclick="openEditAssignmentModal('<%= assignment._id %>', '<%= assignment.title %>', '<%= assignment.description %>', '<%= assignment.dueDate.toISOString().split('T')[0] %>')"
+                                                                class="btn-3d bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600 transition-all duration-300">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button onclick="deleteAssignment('<%= assignment._id %>')"
+                                                                class="btn-3d bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-all duration-300">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                        <button onclick="window.location.href='/teacher/assignment-submissions/<%= assignment._id %>'"
+                                                                class="btn-3d bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition-all duration-300">
+                                                            <i class="fas fa-users mr-1"></i>Xem bài nộp
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div class="text-center py-12">
+                                            <div class="floating-animation mb-4">
+                                                <i class="fas fa-tasks text-6xl text-gray-300"></i>
+                                            </div>
+                                            <h4 class="text-xl font-semibold text-gray-600 mb-2">Chưa có bài tập nào</h4>
+                                            <p class="text-gray-400">Hãy tạo bài tập đầu tiên cho lớp học của bạn</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Documents Tab -->
+                        <div id="content-documents" class="tab-content hidden">
+                            <div class="mb-8">
+                                <h3 class="text-2xl font-bold gradient-text mb-6">Tải lên tài liệu mới</h3>
+                                <form action="/teacher/documents/upload" method="POST" enctype="multipart/form-data" 
+                                      class="glass-card p-6 rounded-2xl">
+                                    <input type="hidden" name="classId" value="<%= classData._id %>">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label for="documentTitle" class="block text-gray-700 font-semibold mb-2">Tên tài liệu</label>
+                                            <input type="text" id="documentTitle" name="title" 
+                                                   class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                                        </div>
+                                        <div>
+                                            <label for="documentCategory" class="block text-gray-700 font-semibold mb-2">Phân loại</label>
+                                            <select id="documentCategory" name="category" 
+                                                    class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                                                <option value="">Chọn phân loại</option>
+                                                <option value="speaking">Luyện nói</option>
+                                                <option value="listening">Luyện nghe</option>
+                                                <option value="writing">Luyện viết</option>
+                                                <option value="vocabulary">Từ vựng</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="documentFile" class="block text-gray-700 font-semibold mb-2">File tài liệu</label>
+                                            <input type="file" id="documentFile" name="document" 
+                                                   class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp3,.wav,.m4a" required>
+                                        </div>
+                                        <div>
+                                            <label for="documentDescription" class="block text-gray-700 font-semibold mb-2">Mô tả</label>
+                                            <textarea id="documentDescription" name="description" rows="3"
+                                                      class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-6">
+                                        <button type="submit" class="btn-3d bg-gradient-to-r from-green-500 to-teal-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                            <i class="fas fa-upload mr-2"></i>Tải lên tài liệu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-2xl font-bold gradient-text mb-6">Tài liệu đã tải lên</h3>
+                                <div class="grid gap-4 max-h-96 overflow-y-auto">
+                                    <% if (documents && documents.length > 0) { %>
+                                        <% documents.forEach((doc, index) => { %>
+                                            <div class="glass-card p-6 rounded-2xl card-hover slide-in" style="animation-delay: <%= index * 0.1 %>s;">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center flex-1">
+                                                        <% const fileExt = doc.fileName.split('.').pop().toLowerCase(); %>
+                                                        <div class="mr-4">
+                                                            <% if (fileExt === 'pdf') { %>
+                                                                <i class="fas fa-file-pdf text-red-500 text-3xl"></i>
+                                                            <% } else if (['doc', 'docx'].includes(fileExt)) { %>
+                                                                <i class="fas fa-file-word text-blue-500 text-3xl"></i>
+                                                            <% } else if (['ppt', 'pptx'].includes(fileExt)) { %>
+                                                                <i class="fas fa-file-powerpoint text-orange-500 text-3xl"></i>
+                                                            <% } else if (['xls', 'xlsx'].includes(fileExt)) { %>
+                                                                <i class="fas fa-file-excel text-green-500 text-3xl"></i>
+                                                            <% } else if (['mp3', 'wav', 'm4a'].includes(fileExt)) { %>
+                                                                <i class="fas fa-file-audio text-purple-500 text-3xl"></i>
+                                                            <% } else { %>
+                                                                <i class="fas fa-file text-gray-500 text-3xl"></i>
+                                                            <% } %>
+                                                        </div>
+                                                        <div class="flex-1">
+                                                            <h4 class="font-semibold text-gray-800 text-lg mb-1"><%= doc.title %></h4>
+                                                            <div class="flex items-center space-x-3 mb-2">
+                                                                <span class="px-3 py-1 rounded-full text-xs font-medium
+                                                                    <%= doc.category === 'speaking' ? 'bg-blue-100 text-blue-800' :
+                                                                       doc.category === 'listening' ? 'bg-green-100 text-green-800' :
+                                                                       doc.category === 'writing' ? 'bg-purple-100 text-purple-800' :
+                                                                       'bg-yellow-100 text-yellow-800' %>">
+                                                                    <%= doc.category === 'speaking' ? 'Luyện nói' :
+                                                                       doc.category === 'listening' ? 'Luyện nghe' :
+                                                                       doc.category === 'writing' ? 'Luyện viết' :
+                                                                       'Từ vựng' %>
+                                                                </span>
+                                                                <span class="text-gray-500 text-sm"><%= doc.description %></span>
+                                                            </div>
+                                                            <p class="text-xs text-gray-400">
+                                                                Tải lên: <%= new Date(doc.uploadedAt).toLocaleString('vi-VN') %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex space-x-2 ml-4">
+                                                        <% if (['mp3', 'wav', 'm4a'].includes(fileExt)) { %>
+                                                            <button onclick="playAudio('/uploads/documents/<%= doc.fileName %>', '<%= doc.title %>')"
+                                                                   class="btn-3d bg-purple-500 text-white px-4 py-2 rounded-xl hover:bg-purple-600 transition-all duration-300"
+                                                                   title="Phát audio">
+                                                                <i class="fas fa-play"></i>
+                                                            </button>
+                                                        <% } else { %>
+                                                            <a href="/uploads/documents/<%= doc.fileName %>" target="_blank"
+                                                               class="btn-3d bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition-all duration-300"
+                                                               title="Xem tài liệu">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        <% } %>
+                                                        <a href="/teacher/documents/<%= doc._id %>/download" 
+                                                           class="btn-3d bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition-all duration-300"
+                                                           title="Tải xuống">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                        <button onclick="openEditDocumentModal('<%= doc._id %>', '<%= doc.title %>', '<%= doc.description %>', '<%= doc.category %>')"
+                                                                class="btn-3d bg-orange-500 text-white px-4 py-2 rounded-xl hover:bg-orange-600 transition-all duration-300"
+                                                                title="Cập nhật tài liệu">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button onclick="deleteDocument('<%= doc._id %>')"
+                                                                class="btn-3d bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-all duration-300"
+                                                                title="Xóa tài liệu">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div class="text-center py-12">
+                                            <div class="floating-animation mb-4">
+                                                <i class="fas fa-file-alt text-6xl text-gray-300"></i>
+                                            </div>
+                                            <h4 class="text-xl font-semibold text-gray-600 mb-2">Chưa có tài liệu nào</h4>
+                                            <p class="text-gray-400">Hãy tải lên tài liệu đầu tiên cho lớp học của bạn</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Edit Assignment Modal -->
+    <div id="editAssignmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-2xl mx-4 modal-enter">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold gradient-text">Cập nhật bài tập</h2>
+                <button onclick="closeEditAssignmentModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editAssignmentForm" action="" method="POST">
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <label for="assignmentTitle" class="block text-gray-700 font-semibold mb-2">Tiêu đề bài tập</label>
+                        <input type="text" id="assignmentTitle" name="title"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    <div>
+                        <label for="assignmentDueDate" class="block text-gray-700 font-semibold mb-2">Hạn nộp</label>
+                        <input type="date" id="assignmentDueDate" name="dueDate"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    <div>
+                        <label for="assignmentDescription" class="block text-gray-700 font-semibold mb-2">Mô tả</label>
+                        <textarea id="assignmentDescription" name="description" rows="4"
+                                  class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" onclick="closeEditAssignmentModal()" 
+                            class="px-8 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit" 
+                            class="btn-3d bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-save mr-2"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Document Modal -->
+    <div id="editDocumentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-2xl mx-4 modal-enter">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold gradient-text">Cập nhật tài liệu</h2>
+                <button onclick="closeEditDocumentModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editDocumentForm" action="" method="POST" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="editDocumentTitle" class="block text-gray-700 font-semibold mb-2">Tên tài liệu</label>
+                        <input type="text" id="editDocumentTitle" name="title"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    <div>
+                        <label for="editDocumentCategory" class="block text-gray-700 font-semibold mb-2">Phân loại</label>
+                        <select id="editDocumentCategory" name="category"
+                                class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            <option value="">Chọn phân loại</option>
+                            <option value="speaking">Luyện nói</option>
+                            <option value="listening">Luyện nghe</option>
+                            <option value="writing">Luyện viết</option>
+                            <option value="vocabulary">Từ vựng</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="editDocumentDescription" class="block text-gray-700 font-semibold mb-2">Mô tả</label>
+                        <textarea id="editDocumentDescription" name="description" rows="3"
+                                  class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="editDocumentFile" class="block text-gray-700 font-semibold mb-2">
+                            <i class="fas fa-paperclip text-indigo-500 mr-2"></i>
+                            Thay đổi file (Tùy chọn)
+                        </label>
+                        <input type="file" id="editDocumentFile" name="document"
+                               class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp3,.wav,.m4a">
+                        <div class="mt-2 text-sm text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Để trống nếu không muốn thay đổi file hiện tại. Hỗ trợ: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, MP3, WAV, M4A (tối đa 50MB)
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" onclick="closeEditDocumentModal()"
+                            class="px-8 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                            class="btn-3d bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-save mr-2"></i>Cập nhật tài liệu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%- include('../partials/teacher_footer') %>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            // Add active class to selected tab
+            document.getElementById(`tab-${tabName}`).classList.add('tab-active');
+        }
+
+        // Enhanced modal functions
+        function openEditAssignmentModal(id, title, description, dueDate) {
+            document.getElementById('editAssignmentForm').action = `/teacher/assignments/${id}/edit`;
+            document.getElementById('assignmentTitle').value = title;
+            document.getElementById('assignmentDescription').value = description;
+            document.getElementById('assignmentDueDate').value = dueDate;
+            
+            const modal = document.getElementById('editAssignmentModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeEditAssignmentModal() {
+            document.getElementById('editAssignmentModal').classList.add('hidden');
+        }
+
+        // Edit document modal functions
+        function openEditDocumentModal(id, title, description, category) {
+            document.getElementById('editDocumentForm').action = `/teacher/documents/${id}/edit`;
+            document.getElementById('editDocumentTitle').value = title;
+            document.getElementById('editDocumentDescription').value = description;
+            document.getElementById('editDocumentCategory').value = category;
+            
+            const modal = document.getElementById('editDocumentModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeEditDocumentModal() {
+            document.getElementById('editDocumentModal').classList.add('hidden');
+            // Reset form
+            document.getElementById('editDocumentForm').reset();
+            document.getElementById('editDocumentFile').value = '';
+        }
+
+        // Enhanced student removal
+        async function removeStudent(classId, studentId) {
+            if (confirm('Bạn có chắc chắn muốn xóa học viên này khỏi lớp học?')) {
+                try {
+                    const response = await fetch(`/teacher/classes/${classId}/students/${studentId}/remove`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showNotification('Đã xóa học viên khỏi lớp học', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                }
+            }
+        }
+
+        // Enhanced assignment deletion
+        async function deleteAssignment(assignmentId) {
+            if (confirm('Bạn có chắc chắn muốn xóa bài tập này?')) {
+                try {
+                    const response = await fetch(`/teacher/assignments/${assignmentId}/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showNotification('Đã xóa bài tập', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
+                }
+            }
+        }
+
+        // Enhanced document deletion
+        async function deleteDocument(documentId) {
+            if (confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) {
+                try {
+                    const response = await fetch(`/teacher/documents/${documentId}/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showNotification('Đã xóa tài liệu', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification('Có lỗi xảy ra khi xóa tài liệu', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra khi xóa tài liệu', 'error');
+                }
+            }
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            notification.className = `fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl transform translate-x-full transition-all duration-500 z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} text-xl mr-3"></i>
+                    <span class="font-semibold">${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Student search functionality
+        document.getElementById('studentSearch')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const studentCards = document.querySelectorAll('.student-card');
+            
+            studentCards.forEach(card => {
+                const studentName = card.querySelector('h4')?.textContent.toLowerCase() || '';
+                const studentEmail = card.querySelector('p')?.textContent.toLowerCase() || '';
+                
+                if (studentName.includes(searchTerm) || studentEmail.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // File upload validation
+        document.querySelector('form[action="/teacher/documents/upload"]')?.addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('documentFile');
+            const allowedTypes = ['.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.mp3'];
+            const fileName = fileInput.value.toLowerCase();
+            
+            if (!allowedTypes.some(type => fileName.endsWith(type))) {
+                e.preventDefault();
+                showNotification('Chỉ chấp nhận file có định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, MP3', 'error');
+                return;
+            }
+
+            if (fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) {
+                e.preventDefault();
+                showNotification('Kích thước file không được vượt quá 10MB', 'error');
+                return;
+            }
+        });
+
+        // Enhanced form submission
+        document.getElementById('editAssignmentForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(new FormData(form))
+                });
+
+                if (response.ok) {
+                    showNotification('Đã cập nhật bài tập', 'success');
+                    closeEditAssignmentModal();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showNotification('Có lỗi xảy ra khi cập nhật bài tập', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi cập nhật bài tập', 'error');
+            }
+        });
+
+        // Enhanced form submission for edit document
+        document.getElementById('editDocumentForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showNotification('Đã cập nhật tài liệu thành công', 'success');
+                    closeEditDocumentModal();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    const result = await response.json();
+                    showNotification(result.message || 'Có lỗi xảy ra khi cập nhật tài liệu', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi cập nhật tài liệu', 'error');
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default tab
+            switchTab('info');
+            
+            // Initialize file upload for assignment form
+            initAssignmentFileUpload();
+            
+            // Initialize animations
+            const cards = document.querySelectorAll('.slide-in');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // File upload handling for assignment form
+        function initAssignmentFileUpload() {
+            const fileInput = document.getElementById('attachmentFile');
+            const uploadArea = document.querySelector('.upload-area');
+            const filePreview = document.getElementById('filePreview');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const fileIcon = document.getElementById('fileIcon');
+            const removeFileBtn = document.getElementById('removeFile');
+
+            if (!fileInput) return;
+
+            // File input change handler
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleFileDrop);
+            
+            // Remove file handler
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', removeFile);
+            }
+
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    displayFile(file);
+                }
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            }
+
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            }
+
+            function handleFileDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    fileInput.files = files;
+                    displayFile(file);
+                }
+            }
+
+            function displayFile(file) {
+                // Validate file type
+                const allowedTypes = ['.pdf', '.mp3', '.wav', '.m4a', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx'];
+                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedTypes.includes(fileExtension)) {
+                    showNotification('Loại file không được hỗ trợ. Vui lòng chọn PDF, Audio (MP3, WAV, M4A) hoặc Office files.', 'error');
+                    return;
+                }
+
+                // Validate file size (50MB for audio files)
+                if (file.size > 50 * 1024 * 1024) {
+                    showNotification('File quá lớn. Kích thước tối đa là 50MB.', 'error');
+                    return;
+                }
+
+                // Set file icon based on type
+                fileIcon.className = 'fas fa-file text-2xl mr-3';
+                if (fileExtension === '.pdf') {
+                    fileIcon.className = 'fas fa-file-pdf text-2xl mr-3 text-red-500';
+                } else if (['.mp3', '.wav', '.m4a'].includes(fileExtension)) {
+                    fileIcon.className = 'fas fa-file-audio text-2xl mr-3 text-purple-500';
+                } else if (['.doc', '.docx'].includes(fileExtension)) {
+                    fileIcon.className = 'fas fa-file-word text-2xl mr-3 text-blue-500';
+                } else if (['.ppt', '.pptx'].includes(fileExtension)) {
+                    fileIcon.className = 'fas fa-file-powerpoint text-2xl mr-3 text-orange-500';
+                } else if (['.xls', '.xlsx'].includes(fileExtension)) {
+                    fileIcon.className = 'fas fa-file-excel text-2xl mr-3 text-green-500';
+                }
+
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                filePreview.classList.remove('hidden');
+            }
+
+            function removeFile() {
+                fileInput.value = '';
+                filePreview.classList.add('hidden');
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+
+        // Audio playback function for MP3 files
+        function playAudio(audioUrl, title) {
+            // Create modal for audio player
+            const audioModal = document.createElement('div');
+            audioModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm';
+            audioModal.innerHTML = `
+                <div class="glass-card p-8 rounded-3xl shadow-2xl w-full max-w-md mx-4 modal-enter">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold gradient-text">${title}</h3>
+                        <button onclick="closeAudioModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-music text-6xl text-purple-500 floating-animation"></i>
+                        </div>
+                        <audio controls class="w-full mb-4" autoplay>
+                            <source src="${audioUrl}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ phát audio.
+                        </audio>
+                        <div class="flex justify-center space-x-4">
+                            <a href="${audioUrl}" download class="btn-3d bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition-all duration-300">
+                                <i class="fas fa-download mr-2"></i>Tải xuống
+                            </a>
+                            <button onclick="closeAudioModal()" class="btn-3d bg-gray-500 text-white px-4 py-2 rounded-xl hover:bg-gray-600 transition-all duration-300">
+                                <i class="fas fa-times mr-2"></i>Đóng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(audioModal);
+            
+            // Add click outside to close
+            audioModal.addEventListener('click', function(e) {
+                if (e.target === audioModal) {
+                    closeAudioModal();
+                }
+            });
+        }
+
+        // Close audio modal function
+        function closeAudioModal() {
+            const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (modal) {
+                modal.remove();
+            }
+        }
+    </script>
+</body>
+
+</html>

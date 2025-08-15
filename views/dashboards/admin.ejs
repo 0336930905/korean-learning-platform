@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card.users::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-card.courses::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .stat-card.lessons::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-card.revenue::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .stat-icon.users {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-icon.courses {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .stat-icon.lessons {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-icon.revenue {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stat-change.positive {
+            color: #10b981;
+        }
+        
+        .stat-change.negative {
+            color: #ef4444;
+        }
+        
+        .section-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+            padding: 32px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .activity-item {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .activity-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+            transform: translateX(8px);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .activity-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .activity-info {
+            flex: 1;
+        }
+        
+        .activity-user {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .activity-action {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .quick-action-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+            border: 2px solid rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quick-action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .quick-action-card:hover::before {
+            left: 100%;
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quick-action-card.users:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+        }
+        
+        .quick-action-card.courses:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(52, 211, 153, 0.05));
+        }
+        
+        .quick-action-card.settings:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.05));
+        }
+        
+        .quick-action-card.reports:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
+        }
+        
+        .quick-action-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .quick-action-icon.users {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .quick-action-icon.courses {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .quick-action-icon.settings {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        
+        .quick-action-icon.reports {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .quick-action-text {
+            flex: 1;
+        }
+        
+        .quick-action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        
+        .quick-action-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            max-height: 450px; /* Giới hạn chiều cao tối đa */
+        }
+        
+        .chart-wrapper {
+            height: 300px; /* Chiều cao cố định cho container biểu đồ */
+            max-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-canvas {
+            max-height: 280px !important;
+            height: 280px !important;
+        }
+        
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 32px;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chart-title-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .recent-users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        
+        .user-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            flex-shrink: 0;
+        }
+        
+        .user-details {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 2px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .user-role.admin {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .user-role.teacher {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .user-role.student {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .user-date {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            padding: 20px 28px;
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .breadcrumb::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { 
+                background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            }
+            50% { 
+                background: linear-gradient(90deg, #f093fb, #667eea, #764ba2);
+            }
+        }
+        
+        .breadcrumb:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 45px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .breadcrumb a:hover {
+            color: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .breadcrumb .w-8,
+        .breadcrumb .w-6 {
+            transition: all 0.3s ease;
+        }
+        
+        .breadcrumb:hover .w-8,
+        .breadcrumb:hover .w-6 {
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 24px;
+            }
+            
+            .hero-title {
+                font-size: 24px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .stat-card {
+                padding: 24px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .section-header {
+                padding: 24px;
+            }
+            
+            .activity-item {
+                padding: 20px 24px;
+            }
+            
+            .activity-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .chart-container {
+                padding: 24px;
+                max-height: 400px;
+            }
+            
+            .chart-wrapper {
+                height: 250px;
+                max-height: 250px;
+            }
+            
+            .chart-canvas {
+                max-height: 230px !important;
+                height: 230px !important;
+            }
+            
+            .recent-users-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .quick-action-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto">
+                <!-- Hidden data elements for JavaScript -->
+                <div style="display: none;">
+                    <span id="hiddenTotalUsers"><%= dashboardData ? dashboardData.totalUsers : 406 %></span>
+                    <span id="hiddenTotalCourses"><%= dashboardData ? dashboardData.totalCourses : 3 %></span>
+                    <span id="hiddenTotalClasses"><%= dashboardData ? dashboardData.totalClasses : 3 %></span>
+                    <span id="hiddenTotalRevenue"><%= dashboardData ? dashboardData.totalRevenue : 47500000 %></span>
+                </div>
+
+                <!-- Hero Section -->
+                <div class="p-8">
+                    <div class="hero-section slide-in">
+                        <div class="hero-content">
+                            <div class="hero-icon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <h1 class="hero-title">Chào mừng quay trở lại!</h1>
+                            <p class="hero-subtitle">Quản lý hệ thống học tập trực tuyến của bạn</p>
+                        </div>
+                    </div>
+
+                    <!-- Breadcrumb Enhanced -->
+                    <div class="breadcrumb slide-in fade-in floating-animation" style="animation-delay: 0.1s;">
+                        <nav class="flex items-center space-x-3">
+                            <div class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition-colors duration-300">
+                                <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-home text-white text-sm"></i>
+                                </div>
+                                <span class="font-medium">Home</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-tachometer-alt text-white text-xs"></i>
+                                </div>
+                                <a href="/dashboard/admin" class="text-purple-600 font-semibold hover:text-purple-800 transition-colors duration-300 hover:underline">
+                                    Admin Dashboard
+                                </a>
+                            </div>
+                            <div class="ml-auto">
+                                <div class="flex items-center space-x-2 text-gray-500 text-sm">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="currentTime"></span>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="px-8 pb-8">
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                        <!-- Total Users -->
+                        <div class="stat-card users slide-in fade-in" style="animation-delay: 0.1s;">
+                            <div class="stat-icon users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-label">Tổng người dùng</div>
+                            <div class="stat-value" id="totalUsers"><%= dashboardData ? dashboardData.totalUsers : 406 %></div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+25.3%</span>
+                                <span class="text-xs ml-1">so với tháng trước</span>
+                            </div>
+                        </div>
+
+                        <!-- Total Courses -->
+                        <div class="stat-card courses slide-in fade-in" style="animation-delay: 0.2s;">
+                            <div class="stat-icon courses">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="stat-label">Khóa học</div>
+                            <div class="stat-value" id="totalCourses"><%= dashboardData ? dashboardData.totalCourses : 3 %></div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2</span>
+                                <span class="text-xs ml-1">khóa mới</span>
+                            </div>
+                        </div>
+
+                        <!-- Total Classes -->
+                        <div class="stat-card lessons slide-in fade-in" style="animation-delay: 0.3s;">
+                            <div class="stat-icon lessons">
+                                <i class="fas fa-chalkboard"></i>
+                            </div>
+                            <div class="stat-label">Lớp học</div>
+                            <div class="stat-value" id="totalClasses"><%= dashboardData ? dashboardData.totalClasses : 3 %></div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-users"></i>
+                                <span>30</span>
+                                <span class="text-xs ml-1">học viên đã đăng ký</span>
+                            </div>
+                        </div>
+
+                        <!-- Revenue -->
+                        <div class="stat-card revenue slide-in fade-in" style="animation-delay: 0.4s;">
+                            <div class="stat-icon revenue">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-label">Doanh thu</div>
+                            <div class="stat-value" id="totalRevenue">₫<%= dashboardData ? dashboardData.totalRevenue.toLocaleString('vi-VN') : '47,500,000' %></div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+18.2%</span>
+                                <span class="text-xs ml-1">tăng trưởng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Quick Actions -->
+                        <div class="lg:col-span-1">
+                            <div class="section-card slide-in fade-in" style="animation-delay: 0.5s;">
+                                <div class="section-header">
+                                    <h2 class="section-title">
+                                        <div class="section-icon">
+                                            <i class="fas fa-bolt"></i>
+                                        </div>
+                                        Thao tác nhanh
+                                    </h2>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <a href="/account-management" class="quick-action-card users block">
+                                        <div class="quick-action-content">
+                                            <div class="quick-action-icon users">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div class="quick-action-text">
+                                                <div class="quick-action-title">Quản lý người dùng</div>
+                                                <div class="quick-action-desc">Xem, chỉnh sửa và quản lý tài khoản</div>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <a href="/admin/course-management" class="quick-action-card courses block">
+                                        <div class="quick-action-content">
+                                            <div class="quick-action-icon courses">
+                                                <i class="fas fa-graduation-cap"></i>
+                                            </div>
+                                            <div class="quick-action-text">
+                                                <div class="quick-action-title">Quản lý khóa học</div>
+                                                <div class="quick-action-desc">Tạo và quản lý nội dung khóa học</div>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <a href="/admin/reports" class="quick-action-card reports block">
+                                        <div class="quick-action-content">
+                                            <div class="quick-action-icon reports">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </div>
+                                            <div class="quick-action-text">
+                                                <div class="quick-action-title">Báo cáo & Thống kê</div>
+                                                <div class="quick-action-desc">Xem thống kê và báo cáo chi tiết</div>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <a href="/admin/settings" class="quick-action-card settings block">
+                                        <div class="quick-action-content">
+                                            <div class="quick-action-icon settings">
+                                                <i class="fas fa-cog"></i>
+                                            </div>
+                                            <div class="quick-action-text">
+                                                <div class="quick-action-title">Cài đặt hệ thống</div>
+                                                <div class="quick-action-desc">Cấu hình và tùy chỉnh hệ thống</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="lg:col-span-2">
+                            <div class="section-card slide-in fade-in" style="animation-delay: 0.6s;">
+                                <div class="section-header">
+                                    <h2 class="section-title">
+                                        <div class="section-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        Hoạt động gần đây
+                                    </h2>
+                                </div>
+                                <div>
+                                    <div class="activity-item">
+                                        <div class="activity-content">
+                                            <div class="activity-avatar" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">
+                                                NV
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-user">Nguyễn Văn Nam</div>
+                                                <div class="activity-action">đã đăng ký khóa học "Tiếng Hàn Sơ Cấp"</div>
+                                                <div class="activity-time">
+                                                    <i class="fas fa-clock"></i>
+                                                    2 phút trước
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-content">
+                                            <div class="activity-avatar" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                                                GV
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-user">Giáo viên Kim</div>
+                                                <div class="activity-action">đã tạo bài tập mới cho lớp "Trung Cấp Buổi Tối"</div>
+                                                <div class="activity-time">
+                                                    <i class="fas fa-clock"></i>
+                                                    15 phút trước
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-content">
+                                            <div class="activity-avatar" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                                                LT
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-user">Lê Thị Hoa</div>
+                                                <div class="activity-action">đã hoàn thành bài kiểm tra "Ngữ pháp cơ bản"</div>
+                                                <div class="activity-time">
+                                                    <i class="fas fa-clock"></i>
+                                                    1 giờ trước
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-content">
+                                            <div class="activity-avatar" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                                                TM
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-user">Trần Minh Đức</div>
+                                                <div class="activity-action">đã thanh toán học phí khóa "Nâng Cao Cuối Tuần"</div>
+                                                <div class="activity-time">
+                                                    <i class="fas fa-clock"></i>
+                                                    2 giờ trước
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-content">
+                                            <div class="activity-avatar" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+                                                PH
+                                            </div>
+                                            <div class="activity-info">
+                                                <div class="activity-user">Phạm Thu Hương</div>
+                                                <div class="activity-action">đã nộp bài tập "Luyện tập từ vựng"</div>
+                                                <div class="activity-time">
+                                                    <i class="fas fa-clock"></i>
+                                                    3 giờ trước
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                        <!-- User Registration Chart -->
+                        <div class="chart-container slide-in fade-in" style="animation-delay: 0.7s;">
+                            <div class="chart-header">
+                                <h3 class="chart-title">
+                                    <div class="chart-title-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    Đăng ký người dùng (30 ngày gần nhất)
+                                </h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="userChart" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Revenue Chart -->
+                        <div class="chart-container slide-in fade-in" style="animation-delay: 0.8s;">
+                            <div class="chart-header">
+                                <h3 class="chart-title">
+                                    <div class="chart-title-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    Doanh thu theo tháng
+                                </h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="revenueChart" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Users Section -->
+                    <div class="mt-8">
+                        <div class="section-card slide-in fade-in" style="animation-delay: 0.9s;">
+                            <div class="section-header">
+                                <h2 class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-user-friends"></i>
+                                    </div>
+                                    Người dùng mới gần đây
+                                </h2>
+                            </div>
+                            <div class="recent-users-grid">
+                                <% if (dashboardData && dashboardData.recentUsers && dashboardData.recentUsers.length > 0) { %>
+                                    <% dashboardData.recentUsers.forEach(function(user) { %>
+                                        <div class="user-card">
+                                            <div class="user-info">
+                                                <div class="user-avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                                                <div class="user-details">
+                                                    <div class="user-name"><%= user.fullName %></div>
+                                                    <div class="user-role <%= user.role %>">
+                                                        <% if (user.role === 'admin') { %>
+                                                            Quản trị viên
+                                                        <% } else if (user.role === 'teacher') { %>
+                                                            Giáo viên
+                                                        <% } else { %>
+                                                            Học viên
+                                                        <% } %>
+                                                    </div>
+                                                    <div class="user-date">Đăng ký: <%= new Date(user.createdAt).toLocaleDateString('vi-VN') %></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <div class="user-card">
+                                        <div class="user-info">
+                                            <div class="user-avatar">NV</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Nguyễn Văn Nam</div>
+                                                <div class="user-role student">Học viên</div>
+                                                <div class="user-date">Đăng ký: 29/07/2025</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="user-card">
+                                        <div class="user-info">
+                                            <div class="user-avatar">LH</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Lê Thị Hoa</div>
+                                                <div class="user-role student">Học viên</div>
+                                                <div class="user-date">Đăng ký: 28/07/2025</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="user-card">
+                                        <div class="user-info">
+                                            <div class="user-avatar">TM</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Trần Minh Đức</div>
+                                                <div class="user-role student">Học viên</div>
+                                                <div class="user-date">Đăng ký: 27/07/2025</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="user-card">
+                                        <div class="user-info">
+                                            <div class="user-avatar">PH</div>
+                                            <div class="user-details">
+                                                <div class="user-name">Phạm Thu Hương</div>
+                                                <div class="user-role student">Học viên</div>
+                                                <div class="user-date">Đăng ký: 26/07/2025</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                        </div>
+
+                
+
+                 
+                 
+                    </div>
+
+            
+
+           
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            animateStatNumbers();
+            
+            // Add staggered animations
+            const elements = document.querySelectorAll('.slide-in, .fade-in');
+            elements.forEach((el, index) => {
+                if (!el.style.animationDelay) {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+        });
+
+        function initializeCharts() {
+            // Get real data from window object (will be populated by server)
+            const userRegistrationData = window.dashboardData ? window.dashboardData.userRegistrations : [
+                { _id: { year: 2024, month: 7, day: 1 }, count: 12 },
+                { _id: { year: 2024, month: 7, day: 5 }, count: 19 },
+                { _id: { year: 2024, month: 7, day: 10 }, count: 25 },
+                { _id: { year: 2024, month: 7, day: 15 }, count: 32 },
+                { _id: { year: 2024, month: 7, day: 20 }, count: 28 },
+                { _id: { year: 2024, month: 7, day: 25 }, count: 35 },
+                { _id: { year: 2024, month: 7, day: 29 }, count: 42 }
+            ];
+
+            // Process chart data
+            const userLabels = userRegistrationData.map(item => {
+                if (item._id.day) {
+                    return item._id.day + '/' + item._id.month;
+                } else {
+                    return item._id.month + '/' + item._id.year;
+                }
+            });
+            const userData = userRegistrationData.map(item => item.count);
+
+            // User Registration Chart
+            const userCtx = document.getElementById('userChart');
+            if (userCtx) {
+                new Chart(userCtx, {
+                    type: 'line',
+                    data: {
+                        labels: userLabels,
+                        datasets: [{
+                            label: 'Đăng ký mới',
+                            data: userData,
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: 'rgb(59, 130, 246)',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    color: '#6b7280',
+                                    maxTicksLimit: 6
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6b7280'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        elements: {
+                            line: {
+                                borderCapStyle: 'round'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                        datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: [5500000, 7200000, 6800000, 8100000, 7500000, 9200000, 8900000],
+                            backgroundColor: [
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(52, 211, 153, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(34, 197, 94, 0.8)',
+                                'rgba(52, 211, 153, 0.8)',
+                                'rgba(16, 185, 129, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgb(16, 185, 129)',
+                                'rgb(34, 197, 94)',
+                                'rgb(52, 211, 153)',
+                                'rgb(16, 185, 129)',
+                                'rgb(34, 197, 94)',
+                                'rgb(52, 211, 153)',
+                                'rgb(16, 185, 129)'
+                            ],
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    color: '#6b7280',
+                                    maxTicksLimit: 6,
+                                    callback: function(value) {
+                                        return value.toLocaleString('vi-VN') + ' ₫';
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6b7280'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' ₫';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function animateStatNumbers() {
+            // Get data from hidden elements
+            const totalUsers = parseInt(document.getElementById('hiddenTotalUsers').textContent);
+            const totalCourses = parseInt(document.getElementById('hiddenTotalCourses').textContent);
+            const totalClasses = parseInt(document.getElementById('hiddenTotalClasses').textContent);
+            const totalRevenue = parseInt(document.getElementById('hiddenTotalRevenue').textContent);
+            
+            const stats = [
+                { id: 'totalUsers', target: totalUsers, suffix: '' },
+                { id: 'totalCourses', target: totalCourses, suffix: '' },
+                { id: 'totalClasses', target: totalClasses, suffix: '' }
+            ];
+
+            stats.forEach(stat => {
+                const element = document.getElementById(stat.id);
+                if (element) {
+                    animateNumber(element, 0, stat.target, 2000, stat.suffix);
+                }
+            });
+            
+            // Special handling for revenue (formatted)
+            const revenueElement = document.getElementById('totalRevenue');
+            if (revenueElement) {
+                animateRevenue(revenueElement, 0, totalRevenue, 2000);
+            }
+        }
+
+        function animateNumber(element, start, end, duration, suffix = '') {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                
+                const displayValue = suffix === 'M' ? 
+                    current.toFixed(1) + suffix : 
+                    Math.floor(current).toLocaleString();
+                    
+                element.textContent = displayValue;
+            }, 16);
+        }
+
+        // Real-time clock update
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const clockElement = document.getElementById('currentTime');
+            if (clockElement) {
+                clockElement.textContent = timeString;
+            }
+        }
+
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        // Real-time updates simulation
+        setInterval(() => {
+            updateRealtimeStats();
+        }, 30000); // Update every 30 seconds
+
+        function updateRealtimeStats() {
+            // Simulate real-time data updates
+            const elements = document.querySelectorAll('.stat-value');
+            elements.forEach(el => {
+                const currentValue = parseInt(el.textContent.replace(/[^\d]/g, ''));
+                const variation = Math.floor(Math.random() * 10) - 5; // -5 to +5
+                const newValue = Math.max(0, currentValue + variation);
+                el.textContent = newValue.toLocaleString();
+            });
+        }
+
+        // Add click effects to cards
+        document.querySelectorAll('.stat-card, .quick-action-card, .user-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = e.offsetX + 'px';
+                ripple.style.top = e.offsetY + 'px';
+                
+                this.style.position = 'relative';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

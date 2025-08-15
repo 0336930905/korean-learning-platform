@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tài Khoản - Korea-DB Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .status-badge {
+            transition: all 0.3s ease;
+        }
+        
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .action-button {
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+        
+        .modal-overlay {
+            backdrop-filter: blur(4px);
+        }
+        
+        .toast-enter {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast-exit {
+            animation: slideOutRight 0.3s ease-in;
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div class="mb-4 lg:mb-0">
+                    <h1 class="text-3xl font-bold text-gray-900">Quản Lý Tài Khoản</h1>
+                    <p class="text-gray-600 mt-1">Quản lý thông tin và trạng thái tài khoản người dùng</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Thêm tài khoản
+                    </button>
+                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-download mr-2"></i>
+                        Xuất Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Users Card -->
+            <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Tổng tài khoản</h3>
+                                <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.totalUsers %>"><%= stats.totalUsers %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Users Card -->
+            <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-user-check text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Đang hoạt động</h3>
+                                <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.activeUsers %>"><%= stats.activeUsers %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teachers Card -->
+            <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Giáo viên</h3>
+                                <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.teacherCount %>"><%= stats.teacherCount %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Card -->
+            <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-graduation-cap text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Học viên</h3>
+                                <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.studentCount %>"><%= stats.studentCount %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Search -->
+                <div class="search-container">
+                    <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="searchInput" 
+                               class="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                               placeholder="Tìm theo tên, email...">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <div id="searchSpinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div id="searchResults" class="search-results hidden"></div>
+                </div>
+
+                <!-- Role Filter -->
+                <div>
+                    <label for="roleFilter" class="block text-sm font-medium text-gray-700 mb-2">Vai trò</label>
+                    <select id="roleFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="admin">Admin</option>
+                        <option value="teacher">Giáo viên</option>
+                        <option value="student">Học viên</option>
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div>
+                    <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+                    <select id="statusFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Vô hiệu hóa</option>
+                    </select>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="flex items-end">
+                    <button onclick="resetFilters()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-redo mr-2"></i>
+                        Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Danh sách tài khoản</h3>
+                    <span id="resultCount" class="text-sm text-gray-500">Hiển thị <%= users.length %> tài khoản</span>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Vai trò
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Trạng thái
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ngày tham gia
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thao tác
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody" class="bg-white divide-y divide-gray-200">
+                        <% users.forEach(function(user) { %>
+                        <tr class="table-row" data-user-id="<%= user._id %>">
+                            <!-- User Info -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <img class="h-10 w-10 rounded-full object-cover user-avatar" 
+                                         src="<%= user.profilePicture || '/images/default-avatar.png' %>" 
+                                         alt="<%= user.fullName %>">
+                                    <div class="ml-4">
+                                        <div class="text-sm font-semibold text-gray-900 user-name"><%= user.fullName %></div>
+                                        <div class="text-sm text-gray-500">ID: <%= user._id %></div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Email -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 user-email"><%= user.email %></div>
+                            </td>
+
+                            <!-- Role -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="role-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    <% if (user.role === 'admin') { %>
+                                        bg-purple-100 text-purple-800
+                                    <% } else if (user.role === 'teacher') { %>
+                                        bg-blue-100 text-blue-800
+                                    <% } else { %>
+                                        bg-green-100 text-green-800
+                                    <% } %>">
+                                    <i class="fas 
+                                        <% if (user.role === 'admin') { %>
+                                            fa-shield-alt
+                                        <% } else if (user.role === 'teacher') { %>
+                                            fa-chalkboard-teacher
+                                        <% } else { %>
+                                            fa-graduation-cap
+                                        <% } %> mr-1"></i>
+                                    <% if (user.role === 'admin') { %>
+                                        Admin
+                                    <% } else if (user.role === 'teacher') { %>
+                                        Giáo viên
+                                    <% } else { %>
+                                        Học viên
+                                    <% } %>
+                                </span>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <%= user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                    <i class="fas <%= user.isActive ? 'fa-check-circle' : 'fa-times-circle' %> mr-1"></i>
+                                    <%= user.isActive ? 'Hoạt động' : 'Vô hiệu' %>
+                                </span>
+                                <% if (!user.isActive && user.blockReason) { %>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    Lý do: <%= user.blockReason %>
+                                </div>
+                                <% } %>
+                            </td>
+
+                            <!-- Join Date -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 joined-date">
+                                <%= new Date(user.createdAt).toLocaleDateString('vi-VN') %>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <!-- View Button -->
+                                    <a href="/account-management/viewAccount/<%= user._id %>" 
+                                       class="action-button text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <!-- Edit Button -->
+                                    <a href="/account-management/edit/<%= user._id %>" 
+                                       class="action-button text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Lock/Unlock Button -->
+                                    <button onclick="toggleUserStatus('<%= user._id %>')" 
+                                            class="action-button px-3 py-1 text-xs font-medium rounded-full transition-all duration-200
+                                                <%= user.isActive 
+                                                    ? 'bg-red-100 text-red-800 hover:bg-red-200' 
+                                                    : 'bg-green-100 text-green-800 hover:bg-green-200' %>">
+                                        <i class="fas <%= user.isActive ? 'fa-lock' : 'fa-unlock' %> mr-1"></i>
+                                        <%= user.isActive ? 'Khóa' : 'Mở khóa' %>
+                                    </button>
+
+                                    <!-- Reset Password Button -->
+                                    <button onclick="resetPassword('<%= user._id %>')" 
+                                            class="action-button text-orange-600 hover:text-orange-900 p-2 rounded-lg hover:bg-orange-50"
+                                            title="Đặt lại mật khẩu">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Block User Modal -->
+    <div id="blockUserModal" class="fixed inset-0 bg-black bg-opacity-50 modal-overlay z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-lock text-red-600 mr-2"></i>
+                            Khóa Tài Khoản
+                        </h3>
+                        <button onclick="closeBlockModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                            Vui lòng nhập lý do khóa tài khoản:
+                        </p>
+                        <textarea id="blockReason" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" 
+                                  rows="4" 
+                                  placeholder="Ví dụ: Vi phạm quy định, spam, hành vi không phù hợp..."></textarea>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Lý do này sẽ được lưu trữ và hiển thị cho người dùng.
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                    <button onclick="closeBlockModal()" 
+                            class="px-4 py-2 text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        Hủy
+                    </button>
+                    <button onclick="confirmBlockUser()" 
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        <i class="fas fa-lock mr-2"></i>
+                        Xác nhận khóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // ACCOUNT LOCK FUNCTIONALITY
+        window.ACCOUNT_LOCK = {
+            modal: null,
+            reasonInput: null,
+            currentUserId: null,
+
+            init() {
+                this.modal = document.getElementById('blockUserModal');
+                this.reasonInput = document.getElementById('blockReason');
+                console.log('✅ Account lock system initialized');
+                return true;
+            },
+
+            show(userId) {
+                this.currentUserId = userId;
+                this.reasonInput.value = '';
+                this.modal.classList.remove('hidden');
+                this.reasonInput.focus();
+                console.log('🔒 Showing block modal for user:', userId);
+            },
+
+            hide() {
+                this.modal.classList.add('hidden');
+                this.currentUserId = null;
+                console.log('❌ Block modal hidden');
+            },
+
+            async confirmBlock() {
+                const reason = this.reasonInput.value.trim();
+                
+                if (!reason) {
+                    this.showToast('Vui lòng nhập lý do khóa tài khoản', 'warning');
+                    return;
+                }
+
+                if (!this.currentUserId) {
+                    this.showToast('Không tìm thấy ID người dùng', 'error');
+                    return;
+                }
+
+                console.log('🔄 Sending block request...', { userId: this.currentUserId, reason });
+
+                try {
+                    const response = await fetch(`/account-management/toggle-status/${this.currentUserId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            blockReason: reason 
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log('📨 Server response:', data);
+
+                    if (response.ok && data.success) {
+                        this.showToast(data.message || 'Đã khóa tài khoản thành công', 'success');
+                        this.hide();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        this.showToast(data.message || 'Có lỗi xảy ra khi khóa tài khoản', 'error');
+                    }
+                } catch (error) {
+                    console.error('❌ Network error:', error);
+                    this.showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+                }
+            },
+
+            showToast(message, type = 'info') {
+                const toastContainer = document.getElementById('toastContainer');
+                const toastId = 'toast-' + Date.now();
+                
+                const bgColors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500', 
+                    warning: 'bg-yellow-500',
+                    info: 'bg-blue-500'
+                };
+                
+                const toast = document.createElement('div');
+                toast.id = toastId;
+                toast.className = `${bgColors[type]} text-white px-6 py-3 rounded-lg shadow-lg mb-2 toast-enter max-w-sm`;
+                toast.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="flex-1">${message}</span>
+                        <button onclick="document.getElementById('${toastId}').remove()" class="text-white hover:text-gray-200 ml-4">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000);
+            }
+        };
+
+        // Global functions required by HTML onclick handlers
+        function toggleUserStatus(userId) {
+            console.log('🎯 toggleUserStatus called with:', userId);
+            ACCOUNT_LOCK.show(userId);
+        }
+
+        function closeBlockModal() {
+            ACCOUNT_LOCK.hide();
+        }
+
+        function confirmBlockUser() {
+            ACCOUNT_LOCK.confirmBlock();
+        }
+
+        function resetPassword(userId) {
+            console.log('🔑 Reset password for user:', userId);
+            ACCOUNT_LOCK.showToast('Chức năng đặt lại mật khẩu đang được phát triển', 'info');
+        }
+
+        function setupAccountManagement() {
+            // Initialize account lock system
+            ACCOUNT_LOCK.init();
+
+            // Setup basic search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const query = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#userTableBody tr');
+                        
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            row.style.display = text.includes(query) ? '' : 'none';
+                        });
+                        updateResultCount();
+                    }, 300);
+                });
+            }
+
+            // Setup filter functionality  
+            const roleFilter = document.getElementById('roleFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            
+            if (roleFilter) {
+                roleFilter.addEventListener('change', applyFilters);
+            }
+            
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
+
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    const searchResults = document.getElementById('searchResults');
+                    if (searchResults) {
+                        searchResults.classList.add('hidden');
+                    }
+                }
+            });
+            
+            console.log('✅ Account management setup complete');
+        }
+
+        function applyFilters() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#userTableBody tr');
+            
+            rows.forEach(row => {
+                let visible = true;
+                
+                // Search filter
+                if (searchQuery) {
+                    const text = row.textContent.toLowerCase();
+                    if (!text.includes(searchQuery)) {
+                        visible = false;
+                    }
+                }
+                
+                // Role filter
+                if (roleFilter) {
+                    const roleCell = row.querySelector('.role-badge');
+                    if (roleCell) {
+                        const roleText = roleCell.textContent.toLowerCase();
+                        if (!roleText.includes(roleFilter.toLowerCase())) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                // Status filter
+                if (statusFilter) {
+                    const statusCell = row.querySelector('.status-badge');
+                    if (statusCell) {
+                        const isActive = statusCell.textContent.includes('Hoạt động');
+                        if ((statusFilter === 'active' && !isActive) || (statusFilter === 'inactive' && isActive)) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                row.style.display = visible ? '' : 'none';
+            });
+            
+            updateResultCount();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            
+            const rows = document.querySelectorAll('#userTableBody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            updateResultCount();
+            ACCOUNT_LOCK.showToast('Đã đặt lại bộ lọc', 'info');
+        }
+
+        function updateResultCount() {
+            const visibleRows = document.querySelectorAll('#userTableBody tr:not([style*="display: none"])');
+            const resultCount = document.getElementById('resultCount');
+            if (resultCount) {
+                resultCount.textContent = `Hiển thị ${visibleRows.length} tài khoản`;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAccountManagement();
+        });
+    </script>
+</body>
+</html>

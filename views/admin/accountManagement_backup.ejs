@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tài Khoản - Korea-DB Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for enhanced UI */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-indicator {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .status-active::after {
+            background-color: #10b981;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-inactive::after {
+            background-color: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
+        /* Block Reason Modal Styles */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        #blockReasonModal textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        #blockReasonModal .bg-red-100 {
+            background-color: #fee2e2;
+        }
+        
+        #blockReasonModal .text-red-600 {
+            color: #dc2626;
+        }
+        
+        /* Enhanced button hover effects */
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        /* Modal backdrop blur */
+        #blockReasonModal {
+            backdrop-filter: blur(4px);
+        }
+        
+        .table-row-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .table-row-hover:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .action-button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .action-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .role-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .role-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .role-admin::before { background: #8b5cf6; }
+        .role-teacher::before { background: #10b981; }
+        .role-student::before { background: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                <!-- Enhanced Page Header -->
+                <div class="gradient-bg py-8 px-8 text-white">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">
+                                    <i class="fas fa-users-cog mr-3"></i>
+                                    Quản Lý Tài Khoản
+                                </h1>
+                                <p class="text-indigo-100">Quản lý và theo dõi tất cả tài khoản người dùng trong hệ thống</p>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="flex items-center space-x-4">
+                                <button onclick="exportUsers()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Xuất Excel
+                                </button>
+                                <button onclick="openBulkImport()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-upload mr-2"></i>
+                                    Nhập hàng loạt
+                                </button>
+                                <button onclick="window.location.href='/account-management/add'"
+                                        class="action-button px-6 py-2 bg-white text-indigo-600 rounded-lg hover:bg-gray-100 font-semibold">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Thêm tài khoản
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Breadcrumb -->
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                <li class="inline-flex items-center">
+                                    <a href="/dashboard/admin" class="text-indigo-100 hover:text-white transition-colors">
+                                        <i class="fas fa-home mr-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <span class="text-white font-medium">Quản lý tài khoản</span>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-8 py-8">
+                    <!-- Enhanced Search and Filter Section -->
+                    <div class="glass-card rounded-xl p-6 mb-8 animate-fade-in">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                                <!-- Enhanced Search -->
+                                <div class="search-container flex-1 max-w-md">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-search text-gray-400"></i>
+                                        </div>
+                                        <input id="searchInput" 
+                                               type="text" 
+                                               placeholder="Tìm kiếm theo email, tên, ID..." 
+                                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                                        <div id="searchSpinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden">
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </div>
+                                    <div id="searchResults" class="search-results hidden"></div>
+                                </div>
+                                
+                                <!-- Enhanced Role Filter -->
+                                <select id="roleFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="">🎯 Tất cả vai trò</option>
+                                    <option value="admin">🛡️ Admin</option>
+                                    <option value="teacher">👨‍🏫 Giáo viên</option>
+                                    <option value="student">🎓 Học viên</option>
+                                </select>
+                                
+                                <!-- Status Filter -->
+                                <select id="statusFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="">📊 Tất cả trạng thái</option>
+                                    <option value="true">✅ Hoạt động</option>
+                                    <option value="false">❌ Vô hiệu hóa</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center gap-2">
+                                <button onclick="resetFilters()" class="px-4 py-3 text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-refresh mr-2"></i>Đặt lại
+                                </button>
+                                <div class="text-sm text-gray-500">
+                                    Tìm thấy: <span id="resultCount" class="font-semibold text-indigo-600">0</span> kết quả
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    // ==============================================
+                    // SIMPLIFIED ACCOUNT MANAGEMENT JAVASCRIPT
+                    // ==============================================
+                    
+                    console.log('🚀 Loading simplified account management...');
+                    
+                    // Simple functions for search and filter
+                    function setupSimpleSearch() {
+                        const searchInput = document.getElementById('searchInput');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', function(e) {
+                                const query = e.target.value.toLowerCase();
+                                filterUserRows(query);
+                            });
+                        }
+                    }
+                    
+                    function filterUserRows(query = '') {
+                        const rows = document.querySelectorAll('#userTableBody tr');
+                        const roleFilter = document.getElementById('roleFilter')?.value || '';
+                        const statusFilter = document.getElementById('statusFilter')?.value || '';
+                        
+                        rows.forEach(row => {
+                            let visible = true;
+                            
+                            // Search filter
+                            if (query) {
+                                const email = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
+                                const name = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
+                                visible = visible && (email.includes(query) || name.includes(query));
+                            }
+                            
+                            // Role filter
+                            if (roleFilter && roleFilter !== '') {
+                                const userRole = row.querySelector('.role-badge')?.textContent.toLowerCase() || '';
+                                visible = visible && userRole.includes(roleFilter.toLowerCase());
+                            }
+                            
+                            // Status filter
+                            if (statusFilter && statusFilter !== '') {
+                                const statusBadge = row.querySelector('.status-badge')?.textContent || '';
+                                if (statusFilter === 'active') {
+                                    visible = visible && statusBadge.includes('Hoạt động');
+                                } else if (statusFilter === 'inactive') {
+                                    visible = visible && statusBadge.includes('Vô hiệu');
+                                }
+                            }
+                            
+                            row.style.display = visible ? '' : 'none';
+                        });
+                    }
+                    
+                    // Setup event listeners
+                    function setupAccountManagement() {
+                        setupSimpleSearch();
+                        
+                        // Role filter
+                        const roleFilter = document.getElementById('roleFilter');
+                        if (roleFilter) {
+                            roleFilter.addEventListener('change', () => filterUserRows());
+                        }
+                        
+                        // Status filter
+                        const statusFilter = document.getElementById('statusFilter');
+                        if (statusFilter) {
+                            statusFilter.addEventListener('change', () => filterUserRows());
+                        }
+                        
+                        // Hide search results on outside click
+                        document.addEventListener('click', function(e) {
+                            if (!e.target.closest('.search-container')) {
+                                const searchResults = document.getElementById('searchResults');
+                                if (searchResults) {
+                                    searchResults.classList.add('hidden');
+                                }
+                            }
+                        });
+                        
+                        console.log('✅ Simple account management setup complete');
+                    }
+                    // Initialize when DOM is ready
+                    document.addEventListener('DOMContentLoaded', function() {
+                        setupAccountManagement();
+                    });
+                    </script>
+
+                    <!-- Enhanced Stats Grid with Charts -->
+                    <!-- XÓA TOÀN BỘ PHẦN STATS CARDS CŨ VÀ THAY BẰNG: -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Total Users Card -->
+                        <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-users text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-500 mb-1">Tổng tài khoản</h3>
+                                            <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.totalUsers %>"><%= stats.totalUsers %></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <span class="text-green-500 font-medium">+<%= stats.monthlyGrowthRate %>%</span>
+                                        <span class="text-gray-500 ml-2">so với tháng trước</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 mt-1">
+                                        <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                                        <%= stats.activeUsers %> hoạt động, 
+                                        <%= stats.inactiveUsers %> vô hiệu
+                                    </div>
+                                </div>
+                                <canvas id="totalUsersChart" width="60" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Admin Count Card -->
+                        <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in" style="animation-delay: 0.1s">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-user-shield text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-500 mb-1">Quản trị viên</h3>
+                                            <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.adminCount %>"><%= stats.adminCount %></p>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        <%= stats.adminPercentage %>% tổng số
+                                    </div>
+                                </div>
+                                <canvas id="adminChart" width="60" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Teacher Count Card -->
+                        <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in" style="animation-delay: 0.2s">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-500 mb-1">Giáo viên</h3>
+                                            <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.teacherCount %>"><%= stats.teacherCount %></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <span class="text-green-500 font-medium">+<%= stats.newTeachersThisWeek %></span>
+                                        <span class="text-gray-500 ml-2">mới tuần này</span>
+                                    </div>
+                                </div>
+                                <canvas id="teacherChart" width="60" height="60"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Student Count Card -->
+                        <div class="glass-card rounded-xl p-6 hover-scale animate-fade-in" style="animation-delay: 0.3s">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-user-graduate text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-500 mb-1">Học viên</h3>
+                                            <p class="text-2xl font-bold text-gray-900 counter" data-target="<%= stats.studentCount %>"><%= stats.studentCount %></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <span class="text-green-500 font-medium">+<%= stats.newStudentsThisWeek %></span>
+                                        <span class="text-gray-500 ml-2">mới tuần này</span>
+                                    </div>
+                                </div>
+                                <canvas id="studentChart" width="60" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced User Table -->
+                    <div class="glass-card rounded-xl shadow-lg overflow-hidden animate-fade-in" style="animation-delay: 0.4s">
+                        <!-- Table Header -->
+                        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900 mb-1">
+                                        <i class="fas fa-table mr-2 text-indigo-600"></i>
+                                        Danh sách tài khoản
+                                    </h2>
+                                    <p class="text-sm text-gray-600">Quản lý và theo dõi thông tin chi tiết các tài khoản</p>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <!-- View Toggle -->
+                                    <div class="flex bg-white rounded-lg p-1 border">
+                                        <button id="tableView" class="px-3 py-2 text-sm rounded-md bg-indigo-100 text-indigo-700">
+                                            <i class="fas fa-table mr-1"></i>Bảng
+                                        </button>
+                                        <button id="cardView" class="px-3 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100">
+                                            <i class="fas fa-th-large mr-1"></i>Thẻ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Table Content -->
+                        <div id="tableContainer" class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thông tin cá nhân</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" data-sort="email">
+                                            Email <i class="fas fa-sort text-gray-400 ml-1"></i>
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" data-sort="role">
+                                            Vai trò <i class="fas fa-sort text-gray-400 ml-1"></i>
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" data-sort="lastActive">
+                                            Hoạt động cuối
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userTableBody" class="bg-white divide-y divide-gray-200">
+                                    <% users.forEach(user => { %>
+                                    <tr class="table-row-hover" data-user-id="<%= user._id %>" data-user-email="<%= user.email %>" data-user-name="<%= user.fullName %>">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="status-indicator <%= user.isActive ? 'status-active' : 'status-inactive' %>">
+                                                    <img class="h-12 w-12 rounded-full object-cover border-2 border-gray-200" 
+                                                         src="<%= user.profileImage || '/images/default-avatar.png' %>" 
+                                                         alt="<%= user.fullName %>"
+                                                         onerror="this.src='/images/default-avatar.png'">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-semibold text-gray-900"><%= user.fullName %></div>
+                                                    <div class="text-sm text-gray-500 flex items-center">
+                                                        <span>ID: <%= user._id.toString().substr(-6) %></span>
+                                                        <!-- Thêm hiển thị giới tính -->
+                                                        <% if (user.gender) { %>
+                                                        <span class="ml-2 px-2 py-0.5 text-xs rounded-full
+                                                                   <%= user.gender === 'male' ? 'bg-blue-100 text-blue-700' : 
+                                                                      user.gender === 'female' ? 'bg-pink-100 text-pink-700' : 
+                                                                      'bg-purple-100 text-purple-700' %>">
+                                                            <% if (user.gender === 'male') { %>
+                                                                <i class="fas fa-mars mr-1"></i>Nam
+                                                            <% } else if (user.gender === 'female') { %>
+                                                                <i class="fas fa-venus mr-1"></i>Nữ
+                                                            <% } else { %>
+                                                                <i class="fas fa-genderless mr-1"></i>Khác
+                                                            <% } %>
+                                                        </span>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900"><%= user.email %></div>
+                                            <div class="text-sm text-gray-500">
+                                                <i class="fas fa-envelope mr-1"></i>
+                                                <%= user.emailVerified ? 'Đã xác thực' : 'Chưa xác thực' %>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="role-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                       role-<%= user.role %> 
+                                                       <%= user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
+                                                          user.role === 'teacher' ? 'bg-green-100 text-green-800' : 
+                                                          'bg-yellow-100 text-yellow-800' %>">
+                                                <%= user.role === 'admin' ? '🛡️ Admin' : 
+                                                   user.role === 'teacher' ? '👨‍🏫 Giáo viên' : '🎓 Học viên' %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <div class="tooltip" data-tooltip="<%= user.lastActive ? new Date(user.lastActive).toLocaleString('vi-VN') : 'Chưa có hoạt động' %>">
+                                                <i class="fas fa-clock text-gray-400 mr-2"></i>
+                                                <%= user.lastActive ? 
+                                                    Math.floor((Date.now() - new Date(user.lastActive)) / (1000 * 60 * 60 * 24)) + ' ngày trước' : 
+                                                    'Chưa có' %>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                           <%= user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                                    <i class="fas <%= user.isActive ? 'fa-check-circle' : 'fa-times-circle' %> mr-1"></i>
+                                                    <%= user.isActive ? 'Hoạt động' : 'Vô hiệu' %>
+                                                </span>
+                                                <% if (!user.isActive && user.blockReason) { %>
+                                                    <div class="ml-2 tooltip" data-tooltip="Lý do: <%= user.blockReason %>">
+                                                        <i class="fas fa-info-circle text-gray-400 text-xs"></i>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex items-center space-x-2">
+                                                <a href="/account-management/viewAccount/<%= user._id %>" 
+                                                   class="tooltip action-button text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-all"
+                                                   data-tooltip="Xem chi tiết">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="/account-management/edit/<%= user._id %>" 
+                                                   class="tooltip action-button text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-all"
+                                                   data-tooltip="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                
+                                                <!-- Lock/Unlock Button -->
+                                                <button onclick="toggleUserStatus('<%= user._id %>')" 
+                                                        class="action-button px-3 py-1 text-xs font-medium rounded-full transition-all duration-200
+                                                            <%= user.isActive 
+                                                                ? 'bg-red-100 text-red-800 hover:bg-red-200' 
+                                                                : 'bg-green-100 text-green-800 hover:bg-green-200' %>">
+                                                    <i class="fas <%= user.isActive ? 'fa-lock' : 'fa-unlock' %> mr-1"></i>
+                                                    <%= user.isActive ? 'Khóa' : 'Mở khóa' %>
+                                                </button>
+                                                
+                                                <button type="button"
+                                                        onclick="resetPassword('<%= user._id %>')"
+                                                        class="tooltip action-button text-orange-600 hover:text-orange-900 p-2 rounded-lg hover:bg-orange-50 transition-all"
+                                                        data-tooltip="Đặt lại mật khẩu">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                                <div class="relative">
+                                                    <button type="button"
+                                                            onclick="toggleMoreActions('<%= user._id %>')"
+                                                            class="tooltip action-button text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-50 transition-all"
+                                                            data-tooltip="Thêm hành động">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <div id="moreActions-<%= user._id %>" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border hidden z-50">
+                                                        <button onclick="sendMessage('<%= user._id %>')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                            <i class="fas fa-envelope text-blue-600 mr-2"></i>Gửi tin nhắn
+                                                        </button>
+                                                        <button onclick="viewLoginHistory('<%= user._id %>')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                            <i class="fas fa-history text-green-600 mr-2"></i>Lịch sử đăng nhập
+                                                        </button>
+                                                        <button onclick="exportUserData('<%= user._id %>')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                            <i class="fas fa-download text-purple-600 mr-2"></i>Xuất dữ liệu
+                                                        </button>
+                                                        <hr class="my-1">
+                                                        <button onclick="deleteUser('<%= user._id %>')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">
+                                                            <i class="fas fa-trash mr-2"></i>Xóa tài khoản
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Card View Container (Hidden by default) -->
+                        <div id="cardContainer" class="hidden p-6">
+                            <div id="userCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                <!-- User cards will be inserted here -->
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Pagination -->
+                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-500">Hiển thị</span>
+                                    <select id="pageSize" class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    <span class="text-sm text-gray-500">trên trang</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-500">
+                                        Trang <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                                    </span>
+                                    <div class="flex space-x-1">
+                                        <button id="prevPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <div id="pageNumbers" class="flex space-x-1">
+                                            <!-- Page numbers will be inserted here -->
+                                        </div>
+                                        <button id="nextPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Loading
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+            <div class="loading-spinner"></div>
+            <span class="text-gray-700">Đang xử lý...</span>
+        </div>
+    </div> -->
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Block User Modal -->
+    <div id="blockUserModal" class="fixed inset-0 bg-black bg-opacity-50 modal-overlay z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-lock text-red-600 mr-2"></i>
+                            Khóa Tài Khoản
+                        </h3>
+                        <button onclick="closeBlockModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                            Vui lòng nhập lý do khóa tài khoản:
+                        </p>
+                        <textarea id="blockReason" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" 
+                                  rows="4" 
+                                  placeholder="Ví dụ: Vi phạm quy định, spam, hành vi không phù hợp..."></textarea>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Lý do này sẽ được lưu trữ và hiển thị cho người dùng.
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                    <button onclick="closeBlockModal()" 
+                            class="px-4 py-2 text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        Hủy
+                    </button>
+                    <button onclick="confirmBlockUser()" 
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        <i class="fas fa-lock mr-2"></i>
+                        Xác nhận khóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Modals -->
+
+    <!-- Bulk Import Modal -->
+    <div id="bulkImportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Nhập tài khoản hàng loạt</h3>
+                <button onclick="closeBulkImport()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tải lên file Excel/CSV</label>
+                    <input type="file" id="bulkImportFile" accept=".xlsx,.xls,.csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+                <div class="text-sm text-gray-500">
+                    <p>Tải xuống <a href="/templates/user-import-template.xlsx" class="text-indigo-600 hover:underline">file mẫu</a> để biết định dạng.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeBulkImport()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Hủy</button>
+                    <button onclick="processBulkImport()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Nhập dữ liệu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="resetPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-key text-orange-500 mr-2"></i>
+                    Đặt lại mật khẩu
+                </h3>
+                <button onclick="closeResetPasswordModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-medium text-yellow-800 mb-1">Cảnh báo bảo mật</h4>
+                            <p class="text-sm text-yellow-700">
+                                Hành động này sẽ tạo mật khẩu mới ngẫu nhiên cho người dùng. 
+                                Hãy chắc chắn thông báo mật khẩu mới cho họ.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-sm text-gray-600">
+                    Bạn có chắc chắn muốn đặt lại mật khẩu cho tài khoản <strong id="resetPasswordUserEmail"></strong>?
+                </p>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeResetPasswordModal()" 
+                        class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                    Hủy
+                </button>
+                <button onclick="confirmResetPassword()" 
+                        id="confirmResetBtn"
+                        class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <i class="fas fa-key mr-2"></i>
+                    Đặt lại mật khẩu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Password Display Modal -->
+    <div id="newPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="text-center mb-4">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Đặt lại mật khẩu thành công!</h3>
+            </div>
+            
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Email:</p>
+                        <p class="font-medium" id="newPasswordUserEmail"></p>
+                        <p class="text-sm text-gray-600 mt-2 mb-1">Mật khẩu mới:</p>
+                        <div class="flex items-center space-x-2">
+                            <code class="bg-blue-100 text-blue-800 px-3 py-1 rounded font-mono text-lg" id="newPasswordValue"></code>
+                            <button onclick="copyPassword()" 
+                                    class="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                                    title="Sao chép">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p class="text-sm text-blue-700">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Hãy lưu lại mật khẩu này và thông báo cho người dùng ngay lập tức.
+                </p>
+            </div>
+            
+            <div class="flex justify-center">
+                <button onclick="closeNewPasswordModal()" 
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Đã hiểu
+                </button>
+            </div>
+        </div>
+    </div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+        <div class="loading-spinner"></div>
+        <span class="text-gray-700">Đang xử lý...</span>
+    </div>
+</div>
+
+<script>
+        // ACCOUNT LOCK FUNCTIONALITY
+        window.ACCOUNT_LOCK = {
+            modal: null,
+            reasonInput: null,
+            currentUserId: null,
+
+            init() {
+                this.modal = document.getElementById('blockUserModal');
+                this.reasonInput = document.getElementById('blockReason');
+                console.log('✅ Account lock system initialized');
+                return true;
+            },
+
+            show(userId) {
+                this.currentUserId = userId;
+                this.reasonInput.value = '';
+                this.modal.classList.remove('hidden');
+                this.reasonInput.focus();
+                console.log('🔒 Showing block modal for user:', userId);
+            },
+
+            hide() {
+                this.modal.classList.add('hidden');
+                this.currentUserId = null;
+                console.log('❌ Block modal hidden');
+            },
+
+            async confirmBlock() {
+                const reason = this.reasonInput.value.trim();
+                
+                if (!reason) {
+                    this.showToast('Vui lòng nhập lý do khóa tài khoản', 'warning');
+                    return;
+                }
+
+                if (!this.currentUserId) {
+                    this.showToast('Không tìm thấy ID người dùng', 'error');
+                    return;
+                }
+
+                console.log('🔄 Sending block request...', { userId: this.currentUserId, reason });
+
+                try {
+                    const response = await fetch(`/account-management/toggle-status/${this.currentUserId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            blockReason: reason 
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log('📨 Server response:', data);
+
+                    if (response.ok && data.success) {
+                        this.showToast(data.message || 'Đã khóa tài khoản thành công', 'success');
+                        this.hide();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        this.showToast(data.message || 'Có lỗi xảy ra khi khóa tài khoản', 'error');
+                    }
+                } catch (error) {
+                    console.error('❌ Network error:', error);
+                    this.showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+                }
+            },
+
+            showToast(message, type = 'info') {
+                const toastContainer = document.getElementById('toastContainer');
+                const toastId = 'toast-' + Date.now();
+                
+                const bgColors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500', 
+                    warning: 'bg-yellow-500',
+                    info: 'bg-blue-500'
+                };
+                
+                const toast = document.createElement('div');
+                toast.id = toastId;
+                toast.className = `${bgColors[type]} text-white px-6 py-3 rounded-lg shadow-lg mb-2 toast-enter max-w-sm`;
+                toast.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="flex-1">${message}</span>
+                        <button onclick="document.getElementById('${toastId}').remove()" class="text-white hover:text-gray-200 ml-4">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000);
+            }
+        };
+
+        // Global functions required by HTML onclick handlers
+        function toggleUserStatus(userId) {
+            console.log('🎯 toggleUserStatus called with:', userId);
+            ACCOUNT_LOCK.show(userId);
+        }
+
+        function closeBlockModal() {
+            ACCOUNT_LOCK.hide();
+        }
+
+        function confirmBlockUser() {
+            ACCOUNT_LOCK.confirmBlock();
+        }
+
+        function resetPassword(userId) {
+            console.log('🔑 Reset password for user:', userId);
+            ACCOUNT_LOCK.showToast('Chức năng đặt lại mật khẩu đang được phát triển', 'info');
+        }
+
+        function setupAccountManagement() {
+            // Initialize account lock system
+            ACCOUNT_LOCK.init();
+
+            // Setup basic search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const query = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#userTableBody tr');
+                        
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            row.style.display = text.includes(query) ? '' : 'none';
+                        });
+                        updateResultCount();
+                    }, 300);
+                });
+            }
+
+            // Setup filter functionality  
+            const roleFilter = document.getElementById('roleFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            
+            if (roleFilter) {
+                roleFilter.addEventListener('change', applyFilters);
+            }
+            
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
+
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    const searchResults = document.getElementById('searchResults');
+                    if (searchResults) {
+                        searchResults.classList.add('hidden');
+                    }
+                }
+            });
+            
+            console.log('✅ Account management setup complete');
+        }
+
+        function applyFilters() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#userTableBody tr');
+            
+            rows.forEach(row => {
+                let visible = true;
+                
+                // Search filter
+                if (searchQuery) {
+                    const text = row.textContent.toLowerCase();
+                    if (!text.includes(searchQuery)) {
+                        visible = false;
+                    }
+                }
+                
+                // Role filter
+                if (roleFilter) {
+                    const roleCell = row.querySelector('.role-badge');
+                    if (roleCell) {
+                        const roleText = roleCell.textContent.toLowerCase();
+                        if (!roleText.includes(roleFilter.toLowerCase())) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                // Status filter
+                if (statusFilter) {
+                    const statusCell = row.querySelector('.status-badge');
+                    if (statusCell) {
+                        const isActive = statusCell.textContent.includes('Hoạt động');
+                        if ((statusFilter === 'active' && !isActive) || (statusFilter === 'inactive' && isActive)) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                row.style.display = visible ? '' : 'none';
+            });
+            
+            updateResultCount();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            
+            const rows = document.querySelectorAll('#userTableBody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            updateResultCount();
+            ACCOUNT_LOCK.showToast('Đã đặt lại bộ lọc', 'info');
+        }
+
+        function updateResultCount() {
+            const visibleRows = document.querySelectorAll('#userTableBody tr:not([style*="display: none"])');
+            const resultCount = document.getElementById('resultCount');
+            if (resultCount) {
+                resultCount.textContent = `Hiển thị ${visibleRows.length} tài khoản`;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAccountManagement();
+        });
+    </script>
+    const statusValue = statusFilter.value;
+    const searchValue = searchQuery.value.toLowerCase();
+    const rows = document.querySelectorAll('#userTableBody tr');
+    
+    rows.forEach(row => {
+        let visible = true;
+        
+        // Search filter
+        if (searchValue) {
+            const text = row.textContent.toLowerCase();
+            if (!text.includes(searchValue)) {
+                visible = false;
+            }
+        }
+        
+        // Role filter
+        if (roleValue) {
+            const roleCell = row.querySelector('.role-badge');
+            if (roleCell) {
+                const roleText = roleCell.textContent.toLowerCase();
+                if (!roleText.includes(roleValue.toLowerCase())) {
+                    visible = false;
+                }
+            }
+        }
+        
+        // Status filter
+        if (statusValue) {
+            const statusCell = row.querySelector('.status-badge');
+            if (statusCell) {
+                const isActive = statusCell.textContent.includes('Hoạt động');
+                if ((statusValue === 'active' && !isActive) || (statusValue === 'inactive' && isActive)) {
+                    visible = false;
+                }
+            }
+        }
+        
+        row.style.display = visible ? '' : 'none';
+    });
+    
+    updateResultCount();
+}
+
+function resetFilters() {
+    const searchInput = document.getElementById('searchInput');
+    const roleFilter = document.getElementById('roleFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    
+    if (searchInput) searchInput.value = '';
+    if (roleFilter) roleFilter.value = '';
+    if (statusFilter) statusFilter.value = '';
+    
+    const rows = document.querySelectorAll('#userTableBody tr');
+    rows.forEach(row => {
+        row.style.display = '';
+    });
+    
+    updateResultCount();
+    if (ACCOUNT_LOCK) {
+        ACCOUNT_LOCK.showToast('Đã đặt lại bộ lọc', 'info');
+    }
+}
+
+function updateResultCount() {
+    const visibleRows = document.querySelectorAll('#userTableBody tr:not([style*="display: none"])');
+    const resultCount = document.getElementById('resultCount');
+    if (resultCount) {
+        resultCount.textContent = `Hiển thị ${visibleRows.length} tài khoản`;
+    }
+}
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAccountManagement();
+        });
+    </script>
+        setTimeout(() => {
+            toast.classList.remove('toast-enter');
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+};
+
+// Main function để khóa/mở khóa tài khoản
+window.toggleUserStatus = async function(userId) {
+    console.log('🔄 === TOGGLE USER STATUS START ===');
+    console.log('📋 User ID:', userId);
+    console.log('⏰ Time:', new Date().toLocaleString());
+    
+    // Prevent double processing
+    if (window.ACCOUNT_LOCK.isProcessing) {
+        console.log('⚠️ Already processing, please wait...');
+        return;
+    }
+    
+    if (!userId) {
+        console.error('❌ No userId provided');
+        showAccountToast('ID người dùng không hợp lệ', 'error');
+        return;
+    }
+
+    try {
+        window.ACCOUNT_LOCK.isProcessing = true;
+        
+        // Tìm user row
+        const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+        if (!userRow) {
+            throw new Error('Không tìm thấy thông tin người dùng trong bảng');
+        }
+        
+        // Kiểm tra trạng thái hiện tại
+        const statusBadge = userRow.querySelector('.status-badge');
+        const isCurrentlyActive = statusBadge && statusBadge.textContent.trim().includes('Hoạt động');
+        
+        console.log('📊 Current user status:', isCurrentlyActive ? 'ACTIVE' : 'INACTIVE');
+        
+        // Nếu user đang active, cần lý do khóa
+        let blockReason = null;
+        if (isCurrentlyActive) {
+            console.log('🔒 User is active, requesting block reason...');
+            blockReason = await requestBlockReason();
+            if (!blockReason) {
+                console.log('❌ User cancelled or no reason provided');
+                return;
+            }
+            console.log('✅ Block reason received:', blockReason);
+        }
+        
+        // Hiển thị loading
+        showLoadingState(userId, true);
+        
+        // Chuẩn bị request data
+        const requestData = {};
+        if (isCurrentlyActive && blockReason) {
+            requestData.blockReason = blockReason.trim();
+        }
+        
+        console.log('📤 Sending API request...');
+        console.log('🔗 URL:', `/account-management/toggle-status/${userId}`);
+        console.log('📦 Data:', requestData);
+        
+        // Gọi API
+        const response = await fetch(`/account-management/toggle-status/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(requestData)
+        });
+        
+        console.log('📥 Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log('� API Response:', result);
+        
+        if (result.success) {
+            // Cập nhật UI
+            updateUserRowDisplay(userId, result.data);
+            showAccountToast(result.message, 'success');
+            console.log('✅ Success!');
+        } else {
+            throw new Error(result.message || 'API trả về lỗi không xác định');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error:', error);
+        showAccountToast('Lỗi: ' + error.message, 'error');
+    } finally {
+        window.ACCOUNT_LOCK.isProcessing = false;
+        showLoadingState(userId, false);
+        console.log('🏁 === TOGGLE USER STATUS END ===');
+    }
+};
+
+// Function để yêu cầu lý do khóa
+function requestBlockReason() {
+    return new Promise((resolve) => {
+        console.log('📝 === REQUEST BLOCK REASON ===');
+        
+        // Xóa modal cũ nếu có
+        if (window.ACCOUNT_LOCK.currentModal) {
+            window.ACCOUNT_LOCK.currentModal.remove();
+        }
+        
+        // Tạo modal mới
+        const modalId = 'blockReasonModal_' + Date.now();
+        const modalHTML = `
+        <div id="${modalId}" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-red-600 mb-2">
+                        <i class="fas fa-lock mr-2"></i>Khóa Tài Khoản
+                    </h3>
+                    <div class="bg-red-50 border border-red-200 rounded p-3 mb-4">
+                        <p class="text-sm text-red-700">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Tài khoản sẽ bị khóa và người dùng không thể đăng nhập.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Lý do khóa tài khoản <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="blockReasonTextarea_${modalId}" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                              rows="4"
+                              placeholder="Nhập lý do khóa tài khoản (tối thiểu 5 ký tự)..."
+                              maxlength="500"></textarea>
+                    <div class="text-xs text-gray-400 mt-1">
+                        <span id="charCounter_${modalId}">0</span>/500 ký tự
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" 
+                            onclick="cancelBlockReason('${modalId}')"
+                            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-times mr-2"></i>Hủy
+                    </button>
+                    <button type="button" 
+                            onclick="confirmBlockReason('${modalId}')"
+                            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        <i class="fas fa-lock mr-2"></i>Khóa Tài Khoản
+                    </button>
+                </div>
+            </div>
+        </div>`;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        window.ACCOUNT_LOCK.currentModal = document.getElementById(modalId);
+        window.ACCOUNT_LOCK.resolveFunction = resolve;
+        
+        // Character counter
+        const textarea = document.getElementById(`blockReasonTextarea_${modalId}`);
+        const counter = document.getElementById(`charCounter_${modalId}`);
+        if (textarea && counter) {
+            textarea.addEventListener('input', () => {
+                counter.textContent = textarea.value.length;
+            });
+            
+            // Focus textarea
+            setTimeout(() => textarea.focus(), 100);
+        }
+        
+        console.log('✅ Modal created with ID:', modalId);
+    });
+}
+
+// Function để confirm lý do khóa
+window.confirmBlockReason = function(modalId) {
+    console.log('✅ Confirm block reason called for modal:', modalId);
+    
+    const textarea = document.getElementById(`blockReasonTextarea_${modalId}`);
+    const reason = textarea ? textarea.value.trim() : '';
+    
+    if (!reason) {
+        showAccountToast('Vui lòng nhập lý do khóa tài khoản', 'error');
+        textarea?.focus();
+        return;
+    }
+    
+    if (reason.length < 5) {
+        showAccountToast('Lý do khóa phải có ít nhất 5 ký tự', 'error');
+        textarea?.focus();
+        return;
+    }
+    
+    // Đóng modal và trả về kết quả
+    if (window.ACCOUNT_LOCK.currentModal) {
+        window.ACCOUNT_LOCK.currentModal.remove();
+        window.ACCOUNT_LOCK.currentModal = null;
+    }
+    
+    if (window.ACCOUNT_LOCK.resolveFunction) {
+        window.ACCOUNT_LOCK.resolveFunction(reason);
+        window.ACCOUNT_LOCK.resolveFunction = null;
+    }
+};
+
+// Function để cancel lý do khóa  
+window.cancelBlockReason = function(modalId) {
+    console.log('❌ Cancel block reason called for modal:', modalId);
+    
+    // Đóng modal
+    if (window.ACCOUNT_LOCK.currentModal) {
+        window.ACCOUNT_LOCK.currentModal.remove();
+        window.ACCOUNT_LOCK.currentModal = null;
+    }
+    
+    if (window.ACCOUNT_LOCK.resolveFunction) {
+        window.ACCOUNT_LOCK.resolveFunction(null);
+        window.ACCOUNT_LOCK.resolveFunction = null;
+    }
+};
+
+// Function để hiển thị loading state
+function showLoadingState(userId, show) {
+    const toggleButton = document.querySelector(`tr[data-user-id="${userId}"] button[onclick*="${userId}"]`);
+    if (!toggleButton) return;
+    
+    if (show) {
+        toggleButton.disabled = true;
+        toggleButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        console.log('🔄 Loading state ON for user:', userId);
+    } else {
+        toggleButton.disabled = false;
+        // Icon sẽ được cập nhật trong updateUserRowDisplay
+        console.log('🔄 Loading state OFF for user:', userId);
+    }
+}
+
+// Function để cập nhật UI sau khi thành công
+function updateUserRowDisplay(userId, data) {
+    console.log('🔄 Updating UI for user:', userId, data);
+    
+    const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+    if (!userRow) {
+        console.error('❌ User row not found for update');
+        return;
+    }
+    
+    const isActive = data.isActive;
+    
+    // 1. Cập nhật status badge
+    const statusBadge = userRow.querySelector('.status-badge');
+    if (statusBadge) {
+        statusBadge.className = 'status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full';
+        if (isActive) {
+            statusBadge.className += ' bg-green-100 text-green-800';
+            statusBadge.textContent = 'Hoạt động';
+        } else {
+            statusBadge.className += ' bg-red-100 text-red-800';
+            statusBadge.textContent = 'Vô hiệu';
+        }
+        console.log('✅ Status badge updated:', isActive ? 'Active' : 'Inactive');
+    }
+    
+    // 2. Cập nhật tooltip nếu bị khóa
+    const statusCell = statusBadge?.parentElement;
+    if (statusCell) {
+        if (!isActive && data.blockReason) {
+            statusCell.setAttribute('title', `Lý do khóa: ${data.blockReason}`);
+            statusCell.style.cursor = 'help';
+        } else {
+            statusCell.removeAttribute('title');
+            statusCell.style.cursor = 'default';
+        }
+    }
+    
+    // 3. Cập nhật button icon và tooltip
+    const toggleButton = userRow.querySelector(`button[onclick*="${userId}"]`);
+    if (toggleButton) {
+        const iconClass = isActive ? 'fas fa-lock' : 'fas fa-unlock';
+        const tooltip = isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+        toggleButton.innerHTML = `<i class="${iconClass}"></i>`;
+        toggleButton.setAttribute('data-tooltip', tooltip);
+        console.log('✅ Toggle button updated');
+    }
+    
+    // 4. Visual feedback
+    userRow.style.backgroundColor = '#fef3c7';
+    setTimeout(() => {
+        userRow.style.backgroundColor = '';
+        userRow.style.transition = 'background-color 0.5s ease';
+    }, 1000);
+    
+    console.log('✅ UI update completed');
+}
+
+// Function để hiển thị toast notification
+function showAccountToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        console.error('Toast container not found');
+        return;
+    }
+    
+    const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-blue-500'
+    };
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    const toastId = 'toast_' + Date.now();
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 mb-2 transform transition-all duration-300 translate-x-full`;
+    toast.innerHTML = `
+        <i class="fas ${icons[type]}"></i>
+        <span class="flex-1">${message}</span>
+        <button onclick="document.getElementById('${toastId}').remove()" class="text-white hover:text-gray-200">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        toast.classList.add('translate-x-full');
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+console.log('✅ Account lock functionality loaded successfully!');
+
+function updateUserStatusUI(userId, data) {
+    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+    if (!row) return;
+
+    const isActive = data.isActive;
+
+    // Update status badge
+    const statusBadge = row.querySelector('.status-badge');
+    if (statusBadge) {
+        statusBadge.className = `status-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`;
+        statusBadge.innerHTML = `
+            <i class="fas ${isActive ? 'fa-check-circle' : 'fa-times-circle'} mr-1"></i>
+            ${isActive ? 'Hoạt động' : 'Vô hiệu'}
+        `;
+    }
+
+    // Update or add block reason tooltip
+    const statusCell = statusBadge?.parentElement;
+    if (statusCell) {
+        // Remove existing block reason tooltip
+        const existingTooltip = statusCell.querySelector('.block-reason-tooltip');
+        if (existingTooltip) {
+            existingTooltip.remove();
+        }
+        
+        // Add new block reason tooltip if user is blocked
+        if (!isActive && data.blockReason) {
+            const tooltipDiv = document.createElement('div');
+            tooltipDiv.className = 'ml-2 tooltip block-reason-tooltip';
+            tooltipDiv.setAttribute('data-tooltip', `Lý do: ${data.blockReason}`);
+            tooltipDiv.innerHTML = '<i class="fas fa-info-circle text-gray-400 text-xs"></i>';
+            statusCell.appendChild(tooltipDiv);
+        }
+    }
+
+    // Update toggle button
+    const toggleButton = row.querySelector(`button[onclick*="${userId}"]`);
+    if (toggleButton) {
+        const iconElement = toggleButton.querySelector('i');
+        if (iconElement) {
+            iconElement.className = isActive ? 'fas fa-lock text-red-600' : 'fas fa-unlock text-green-600';
+        }
+        toggleButton.title = isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản';
+        toggleButton.className = `px-3 py-2 rounded-lg transition-colors ${
+            isActive ? 'bg-red-100 hover:bg-red-200' : 'bg-green-100 hover:bg-green-200'
+        }`;
+    }
+
+    // Update profile image indicator
+    const statusIndicator = row.querySelector('.status-indicator');
+    if (statusIndicator) {
+        statusIndicator.className = `status-indicator ${isActive ? 'status-active' : 'status-inactive'}`;
+    }
+    // Update profile image indicator
+    const statusIndicator = row.querySelector('.status-indicator');
+    if (statusIndicator) {
+        statusIndicator.className = `status-indicator ${isActive ? 'status-active' : 'status-inactive'}`;
+    }
+}
+
+// Block Reason Modal Functions
+function showBlockReasonModal(userId) {
+    console.log('=== SHOW BLOCK REASON MODAL ===');
+    console.log('Showing modal for userId:', userId);
+    
+    return new Promise((resolve) => {
+        const modal = document.getElementById('blockReasonModal');
+        const input = document.getElementById('blockReasonInput');
+        
+        if (!modal) {
+            console.error('❌ Block reason modal not found!');
+            resolve(null);
+            return;
+        }
+        
+        if (!input) {
+            console.error('❌ Block reason input not found!');
+            resolve(null);
+            return;
+        }
+        
+        console.log('✅ Modal and input elements found');
+        
+        // Clear previous input
+        input.value = '';
+        
+        // Store resolve function globally so buttons can access it
+        window.blockReasonResolve = resolve;
+        window.currentUserId = userId;
+        
+        console.log('🔄 Stored resolve function and userId globally');
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        console.log('✅ Modal shown');
+        
+        // Focus on input
+        setTimeout(() => {
+            input.focus();
+            console.log('✅ Input focused');
+        }, 100);
+    });
+}
+
+window.confirmBlockUser = function() {
+    console.log('=== CONFIRM BLOCK USER ===');
+    console.log('confirmBlockUser() called');
+    
+    const textarea = document.getElementById('blockReasonInput');
+    const reason = textarea ? textarea.value.trim() : '';
+    
+    console.log('Block reason input:', {
+        textarea: !!textarea,
+        reason: reason,
+        reasonLength: reason.length
+    });
+    
+    if (!reason) {
+        console.log('❌ No reason provided');
+        showToast('Vui lòng nhập lý do khóa tài khoản', 'error');
+        return;
+    }
+    
+    console.log('✅ Valid reason provided, proceeding...');
+    
+    // Store reason globally for the API call
+    window.currentBlockReason = reason;
+    console.log('📝 Stored reason globally:', window.currentBlockReason);
+    
+    closeBlockReasonModal();
+    
+    if (window.blockReasonResolve) {
+        console.log('✅ Resolving promise with reason:', reason);
+        window.blockReasonResolve(reason);
+    } else {
+        console.log('❌ No resolve function found!');
+    }
+    
+    console.log('=== CONFIRM BLOCK USER END ===');
+};
+
+window.cancelBlockUser = function() {
+    closeBlockReasonModal();
+    if (window.blockReasonResolve) {
+        window.blockReasonResolve(null);
+    }
+};
+
+function closeBlockReasonModal() {
+    const modal = document.getElementById('blockReasonModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    
+    // Clean up
+    window.blockReasonResolve = null;
+    window.currentUserId = null;
+}
+
+// Show toast notification
+function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) return;
+
+    const toast = document.createElement('div');
+    
+    const colors = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-blue-500'
+    };
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 mb-2 transform transition-all duration-300 translate-x-full`;
+    toast.innerHTML = `
+        <i class="fas ${icons[type]}"></i>
+        <span class="flex-1">${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+        toast.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Reset password function - Cải tiến với modal
+window.resetPassword = async function(userId) {
+    console.log('Reset password called for userId:', userId);
+    try {
+        // Get user info first from DOM for confirmation
+        const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+        if (!userRow) {
+            showToast('Không tìm thấy thông tin người dùng', 'error');
+            return;
+        }
+        
+        // Get user info from data attributes (most reliable)
+        const userEmailFromDOM = userRow.getAttribute('data-user-email') || 'Không xác định';
+        const userNameFromDOM = userRow.getAttribute('data-user-name') || 'Không xác định';
+        
+        // Show loading
+        showToast('Đang đặt lại mật khẩu...', 'info');
+        
+        const response = await fetch(`/account-management/reset-password/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const data = await response.json();
+        
+        // Debug: Log the response data
+        console.log('Reset password response:', data);
+
+        if (data.success) {
+            // Show success with new password using data from API response, fallback to DOM data
+            const userEmail = data.data.userEmail || userEmailFromDOM || 'Không xác định';
+            const userName = data.data.userName || userNameFromDOM || 'Không xác định';
+            const newPassword = data.data.newPassword || '';
+            
+            showPasswordModal(newPassword, userEmail, userName);
+            showToast('Đặt lại mật khẩu thành công', 'success');
+        } else {
+            showToast(data.message || 'Có lỗi xảy ra khi đặt lại mật khẩu', 'error');
+        }
+    } catch (error) {
+        console.error('Reset password error:', error);
+        showToast('Có lỗi xảy ra khi đặt lại mật khẩu', 'error');
+    }
+};
+
+// Show password modal
+function showPasswordModal(newPassword, userEmail, userName) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('newPasswordModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const modalHTML = `
+    <div id="newPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <i class="fas fa-key text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Mật khẩu mới đã được tạo</h3>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Tài khoản:</strong> ${userName}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Email:</strong> ${userEmail}
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600 mb-2">Mật khẩu mới:</div>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="newPasswordInput" readonly value="${newPassword}" class="flex-1 font-mono text-lg bg-white border rounded px-3 py-2 text-center tracking-wider">
+                            <button onclick="copyPassword()" class="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-xs text-red-600 bg-red-50 p-3 rounded">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Vui lòng sao chép và gửi mật khẩu cho người dùng. Mật khẩu này sẽ không hiển thị lại.
+                    </div>
+                </div>
+                <button onclick="closePasswordModal()" class="mt-6 w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Đã sao chép
+                </button>
+            </div>
+        </div>
+    </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// Copy password to clipboard
+function copyPassword() {
+    const passwordInput = document.getElementById('newPasswordInput');
+    passwordInput.select();
+    passwordInput.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+        document.execCommand('copy');
+        showToast('Đã sao chép mật khẩu vào clipboard', 'success');
+        
+        // Change copy button icon temporarily
+        const copyBtn = event.target.closest('button');
+        const icon = copyBtn.querySelector('i');
+        const originalClass = icon.className;
+        icon.className = 'fas fa-check text-green-600';
+        
+        setTimeout(() => {
+            icon.className = originalClass;
+        }, 2000);
+    } catch (err) {
+        // Fallback for older browsers
+        passwordInput.focus();
+        passwordInput.select();
+        showToast('Vui lòng sao chép mật khẩu thủ công', 'warning');
+    }
+}
+
+// Close password modal
+function closePasswordModal() {
+    const modal = document.getElementById('newPasswordModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// More actions toggle
+window.toggleMoreActions = function(userId) {
+    const menu = document.getElementById(`moreActions-${userId}`);
+    const allMenus = document.querySelectorAll('[id^="moreActions-"]');
+    
+    // Close all other menus
+    allMenus.forEach(m => {
+        if (m.id !== `moreActions-${userId}`) {
+            m.classList.add('hidden');
+        }
+    });
+    
+    // Toggle current menu
+    menu.classList.toggle('hidden');
+};
+
+// Other functions
+window.sendMessage = function(userId) {
+    showToast('Chức năng gửi tin nhắn đang được phát triển', 'info');
+};
+
+window.viewLoginHistory = function(userId) {
+    showToast('Chức năng xem lịch sử đăng nhập đang được phát triển', 'info');
+};
+
+window.exportUserData = async function(userId) {
+    try {
+        const response = await fetch(`/account-management/export-user/${userId}`);
+        
+        if (!response.ok) {
+            throw new Error('Không thể xuất dữ liệu');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `user-${userId}-data.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showToast('Đã xuất dữ liệu thành công', 'success');
+    } catch (error) {
+        console.error('Export error:', error);
+        showToast('Có lỗi xảy ra khi xuất dữ liệu', 'error');
+    }
+};
+
+window.deleteUser = async function(userId) {
+    try {
+        const response = await fetch(`/account-management/delete/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Remove row from table
+            const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+            if (row) {
+                row.remove();
+            }
+            showToast(data.message, 'success');
+        } else {
+            showToast(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        showToast('Có lỗi xảy ra khi xóa tài khoản', 'error');
+    }
+};
+
+// Export all users
+window.exportUsers = async function() {
+    try {
+        showToast('Đang xuất dữ liệu...', 'info');
+        
+        const response = await fetch('/account-management/export-all-users');
+        
+        if (!response.ok) {
+            throw new Error('Không thể xuất dữ liệu');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `all-users-${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showToast('Đã xuất dữ liệu thành công', 'success');
+    } catch (error) {
+        console.error('Export error:', error);
+        showToast('Có lỗi xảy ra khi xuất dữ liệu', 'error');
+    }
+};
+
+// Bulk import functions
+window.openBulkImport = function() {
+    showToast('Chức năng nhập hàng loạt đang được phát triển', 'info');
+};
+
+// Close dropdown menus when clicking outside
+document.addEventListener('click', function(event) {
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            counter.textContent = Math.floor(current);
+        }, 16);
+    });
+}
+
+console.log('✅ Account lock functionality loaded successfully!');
+</script>
+
+<!-- Stats and Analytics Script -->
+<script>
+// Stats data
+const STATS = {
+    totalUsers: <%= stats.totalUsers %>,
+    adminCount: <%= stats.adminCount %>,
+    teacherCount: <%= stats.teacherCount %>,
+    studentCount: <%= stats.studentCount %>,
+    activeUsers: <%= stats.activeUsers %>,
+    inactiveUsers: <%= stats.inactiveUsers %>
+};
+
+// Counter animation function
+function animateCounters() {
+    const counters = document.querySelectorAll('.counter');
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000; // 2 seconds
+        const increment = target / (duration / 16); // 60fps
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                counter.textContent = Math.floor(current);
+                return;
+            }
+            counter.textContent = Math.floor(current);
+            requestAnimationFrame(updateCounter);
+        };
+        
+        updateCounter();
+    });
+}
+
+// Chart creation function
+function createMiniCharts() {
+    // Check if Chart.js is loaded
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded');
+        return;
+    }
+    
+    try {
+        console.log('Creating charts with data:', STATS);
+        
+        // Total Users Chart (Doughnut - Active vs Inactive)
+        const totalUsersCanvas = document.getElementById('totalUsersChart');
+        if (totalUsersCanvas) {
+            new Chart(totalUsersCanvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hoạt động', 'Vô hiệu'],
+                    datasets: [{
+                        data: [STATS.activeUsers, STATS.inactiveUsers],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+            console.log('Total Users Chart created');
+        }
+
+        // Admin Chart (Doughnut - Admin vs Others)
+        const adminCanvas = document.getElementById('adminChart');
+        if (adminCanvas) {
+            new Chart(adminCanvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Admin', 'Khác'],
+                    datasets: [{
+                        data: [STATS.adminCount, STATS.totalUsers - STATS.adminCount],
+                        backgroundColor: ['#8b5cf6', '#e5e7eb'],
+                        borderWidth: 0,
+                        cutout: '70%'
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+            console.log('Admin Chart created');
+        }
+
+        // Teacher Chart (Line - Growth trend)
+        const teacherCanvas = document.getElementById('teacherChart');
+        if (teacherCanvas) {
+            new Chart(teacherCanvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['6 tuần', '5 tuần', '4 tuần', '3 tuần', '2 tuần', '1 tuần', 'Hiện tại'],
+                    datasets: [{
+                        data: [
+                            Math.max(0, STATS.teacherCount - 0.5),
+                            Math.max(0, STATS.teacherCount - 0.3),
+                            Math.max(0, STATS.teacherCount - 0.1),
+                            STATS.teacherCount,
+                            STATS.teacherCount,
+                            STATS.teacherCount,
+                            STATS.teacherCount
+                        ],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    }
+                }
+            });
+            console.log('Teacher Chart created');
+        }
+
+        // Student Chart (Bar - Distribution)
+        const studentCanvas = document.getElementById('studentChart');
+        if (studentCanvas) {
+            new Chart(studentCanvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['6 tuần', '5 tuần', '4 tuần', '3 tuần', '2 tuần', '1 tuần', 'Hiện tại'],
+                    datasets: [{
+                        data: [
+                            Math.max(1, STATS.studentCount - 2),
+                            Math.max(1, STATS.studentCount - 1.5),
+                            Math.max(1, STATS.studentCount - 1),
+                            Math.max(1, STATS.studentCount - 0.5),
+                            STATS.studentCount,
+                            STATS.studentCount,
+                            STATS.studentCount
+                        ],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 2,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false }
+                    }
+                }
+            });
+            console.log('Student Chart created');
+        }
+        
+        console.log('All charts created successfully');
+        
+    } catch (error) {
+        console.error('Error creating charts:', error);
+    }
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded - Initializing stats dashboard...');
+    
+    // Small delay to ensure Chart.js is fully loaded
+    setTimeout(() => {
+        console.log('Chart.js available:', typeof Chart !== 'undefined');
+        animateCounters();
+        createMiniCharts();
+    }, 500);
+});
+
+// Rest of existing functions remain unchanged...
+// (toggleUserStatus, resetPassword, etc.)
+</script>
+
+<!-- Include Enhanced Account Management JavaScript with cache busting -->
+<script src="/js/account-management.js?v=<%= Date.now() %>"></script>
+
+<!-- JavaScript from accountManagement1.ejs (Working Version) -->
+<script>
+        // ACCOUNT LOCK FUNCTIONALITY
+        window.ACCOUNT_LOCK = {
+            modal: null,
+            reasonInput: null,
+            currentUserId: null,
+
+            init() {
+                this.modal = document.getElementById('blockUserModal');
+                this.reasonInput = document.getElementById('blockReason');
+                console.log('✅ Account lock system initialized');
+                return true;
+            },
+
+            show(userId) {
+                this.currentUserId = userId;
+                this.reasonInput.value = '';
+                this.modal.classList.remove('hidden');
+                this.reasonInput.focus();
+                console.log('🔒 Showing block modal for user:', userId);
+            },
+
+            hide() {
+                this.modal.classList.add('hidden');
+                this.currentUserId = null;
+                console.log('❌ Block modal hidden');
+            },
+
+            async confirmBlock() {
+                const reason = this.reasonInput.value.trim();
+                
+                if (!reason) {
+                    this.showToast('Vui lòng nhập lý do khóa tài khoản', 'warning');
+                    return;
+                }
+
+                if (!this.currentUserId) {
+                    this.showToast('Không tìm thấy ID người dùng', 'error');
+                    return;
+                }
+
+                console.log('🔄 Sending block request...', { userId: this.currentUserId, reason });
+
+                try {
+                    const response = await fetch(`/account-management/toggle-status/${this.currentUserId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            blockReason: reason 
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log('📨 Server response:', data);
+
+                    if (response.ok && data.success) {
+                        this.showToast(data.message || 'Đã khóa tài khoản thành công', 'success');
+                        this.hide();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        this.showToast(data.message || 'Có lỗi xảy ra khi khóa tài khoản', 'error');
+                    }
+                } catch (error) {
+                    console.error('❌ Network error:', error);
+                    this.showToast('Lỗi kết nối. Vui lòng thử lại.', 'error');
+                }
+            },
+
+            showToast(message, type = 'info') {
+                const toastContainer = document.getElementById('toastContainer');
+                const toastId = 'toast-' + Date.now();
+                
+                const bgColors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500', 
+                    warning: 'bg-yellow-500',
+                    info: 'bg-blue-500'
+                };
+                
+                const toast = document.createElement('div');
+                toast.id = toastId;
+                toast.className = `${bgColors[type]} text-white px-6 py-3 rounded-lg shadow-lg mb-2 toast-enter max-w-sm`;
+                toast.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="flex-1">${message}</span>
+                        <button onclick="document.getElementById('${toastId}').remove()" class="text-white hover:text-gray-200 ml-4">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000);
+            }
+        };
+
+        // Global functions required by HTML onclick handlers
+        function toggleUserStatus(userId) {
+            console.log('🎯 toggleUserStatus called with:', userId);
+            ACCOUNT_LOCK.show(userId);
+        }
+
+        function closeBlockModal() {
+            ACCOUNT_LOCK.hide();
+        }
+
+        function confirmBlockUser() {
+            ACCOUNT_LOCK.confirmBlock();
+        }
+
+        function resetPassword(userId) {
+            console.log('🔑 Reset password for user:', userId);
+            ACCOUNT_LOCK.showToast('Chức năng đặt lại mật khẩu đang được phát triển', 'info');
+        }
+
+        function setupAccountManagement() {
+            // Initialize account lock system
+            ACCOUNT_LOCK.init();
+
+            // Setup basic search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const query = this.value.toLowerCase();
+                        const rows = document.querySelectorAll('#userTableBody tr');
+                        
+                        rows.forEach(row => {
+                            const text = row.textContent.toLowerCase();
+                            row.style.display = text.includes(query) ? '' : 'none';
+                        });
+                        updateResultCount();
+                    }, 300);
+                });
+            }
+
+            // Setup filter functionality  
+            const roleFilter = document.getElementById('roleFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            
+            if (roleFilter) {
+                roleFilter.addEventListener('change', applyFilters);
+            }
+            
+            if (statusFilter) {
+                statusFilter.addEventListener('change', applyFilters);
+            }
+
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    const searchResults = document.getElementById('searchResults');
+                    if (searchResults) {
+                        searchResults.classList.add('hidden');
+                    }
+                }
+            });
+            
+            console.log('✅ Account management setup complete');
+        }
+
+        function applyFilters() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#userTableBody tr');
+            
+            rows.forEach(row => {
+                let visible = true;
+                
+                // Search filter
+                if (searchQuery) {
+                    const text = row.textContent.toLowerCase();
+                    if (!text.includes(searchQuery)) {
+                        visible = false;
+                    }
+                }
+                
+                // Role filter
+                if (roleFilter) {
+                    const roleCell = row.querySelector('.role-badge');
+                    if (roleCell) {
+                        const roleText = roleCell.textContent.toLowerCase();
+                        if (!roleText.includes(roleFilter.toLowerCase())) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                // Status filter
+                if (statusFilter) {
+                    const statusCell = row.querySelector('.status-badge');
+                    if (statusCell) {
+                        const isActive = statusCell.textContent.includes('Hoạt động');
+                        if ((statusFilter === 'active' && !isActive) || (statusFilter === 'inactive' && isActive)) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                row.style.display = visible ? '' : 'none';
+            });
+            
+            updateResultCount();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            
+            const rows = document.querySelectorAll('#userTableBody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            updateResultCount();
+            ACCOUNT_LOCK.showToast('Đã đặt lại bộ lọc', 'info');
+        }
+
+        function updateResultCount() {
+            const visibleRows = document.querySelectorAll('#userTableBody tr:not([style*="display: none"])');
+            const resultCount = document.getElementById('resultCount');
+            if (resultCount) {
+                resultCount.textContent = `Hiển thị ${visibleRows.length} tài khoản`;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAccountManagement();
+        });
+    </script>
+
+<!-- Override browser confirm to prevent unwanted popups -->
+<script>
+// Override window.confirm to prevent any confirmation dialogs
+window.confirm = function(message) {
+    console.log('Confirm dialog blocked:', message);
+    return true; // Always return true to proceed
+};
+</script>
+</body>
+</html>

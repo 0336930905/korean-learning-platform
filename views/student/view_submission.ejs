@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem bài nộp | <%= submission.assignment.title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 32px;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .hero-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .submission-details-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submission-details-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+            padding: 32px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .assignment-info {
+            padding: 32px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+            border: 2px solid rgba(59, 130, 246, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .info-item-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .info-content {
+            flex: 1;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .file-preview-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-preview-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .file-card {
+            padding: 32px;
+        }
+        
+        .file-display {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.05));
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .file-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .file-display:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .file-icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .file-display:hover .file-icon-container {
+            transform: scale(1.1);
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .file-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1));
+            color: #3b82f6;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn-view:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(96, 165, 250, 0.2));
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #3b82f6;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .grade-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grade-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .graded-card {
+            padding: 32px;
+        }
+        
+        .grade-display {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(52, 211, 153, 0.05));
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .grade-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .grade-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
+        }
+        
+        .grade-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .grade-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .grade-info {
+            flex: 1;
+        }
+        
+        .grade-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .grade-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 16px;
+        }
+        
+        .grade-feedback {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .pending-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pending-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .pending-card {
+            padding: 32px;
+        }
+        
+        .pending-display {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.05));
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .pending-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.15);
+        }
+        
+        .pending-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .pending-content {
+            flex: 1;
+        }
+        
+        .pending-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .pending-description {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .actions-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .actions-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .actions-content {
+            padding: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .primary-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .primary-btn:hover::before {
+            left: 100%;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            color: #ef4444;
+            border: 2px solid rgba(239, 68, 68, 0.2);
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .delete-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .delete-btn:hover::before {
+            left: 100%;
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.2));
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .delete-btn:disabled {
+            background: linear-gradient(135deg, rgba(156, 163, 175, 0.1), rgba(209, 213, 219, 0.1));
+            color: #9ca3af;
+            border-color: rgba(156, 163, 175, 0.2);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .delete-btn:disabled:hover {
+            transform: none;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #374151;
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #374151 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            animation: slideInUp 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+        }
+        
+        .modal-body {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+        }
+        
+        .modal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .modal-btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-cancel {
+            background: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+            border: 2px solid rgba(156, 163, 175, 0.2);
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(156, 163, 175, 0.2);
+            border-color: rgba(156, 163, 175, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .btn-confirm {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 24px;
+            }
+            
+            .hero-title {
+                font-size: 24px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .info-item {
+                padding: 16px;
+            }
+            
+            .section-header {
+                padding: 24px;
+            }
+            
+            .file-card,
+            .graded-card,
+            .pending-card {
+                padding: 24px;
+            }
+            
+            .file-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .file-actions {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+            
+            .action-btn {
+                justify-content: center;
+            }
+            
+            .actions-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .grade-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .grade-score {
+                font-size: 36px;
+            }
+            
+            .pending-display {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            
+            .modal-content {
+                padding: 24px;
+                margin: 20px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <div class="flex h-screen">
+        <!-- Include Student Sidebar -->
+        <%- include('../partials/student_sidebar', { 
+            user: locals.user, 
+            path: '/student/assignments' 
+        }) %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- Hero Section -->
+                    <div class="hero-section slide-in">
+                        <!-- Back Button -->
+                        <a href="/student/assignments/submit" class="back-button">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Quay lại danh sách bài tập</span>
+                        </a>
+                        
+                        <!-- Hero Content -->
+                        <div class="hero-content">
+                            <div class="hero-icon">
+                                <i class="fas fa-file-check"></i>
+                            </div>
+                            <h1 class="hero-title"><%= submission.assignment.title %></h1>
+                            <p class="hero-subtitle">Chi tiết bài nộp của bạn</p>
+                        </div>
+                    </div>
+
+                    <!-- Submission Details -->
+                    <div class="submission-details-section slide-in fade-in" style="animation-delay: 0.1s;">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <div class="section-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                Thông tin bài tập
+                            </div>
+                        </div>
+                        
+                        <div class="assignment-info">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-item-icon">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-label">Lớp học</div>
+                                        <div class="info-value"><%= submission.assignment.class.name %></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <div class="info-item-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-label">Khóa học</div>
+                                        <div class="info-value"><%= submission.assignment.class.course.title %></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <div class="info-item-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-label">Hạn nộp</div>
+                                        <div class="info-value">
+                                            <%= new Date(submission.assignment.dueDate).toLocaleDateString('vi-VN') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <div class="info-item-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-label">Nộp lúc</div>
+                                        <div class="info-value">
+                                            <%= new Date(submission.submittedAt).toLocaleDateString('vi-VN') %><br>
+                                            <small class="text-sm text-gray-500">
+                                                <%= new Date(submission.submittedAt).toLocaleTimeString('vi-VN', { 
+                                                    hour: '2-digit', 
+                                                    minute: '2-digit' 
+                                                }) %>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Preview -->
+                    <div class="file-preview-section slide-in fade-in" style="animation-delay: 0.2s;">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <div class="section-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                Tệp đã nộp
+                            </div>
+                        </div>
+                        
+                        <div class="file-card">
+                            <div class="file-display">
+                                <div class="file-info">
+                                    <%
+                                        const fileType = submission.fileType;
+                                        const fileIcon = getFileIcon(fileType);
+                                        const fileIconStyle = getFileIconStyle(fileType);
+                                        
+                                        let fileTypeColor = 'background: rgba(107, 114, 128, 0.1); color: #6b7280; border-color: rgba(107, 114, 128, 0.2);';
+                                        
+                                        if (fileType === 'pdf') {
+                                            fileTypeColor = 'background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);';
+                                        } else if (['jpg', 'jpeg', 'png'].includes(fileType)) {
+                                            fileTypeColor = 'background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2);';
+                                        } else if (fileType === 'mp3') {
+                                            fileTypeColor = 'background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border-color: rgba(139, 92, 246, 0.2);';
+                                        } else if (fileType === 'mp4') {
+                                            fileTypeColor = 'background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2);';
+                                        } else if (['doc', 'docx'].includes(fileType)) {
+                                            fileTypeColor = 'background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2);';
+                                        }
+                                    %>
+                                    
+                                    <div class="file-icon-container" style="<%= fileIconStyle %>">
+                                        <i class="fas <%= fileIcon %>"></i>
+                                    </div>
+                                    
+                                    <div class="file-details">
+                                        <div class="file-name"><%= submission.fileName %></div>
+                                        <div class="file-type-badge" style="<%= fileTypeColor %>">
+                                            <i class="fas <%= fileIcon %>"></i>
+                                            <span><%= fileType.toUpperCase() %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="file-actions">
+                                    <a href="/student/view-submission/<%= submission.fileName %>" 
+                                       target="_blank"
+                                       class="action-btn btn-view">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Xem tệp</span>
+                                    </a>
+                                    
+                                    <a href="/student/download-submission/<%= submission.fileName %>" 
+                                       class="action-btn btn-download">
+                                        <i class="fas fa-download"></i>
+                                        <span>Tải xuống</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grade or Pending Section -->
+                    <% if (submission.grade && submission.grade.score !== undefined) { %>
+                        <!-- Graded Section -->
+                        <div class="grade-section slide-in fade-in" style="animation-delay: 0.3s;">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-award"></i>
+                                    </div>
+                                    Kết quả chấm điểm
+                                </div>
+                            </div>
+                            
+                            <div class="graded-card">
+                                <div class="grade-display">
+                                    <div class="grade-header">
+                                        <div class="grade-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="grade-info">
+                                            <div class="grade-title">Điểm của bạn</div>
+                                            <div class="grade-score"><%= submission.grade.score %>/10</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <% if (submission.grade.feedback) { %>
+                                        <div class="grade-feedback">
+                                            <strong>Nhận xét từ giáo viên:</strong><br>
+                                            <%= submission.grade.feedback %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <!-- Pending Section -->
+                        <div class="pending-section slide-in fade-in" style="animation-delay: 0.3s;">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-hourglass-half"></i>
+                                    </div>
+                                    Trạng thái chấm điểm
+                                </div>
+                            </div>
+                            
+                            <div class="pending-card">
+                                <div class="pending-display">
+                                    <div class="pending-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="pending-content">
+                                        <div class="pending-title">Đang chờ chấm điểm</div>
+                                        <div class="pending-description">
+                                            Bài nộp của bạn đã được gửi thành công và đang chờ giáo viên chấm điểm. 
+                                            Bạn sẽ nhận được thông báo khi có kết quả.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Actions Section -->
+                    <div class="actions-section slide-in fade-in" style="animation-delay: 0.4s;">
+                        <div class="actions-content">
+                            <a href="/student/assignments/submit" class="primary-btn">
+                                <i class="fas fa-list"></i>
+                                <span>Quay lại danh sách</span>
+                            </a>
+                            
+                            <% if (!submission.grade || submission.grade.score === undefined) { %>
+                                <button onclick="showDeleteModal('<%= submission.assignment._id %>')" 
+                                        class="delete-btn">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Hủy nộp bài</span>
+                                </button>
+                            <% } else { %>
+                                <div class="tooltip">
+                                    <button class="delete-btn" disabled>
+                                        <i class="fas fa-trash"></i>
+                                        <span>Hủy nộp bài</span>
+                                    </button>
+                                    <span class="tooltiptext">Không thể hủy bài đã được chấm điểm</span>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="modal-title">Xác nhận hủy nộp bài</div>
+            </div>
+            
+            <div class="modal-body">
+                Bạn có chắc chắn muốn hủy nộp bài này không? Hành động này không thể hoàn tác và bạn sẽ cần nộp lại bài tập.
+            </div>
+            
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="modal-btn btn-cancel">
+                    <i class="fas fa-times"></i>
+                    <span>Hủy</span>
+                </button>
+                <button onclick="confirmDelete()" class="modal-btn btn-confirm">
+                    <i class="fas fa-check"></i>
+                    <span>Xác nhận</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/student_footer') %>
+    
+    <script>
+        let currentAssignmentId = null;
+
+        function showDeleteModal(assignmentId) {
+            // First check if submission can be deleted
+            fetch(`/student/check-submission/${assignmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.canDelete) {
+                        currentAssignmentId = assignmentId;
+                        document.getElementById('deleteModal').classList.add('show');
+                    } else {
+                        showNotification('Không thể hủy bài đã được chấm điểm', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra khi kiểm tra trạng thái bài nộp', 'error');
+                });
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            currentAssignmentId = null;
+        }
+
+        function confirmDelete() {
+            if (!currentAssignmentId) return;
+
+            // Show loading state
+            const confirmBtn = document.querySelector('.btn-confirm');
+            const originalContent = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang xử lý...</span>';
+            confirmBtn.disabled = true;
+
+            fetch(`/student/delete-submission/${currentAssignmentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Đã hủy nộp bài thành công!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/student/assignments/submit';
+                    }, 1500);
+                } else if (data.error === 'ALREADY_GRADED') {
+                    showNotification('Không thể hủy bài đã được chấm điểm', 'error');
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra khi hủy nộp bài', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi hủy nộp bài', 'error');
+            })
+            .finally(() => {
+                confirmBtn.innerHTML = originalContent;
+                confirmBtn.disabled = false;
+                closeDeleteModal();
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            switch (type) {
+                case 'success':
+                    notification.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+                    break;
+                case 'error':
+                    notification.style.background = 'linear-gradient(135deg, #ef4444, #f87171)';
+                    break;
+                case 'warning':
+                    notification.style.background = 'linear-gradient(135deg, #f59e0b, #fbbf24)';
+                    break;
+                case 'info':
+                    notification.style.background = 'linear-gradient(135deg, #3b82f6, #60a5fa)';
+                    break;
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                   type === 'error' ? 'fa-exclamation-circle' : 
+                                   type === 'warning' ? 'fa-exclamation-triangle' :
+                                   'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add staggered animations
+            const elements = document.querySelectorAll('.slide-in, .fade-in');
+            elements.forEach((el, index) => {
+                if (!el.style.animationDelay) {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('deleteModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeDeleteModal();
+                }
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape to close modal or go back
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('deleteModal');
+                if (modal.classList.contains('show')) {
+                    closeDeleteModal();
+                } else {
+                    window.history.back();
+                }
+            }
+            
+            // Enter to confirm in modal
+            if (e.key === 'Enter' && document.getElementById('deleteModal').classList.contains('show')) {
+                confirmDelete();
+            }
+        });
+    </script>
+</body>
+</html>

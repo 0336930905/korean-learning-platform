@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn thanh toán | Korean Learning Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .invoice-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            border-radius: 0;
+        }
+        
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .company-info {
+            color: white;
+        }
+        
+        .invoice-number {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-paid {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .invoice-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .invoice-table th {
+            background: #f8fafc;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .invoice-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            background: white;
+        }
+        
+        .course-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .total-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .signature-section {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            background: #fafafa;
+            text-align: center;
+        }
+        
+        .instructor-signature {
+            margin-top: 40px;
+            border-top: 2px solid #374151;
+            padding-top: 8px;
+            display: inline-block;
+            min-width: 200px;
+        }
+        
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            color: rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+            }
+            
+            .watermark {
+                color: rgba(0, 0, 0, 0.03) !important;
+            }
+        }
+        
+        .btn-action {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .info-section {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .invoice-header .flex {
+                flex-direction: column;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 py-8 px-4">
+    <!-- Watermark -->
+    <% if (invoice.status === 'paid') { %>
+        <div class="watermark">PAID</div>
+    <% } else { %>
+        <div class="watermark">PENDING</div>
+    <% } %>
+
+    <div class="invoice-container">
+        <!-- Header Section -->
+        <div class="invoice-header p-8">
+            <div class="flex justify-between items-start">
+                <!-- Company Info -->
+                <div class="flex items-start gap-6">
+                    <div class="company-logo">
+                        <img src="/images/logo.png" alt="Korean Learning Center" class="w-full h-full object-contain">
+                    </div>
+                    <div class="company-info">
+                        <h1 class="text-2xl font-bold mb-2">KOREAN LEARNING CENTER</h1>
+                        <p class="text-blue-100 mb-1">Trung tâm học tiếng Hàn chuyên nghiệp</p>
+                        <p class="text-blue-100 mb-1"><i class="fas fa-phone mr-2"></i>0123-456-789</p>
+                        <p class="text-blue-100 mb-1"><i class="fas fa-envelope mr-2"></i>info@koreanlearning.vn</p>
+                        <p class="text-blue-100"><i class="fas fa-map-marker-alt mr-2"></i>123 Nguyễn Văn Cừ, Q.5, TP.HCM</p>
+                    </div>
+                </div>
+                
+                <!-- Invoice Info -->
+                <div class="text-right">
+                    <h2 class="text-3xl font-bold text-white mb-4">HÓA ĐƠN</h2>
+                    <div class="invoice-number mb-3">
+                        # <%= invoice._id.toString().slice(-8).toUpperCase() %>
+                    </div>
+                    <div class="status-badge 
+                        <%= invoice.status === 'paid' ? 'status-paid' : 
+                           invoice.status === 'pending' ? 'status-pending' : 
+                           'status-failed' %>">
+                        <i class="fas <%= invoice.status === 'paid' ? 'fa-check-circle' :
+                                       invoice.status === 'pending' ? 'fa-clock' :
+                                       'fa-times-circle' %>"></i>
+                        <%= invoice.status === 'paid' ? 'Đã thanh toán' :
+                           invoice.status === 'pending' ? 'Chờ thanh toán' :
+                           'Thanh toán thất bại' %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer & Date Info -->
+        <div class="info-section">
+            <div class="info-grid">
+                <div>
+                    <h3 class="section-title">
+                        <i class="fas fa-user text-blue-600"></i>
+                        Thông tin khách hàng
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="info-item">
+                            <span class="info-label">Họ và tên</span>
+                            <span class="info-value"><%= invoice.student.fullName %></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value"><%= invoice.student.email %></span>
+                        </div>
+                        <% if (invoice.student.phone) { %>
+                        <div class="info-item">
+                            <span class="info-label">Số điện thoại</span>
+                            <span class="info-value"><%= invoice.student.phone %></span>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar text-green-600"></i>
+                        Thông tin hóa đơn
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="info-item">
+                            <span class="info-label">Ngày tạo</span>
+                            <span class="info-value"><%= new Date(invoice.createdAt).toLocaleDateString('vi-VN') %></span>
+                        </div>
+                        <% if (invoice.paidAt) { %>
+                        <div class="info-item">
+                            <span class="info-label">Ngày thanh toán</span>
+                            <span class="info-value"><%= new Date(invoice.paidAt).toLocaleDateString('vi-VN') %></span>
+                        </div>
+                        <% } %>
+                        <div class="info-item">
+                            <span class="info-label">Mã giao dịch</span>
+                            <span class="info-value font-mono"><%= invoice.transactionId || invoice._id.toString().slice(-12) %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Details Table -->
+        <div class="p-6">
+            <h3 class="section-title mb-4">
+                <i class="fas fa-book text-purple-600"></i>
+                Chi tiết khóa học
+            </h3>
+            
+            <table class="invoice-table w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left">Khóa học</th>
+                        <th class="text-center">Cấp độ</th>
+                        <th class="text-center">Thời lượng</th>
+                        <th class="text-right">Giá tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-4">
+                                <div class="course-image bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900"><%= course.title %></div>
+                                    <div class="text-sm text-gray-600 mt-1"><%= course.description %></div>
+                                    <div class="text-xs text-gray-500 mt-1">Danh mục: <%= course.category %></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                <%= course.level === 'beginner' ? 'Cơ bản' : 
+                                   course.level === 'intermediate' ? 'Trung cấp' : 'Nâng cao' %>
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-gray-700 font-medium"><%= course.duration || '12 tuần' %></span>
+                        </td>
+                        <td class="text-right">
+                            <span class="text-lg font-semibold text-gray-900">
+                                <%= new Intl.NumberFormat('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                }).format(course.price) %>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="p-6">
+            <div class="total-section">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold text-gray-700">Phương thức thanh toán:</span>
+                    <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg font-medium">
+                        <%= {
+                            'zalopay_app': 'ZaloPay App',
+                            'zalopay_qr': 'ZaloPay QR Code',
+                            'zalopay_cc': 'Thẻ tín dụng/ghi nợ',
+                            'zalopay_atm': 'Thẻ ATM nội địa',
+                            'momo': 'MoMo Wallet',
+                            'vnpay': 'VNPay'
+                        }[invoice.paymentMethod] || 'Chuyển khoản' %>
+                    </span>
+                </div>
+                
+                <div class="border-t pt-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold text-gray-900">Tổng cộng:</span>
+                        <span class="text-2xl font-bold text-green-600">
+                            <%= new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(invoice.amount) %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructor Info & Signature -->
+        <div class="info-section">
+            <div class="info-grid">
+                <div>
+                    <h3 class="section-title">
+                        <i class="fas fa-chalkboard-teacher text-orange-600"></i>
+                        Thông tin giảng viên
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="info-item">
+                            <span class="info-label">Giảng viên</span>
+                            <span class="info-value"><%= course.instructor.fullName %></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email liên hệ</span>
+                            <span class="info-value"><%= course.instructor.email %></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="signature-section">
+                    <h4 class="font-semibold text-gray-700 mb-4">Chữ ký giảng viên</h4>
+                    <div class="h-16 flex items-end justify-center">
+                        <div class="instructor-signature text-center">
+                            <div class="text-sm font-medium text-gray-800"><%= course.instructor.fullName %></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="p-6 bg-gray-50 text-center">
+            <div class="text-sm text-gray-600 mb-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                Hóa đơn này được tạo tự động và có giá trị pháp lý
+            </div>
+            <div class="text-xs text-gray-500">
+                © <%= new Date().getFullYear() %> Korean Learning Center. Tất cả quyền được bảo lưu.
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="p-6 bg-white border-t no-print">
+            <div class="flex justify-center gap-4">
+                <button onclick="printInvoice()" class="btn-action">
+                    <i class="fas fa-print"></i>
+                    In hóa đơn
+                </button>
+                <button onclick="downloadPDF()" class="btn-action">
+                    <i class="fas fa-download"></i>
+                    Tải PDF
+                </button>
+                <a href="/student/dashboard" class="btn-action bg-gray-600 hover:bg-gray-700">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printInvoice() {
+            window.print();
+        }
+
+        function downloadPDF() {
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = window.location.href + '?format=pdf';
+            link.download = `hoa-don-${new Date().getTime()}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to info items
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(4px)';
+                    this.style.transition = 'all 0.2s ease';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

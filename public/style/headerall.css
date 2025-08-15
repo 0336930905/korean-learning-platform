@@ -1,0 +1,133 @@
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-bottom: 1px solid #eaeaea;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .header-left {
+    flex: 1;
+  }
+  
+  .header-left h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .breadcrumb {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumb-item:not(:last-child):after {
+    content: '/';
+    margin: 0 8px;
+    color: #ccc;
+  }
+  
+  .breadcrumb-item a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  .breadcrumb-item.active {
+    color: #666;
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .search-wrapper {
+    position: relative;
+  }
+  
+  #courseSearch {
+    padding: 8px 12px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    width: 220px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+  }
+  
+  .search-input:focus {
+    width: 250px;
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+  }
+  
+  .filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8.825l-4.175-4.15 1.4-1.4L6 6.025l2.775-2.75 1.4 1.4z'/%3E%3C/svg%3E");
+    background-position: calc(100% - 10px) center;
+    background-repeat: no-repeat;
+    padding-right: 30px;
+  }
+  
+  .btn.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 500;
+  }
+  
+  .btn.btn-primary:hover {
+    background-color: #2980b9;
+  }
+  
+  .btn.btn-primary i {
+    font-size: 0.9rem;
+  }
+  .main-content{
+    width: 100%;
+    padding: 20px;  
+  }
+
+  .logo img {
+    width: 80px;
+    height: 80px;
+    margin-right: 10px;
+    transform: translateZ(20px);
+    transition: all 0.3s ease;
+}

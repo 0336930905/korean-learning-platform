@@ -1,0 +1,1964 @@
+<!-- filepath: src/views/student/accountManagement.ejs -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tài khoản | Korean Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        /* Profile Avatar Section */
+        .profile-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+        
+        .avatar-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 6px solid white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .avatar-wrapper:hover {
+            transform: translateY(-8px) rotateY(15deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+        }
+        
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+        
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        .upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .upload-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+        
+        /* Stats Grid with 3D Effects */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        
+        .stat-card.account::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-card.courses::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .stat-card.progress::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .stat-card.achievements::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-12px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: iconShimmer 3s infinite;
+        }
+        
+        @keyframes iconShimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .stat-card.account .stat-icon {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .stat-card.courses .stat-icon {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .stat-card.progress .stat-icon {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        
+        .stat-card.achievements .stat-icon {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        .stat-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 4px;
+            transition: width 2s ease-out;
+            animation: progressFill 2s ease-out;
+        }
+        
+        @keyframes progressFill {
+            from { width: 0%; }
+        }
+        
+        /* Form Sections with 3D Effects */
+        .form-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 32px;
+            transform-style: preserve-3d;
+        }
+        
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .form-section.security::before {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .form-section.settings::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(96, 165, 250, 0.05));
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1);
+            padding: 32px;
+        }
+        
+        .form-section.security .form-header {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(248, 113, 113, 0.05));
+            border-bottom: 2px solid rgba(239, 68, 68, 0.1);
+        }
+        
+        .form-section.settings .form-header {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.05));
+            border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .form-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: iconShimmer 3s infinite;
+        }
+        
+        .form-section .form-icon {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .form-section.security .form-icon {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        .form-section.settings .form-icon {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        .form-body {
+            padding: 32px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .form-input:disabled {
+            background: rgba(249, 250, 251, 0.8);
+            color: #6b7280;
+            cursor: not-allowed;
+            border-color: rgba(229, 231, 235, 0.5);
+        }
+        
+        .form-section.security .form-input {
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        
+        .form-section.security .form-input:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+        
+        .form-section.settings .form-input {
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        .form-section.settings .form-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+        
+        .form-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #e5e7eb;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.active::before {
+            transform: translateX(30px);
+        }
+        
+        /* Theme Settings */
+        .theme-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+        
+        .theme-option.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.1));
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        }
+        
+        .theme-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .theme-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+        
+        .theme-light .theme-icon {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .theme-dark .theme-icon {
+            background: linear-gradient(135deg, #374151, #4b5563);
+        }
+        
+        .theme-auto .theme-icon {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        
+        /* 3D Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) rotateX(5deg);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .btn-danger::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-danger:hover::before {
+            left: 100%;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px) rotateX(5deg);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-purple {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .btn-purple::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-purple:hover::before {
+            left: 100%;
+        }
+        
+        .btn-purple:hover {
+            transform: translateY(-3px) rotateX(5deg);
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak { background: #ef4444; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #10b981; width: 75%; }
+        .strength-strong { background: #059669; width: 100%; }
+        
+        /* Alerts */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .alert-success::before {
+            background: #10b981;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .alert-error::before {
+            background: #ef4444;
+        }
+        
+        /* Tab Container */
+        .tab-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+        
+        .tab-btn {
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .account-notification {
+            animation: slideInRight 0.3s ease-out;
+            z-index: 1000;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Dark theme styles */
+        .dark {
+            background: linear-gradient(135deg, #1f2937, #111827);
+        }
+        
+        .dark .glass-card {
+            background: rgba(31, 41, 55, 0.9);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+        
+        .dark .form-section,
+        .dark .profile-section,
+        .dark .tab-container {
+            background: rgba(31, 41, 55, 0.95);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+        
+        .dark .form-input {
+            background: rgba(17, 24, 39, 0.8);
+            border-color: rgba(75, 85, 99, 0.4);
+            color: #f9fafb;
+        }
+        
+        .dark .form-input:focus {
+            background: rgba(17, 24, 39, 0.95);
+        }
+        
+        .dark .form-label,
+        .dark .form-title,
+        .dark .stat-number {
+            color: #f9fafb;
+        }
+        
+        .dark .stat-label,
+        .dark .form-note {
+            color: #d1d5db;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 24px;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-content {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .form-section {
+                margin: 16px;
+                border-radius: 20px;
+            }
+            
+            .form-header {
+                padding: 24px;
+            }
+            
+            .form-body {
+                padding: 24px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .form-title {
+                font-size: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .form-input {
+                padding: 12px 16px;
+            }
+            
+            .tab-container {
+                border-radius: 20px;
+                padding: 4px;
+            }
+            
+            .tab-btn {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .avatar-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .theme-option {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen" id="appBody">
+    <div class="flex h-screen">
+        <!-- Include Student Sidebar -->
+        <%- include('../partials/student_sidebar', { 
+            user: locals.user, 
+            path: '/student/account' 
+        }) %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto">
+                <div class="container mx-auto px-6 py-8">
+                    <!-- Flash Messages -->
+                    <% if (typeof success !== 'undefined' && success.length > 0) { %>
+                        <div class="alert alert-success slide-in">
+                            <i class="fas fa-check-circle mr-3"></i>
+                            <%= success %>
+                        </div>
+                    <% } %>
+                    <% if (typeof error !== 'undefined' && error.length > 0) { %>
+                        <div class="alert alert-error slide-in">
+                            <i class="fas fa-exclamation-circle mr-3"></i>
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <!-- Hero Section -->
+                    <div class="hero-section slide-in">
+                        <div class="hero-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h1 class="hero-title">Quản lý tài khoản</h1>
+                        <p class="hero-subtitle">Cập nhật thông tin cá nhân và bảo mật tài khoản của bạn</p>
+                    </div>
+
+                    <!-- Profile Avatar Section -->
+                    <div class="profile-section slide-in fade-in" style="animation-delay: 0.1s;">
+                        <div class="text-center">
+                            <div class="avatar-container">
+                                <div class="avatar-wrapper" onclick="AccountManager.openFileSelector()">
+                                    <img src="<%= user.profileImage || '/images/default-avatar.png' %>" 
+                                         alt="Avatar" 
+                                         class="avatar-image"
+                                         id="avatarPreview">
+                                    <div class="avatar-overlay">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <div class="upload-btn">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2"><%= user.fullName %></h2>
+                            <p class="text-gray-600 mb-4"><%= user.email %></p>
+                            <div class="flex justify-center space-x-4">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-user-tag mr-1"></i>
+                                    <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
+                                </span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Hoạt động
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Grid -->
+                    <div class="stats-grid slide-in fade-in" style="animation-delay: 0.2s;">
+                        <!-- Account Info -->
+                        <div class="stat-card account">
+                            <div class="stat-badge">Tài khoản</div>
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-count="<%= new Date().getFullYear() - new Date(user.joinedDate || user.createdAt).getFullYear() %>">
+                                        <%= Math.max(1, new Date().getFullYear() - new Date(user.joinedDate || user.createdAt).getFullYear()) %>
+                                    </div>
+                                    <div class="stat-label">Năm học tập</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enrolled Courses -->
+                        <div class="stat-card courses">
+                            <div class="stat-badge">Khóa học</div>
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-count="<%= user.enrolledCourses?.length || 0 %>">
+                                        <%= user.enrolledCourses?.length || 0 %>
+                                    </div>
+                                    <div class="stat-label">Khóa học đã đăng ký</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <%= Math.min(100, (user.enrolledCourses?.length || 0) * 20) %>%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="stat-card progress">
+                            <div class="stat-badge">Tiến độ</div>
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-count="<%= user.progress?.totalPoints || 0 %>">
+                                        <%= user.progress?.totalPoints || 0 %>
+                                    </div>
+                                    <div class="stat-label">Tổng điểm</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <%= Math.min(100, (user.progress?.totalPoints || 0) / 10) %>%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="stat-card achievements">
+                            <div class="stat-badge">Thành tích</div>
+                            <div class="stat-content">
+                                <div class="stat-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <div class="stat-number" data-count="<%= user.progress?.completedLessons?.length || 0 %>">
+                                        <%= user.progress?.completedLessons?.length || 0 %>
+                                    </div>
+                                    <div class="stat-label">Bài học hoàn thành</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <%= Math.min(100, (user.progress?.completedLessons?.length || 0) * 5) %>%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Navigation -->
+                    <div class="tab-container slide-in fade-in" style="animation-delay: 0.3s;">
+                        <div class="flex flex-wrap justify-center">
+                            <button onclick="AccountManager.showTab('personal')" class="tab-btn active">
+                                <i class="fas fa-user mr-2"></i>
+                                Thông tin cá nhân
+                            </button>
+                            <button onclick="AccountManager.showTab('settings')" class="tab-btn">
+                                <i class="fas fa-cog mr-2"></i>
+                                Thiết lập
+                            </button>
+                            <button onclick="AccountManager.showTab('security')" class="tab-btn">
+                                <i class="fas fa-lock mr-2"></i>
+                                Bảo mật
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information Tab -->
+                    <div id="personal" class="tab-content active">
+                        <div class="form-section slide-in fade-in" style="animation-delay: 0.4s;">
+                            <div class="form-header">
+                                <div class="form-title">
+                                    <div class="form-icon">
+                                        <i class="fas fa-id-card"></i>
+                                    </div>
+                                    Cập nhật thông tin cá nhân
+                                </div>
+                            </div>
+                            
+                            <div class="form-body">
+                                <form action="/student/account/update" method="POST" enctype="multipart/form-data">
+                                    <input type="file" id="profileImageInput" name="profileImage" accept="image/*" style="display: none;">
+                                    
+                                    <div class="form-grid">
+                                        <!-- Họ và tên -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-user mr-2"></i>
+                                                Họ và tên
+                                            </label>
+                                            <input type="text" name="fullName" value="<%= user.fullName %>" 
+                                                   class="form-input" required placeholder="Nhập họ và tên">
+                                        </div>
+
+                                        <!-- Email (readonly) -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-envelope mr-2"></i>
+                                                Email
+                                            </label>
+                                            <input type="email" value="<%= user.email %>" 
+                                                   class="form-input" disabled>
+                                            <div class="form-note">
+                                                <i class="fas fa-info-circle"></i>
+                                                Email không thể thay đổi
+                                            </div>
+                                        </div>
+
+                                        <!-- Giới tính -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-venus-mars mr-2"></i>
+                                                Giới tính
+                                            </label>
+                                            <select name="gender" class="form-input">
+                                                <option value="">Chọn giới tính</option>
+                                                <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Nam</option>
+                                                <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Nữ</option>
+                                                <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Khác</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Số điện thoại -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-phone mr-2"></i>
+                                                Số điện thoại
+                                            </label>
+                                            <input type="tel" name="phone" value="<%= user.phone || '' %>" 
+                                                   class="form-input" placeholder="Nhập số điện thoại">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end mt-8">
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-save mr-2"></i>
+                                            Lưu thay đổi
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settings" class="tab-content">
+                        <div class="form-section settings slide-in fade-in" style="animation-delay: 0.4s;">
+                            <div class="form-header">
+                                <div class="form-title">
+                                    <div class="form-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    Thiết lập giao diện & ngôn ngữ
+                                </div>
+                            </div>
+                            
+                            <div class="form-body">
+                                <form action="/student/account/settings" method="POST">
+                                    <!-- Theme Settings -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-paint-brush mr-2"></i>
+                                            Chế độ hiển thị
+                                        </label>
+                                        <div class="space-y-3">
+                                            <div class="theme-option theme-light" onclick="AccountManager.setTheme('light')">
+                                                <div class="theme-info">
+                                                    <div class="theme-icon">
+                                                        <i class="fas fa-sun"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-semibold text-gray-800">Chế độ sáng</div>
+                                                        <div class="text-sm text-gray-600">Giao diện sáng, phù hợp ban ngày</div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-check">
+                                                    <i class="fas fa-check text-green-600" id="lightCheck" style="display: none;"></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="theme-option theme-dark" onclick="AccountManager.setTheme('dark')">
+                                                <div class="theme-info">
+                                                    <div class="theme-icon">
+                                                        <i class="fas fa-moon"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-semibold text-gray-800">Chế độ tối</div>
+                                                        <div class="text-sm text-gray-600">Giao diện tối, bảo vệ mắt ban đêm</div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-check">
+                                                    <i class="fas fa-check text-green-600" id="darkCheck" style="display: none;"></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="theme-option theme-auto active" onclick="AccountManager.setTheme('auto')">
+                                                <div class="theme-info">
+                                                    <div class="theme-icon">
+                                                        <i class="fas fa-adjust"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-semibold text-gray-800">Tự động</div>
+                                                        <div class="text-sm text-gray-600">Thay đổi theo thời gian trong ngày</div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-check">
+                                                    <i class="fas fa-check text-green-600" id="autoCheck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="theme" id="themeInput" value="auto">
+                                    </div>
+
+                                    <!-- Language Settings -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-language mr-2"></i>
+                                            Ngôn ngữ hiển thị
+                                        </label>
+                                        <select name="language" class="form-input" id="languageSelect">
+                                            <option value="vi" <%= (user.settings?.language || 'vi') === 'vi' ? 'selected' : '' %>>
+                                                🇻🇳 Tiếng Việt
+                                            </option>
+                                            <option value="en" <%= (user.settings?.language || 'vi') === 'en' ? 'selected' : '' %>>
+                                                🇺🇸 English
+                                            </option>
+                                            <option value="ko" <%= (user.settings?.language || 'vi') === 'ko' ? 'selected' : '' %>>
+                                                🇰🇷 한국어
+                                            </option>
+                                        </select>
+                                        <div class="form-note">
+                                            <i class="fas fa-info-circle"></i>
+                                            Thay đổi ngôn ngữ hiển thị của giao diện
+                                        </div>
+                                    </div>
+
+                                    
+
+                                    <div class="flex justify-end mt-8">
+                                        <button type="submit" class="btn-purple">
+                                            <i class="fas fa-save mr-2"></i>
+                                            Lưu thiết lập
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div id="security" class="tab-content">
+                        <div class="form-section security slide-in fade-in" style="animation-delay: 0.4s;">
+                            <div class="form-header">
+                                <div class="form-title">
+                                    <div class="form-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    Đổi mật khẩu
+                                </div>
+                            </div>
+                            
+                            <div class="form-body">
+                                <form action="/student/account/change-password" method="POST">
+                                    <div class="space-y-6">
+                                        <!-- Mật khẩu hiện tại -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-key mr-2"></i>
+                                                Mật khẩu hiện tại
+                                            </label>
+                                            <input type="password" name="currentPassword" 
+                                                   class="form-input" required placeholder="Nhập mật khẩu hiện tại">
+                                        </div>
+
+                                        <!-- Mật khẩu mới -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-lock mr-2"></i>
+                                                Mật khẩu mới
+                                            </label>
+                                            <input type="password" name="newPassword" id="newPasswordInput"
+                                                   class="form-input" required minlength="6"
+                                                   placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                                                   onkeyup="AccountManager.checkPasswordStrength(this.value)">
+                                            <div class="password-strength">
+                                                <div id="strengthBar" class="password-strength-bar"></div>
+                                            </div>
+                                            <div class="form-note">
+                                                <i class="fas fa-info-circle"></i>
+                                                Mật khẩu phải có ít nhất 6 ký tự
+                                            </div>
+                                        </div>
+
+                                        <!-- Xác nhận mật khẩu -->
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <i class="fas fa-lock mr-2"></i>
+                                                Xác nhận mật khẩu mới
+                                            </label>
+                                            <input type="password" name="confirmPassword" id="confirmPasswordInput"
+                                                   class="form-input" required placeholder="Nhập lại mật khẩu mới">
+                                            <div id="passwordError" class="text-red-500 text-sm mt-2 hidden">
+                                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                                Mật khẩu xác nhận không khớp
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end mt-8">
+                                        <button type="submit" id="changePasswordBtn" class="btn-danger">
+                                            <i class="fas fa-shield-alt mr-2"></i>
+                                            Đổi mật khẩu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+        </div>
+    </div>
+            <%- include('../partials/student_footer') %>
+
+    <script>
+        // Account Management Namespace - Tách biệt hoàn toàn với footer JS
+        window.AccountManager = {
+            // State variables
+            currentTheme: 'auto',
+            settings: {
+                emailNotifications: true,
+                soundNotifications: false,
+                assignmentNotifications: true
+            },
+            
+            // Initialize account manager
+            init() {
+                // Wait for DOM to be ready
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.initializeAccountManager());
+                } else {
+                    this.initializeAccountManager();
+                }
+            },
+
+            initializeAccountManager() {
+                // Initialize components
+                this.setupAccountAnimations();
+                this.setupStatCounters();
+                this.setupFormValidation();
+                this.setupThemeManager();
+                this.loadAccountSettings();
+                this.setupAccountEventListeners();
+            },
+
+            setupAccountEventListeners() {
+                // Profile image upload
+                const profileInput = document.getElementById('profileImageInput');
+                if (profileInput) {
+                    profileInput.addEventListener('change', (e) => this.handleImageUpload(e));
+                }
+
+                // Password validation
+                const confirmPassword = document.getElementById('confirmPasswordInput');
+                if (confirmPassword) {
+                    confirmPassword.addEventListener('input', () => this.validatePasswordMatch());
+                }
+
+                // Language auto-save
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.addEventListener('change', () => this.autoSaveLanguage());
+                }
+
+                // Keyboard shortcuts for account management
+                document.addEventListener('keydown', (e) => this.handleAccountKeyboardShortcuts(e));
+            },
+
+            // Tab Management - Unique function names
+            showTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Remove active class from all tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                const targetTab = document.getElementById(tabName);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+                
+                // Add active class to clicked tab button
+                const tabs = ['personal', 'settings', 'security'];
+                const tabIndex = tabs.indexOf(tabName);
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                if (tabButtons[tabIndex]) {
+                    tabButtons[tabIndex].classList.add('active');
+                }
+                
+                // Show account notification
+                this.showAccountNotification(`Đã chuyển sang tab ${this.getTabDisplayName(tabName)}`, 'info');
+            },
+
+            getTabDisplayName(tabName) {
+                const names = {
+                    personal: 'Thông tin cá nhân',
+                    settings: 'Thiết lập',
+                    security: 'Bảo mật'
+                };
+                return names[tabName] || tabName;
+            },
+
+            // Image Upload Management
+            openFileSelector() {
+                const input = document.getElementById('profileImageInput');
+                if (input) {
+                    input.click();
+                }
+            },
+
+            handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        this.showAccountNotification('Vui lòng chọn file hình ảnh hợp lệ!', 'error');
+                        return;
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        this.showAccountNotification('Kích thước file không được vượt quá 5MB!', 'error');
+                        return;
+                    }
+
+                    // Preview image
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const preview = document.getElementById('avatarPreview');
+                        if (preview) {
+                            preview.src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+
+                    this.showAccountNotification('Hình ảnh đã được chọn. Nhấn "Lưu thay đổi" để cập nhật!', 'success');
+                }
+            },
+
+            // Theme Management
+            setTheme(theme) {
+                this.currentTheme = theme;
+                
+                // Update UI
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                document.querySelectorAll('.theme-check i').forEach(check => {
+                    check.style.display = 'none';
+                });
+                
+                // Show selected theme
+                const selectedCheck = document.getElementById(`${theme}Check`);
+                if (selectedCheck) {
+                    selectedCheck.style.display = 'inline';
+                }
+                
+                document.querySelector(`.theme-${theme}`).classList.add('active');
+                
+                // Update hidden input
+                const themeInput = document.getElementById('themeInput');
+                if (themeInput) {
+                    themeInput.value = theme;
+                }
+                
+                // Apply theme immediately
+                this.applyTheme(theme);
+                
+                this.showAccountNotification(`Đã chuyển sang chế độ ${this.getThemeDisplayName(theme)}`, 'success');
+            },
+
+            getThemeDisplayName(theme) {
+                const names = {
+                    light: 'sáng',
+                    dark: 'tối',
+                    auto: 'tự động'
+                };
+                return names[theme] || theme;
+            },
+
+            applyTheme(theme) {
+                const body = document.getElementById('appBody');
+                if (!body) return;
+
+                body.classList.remove('dark', 'light');
+                
+                if (theme === 'dark') {
+                    body.classList.add('dark');
+                } else if (theme === 'light') {
+                    body.classList.add('light');
+                } else {
+                    // Auto theme based on time
+                    const hour = new Date().getHours();
+                    if (hour >= 19 || hour <= 6) {
+                        body.classList.add('dark');
+                    } else {
+                        body.classList.add('light');
+                    }
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('accountTheme', theme);
+            },
+
+            // Settings Management
+            toggleSetting(button, settingName) {
+                const isActive = button.classList.contains('active');
+                
+                if (isActive) {
+                    button.classList.remove('active');
+                    this.settings[settingName] = false;
+                } else {
+                    button.classList.add('active');
+                    this.settings[settingName] = true;
+                }
+                
+                // Save settings
+                localStorage.setItem('accountSettings', JSON.stringify(this.settings));
+                
+                this.showAccountNotification(
+                    `${this.getSettingDisplayName(settingName)} đã được ${isActive ? 'tắt' : 'bật'}`, 
+                    'info'
+                );
+            },
+
+            getSettingDisplayName(settingName) {
+                const names = {
+                    emailNotifications: 'Thông báo email',
+                    soundNotifications: 'Âm thanh thông báo',
+                    assignmentNotifications: 'Thông báo bài tập'
+                };
+                return names[settingName] || settingName;
+            },
+
+            // Password Validation
+            checkPasswordStrength(password) {
+                const strengthBar = document.getElementById('strengthBar');
+                if (!strengthBar) return;
+
+                let strength = 0;
+                let className = '';
+
+                if (password.length >= 6) strength++;
+                if (password.match(/[a-z]/)) strength++;
+                if (password.match(/[A-Z]/)) strength++;
+                if (password.match(/[0-9]/)) strength++;
+                if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+                switch (strength) {
+                    case 0:
+                    case 1:
+                        className = 'strength-weak';
+                        break;
+                    case 2:
+                        className = 'strength-fair';
+                        break;
+                    case 3:
+                        className = 'strength-good';
+                        break;
+                    case 4:
+                    case 5:
+                        className = 'strength-strong';
+                        break;
+                }
+
+                strengthBar.className = `password-strength-bar ${className}`;
+            },
+
+            validatePasswordMatch() {
+                const newPassword = document.getElementById('newPasswordInput');
+                const confirmPassword = document.getElementById('confirmPasswordInput');
+                const errorElement = document.getElementById('passwordError');
+                const submitBtn = document.getElementById('changePasswordBtn');
+
+                if (!newPassword || !confirmPassword || !errorElement) return;
+
+                if (confirmPassword.value && newPassword.value !== confirmPassword.value) {
+                    errorElement.classList.remove('hidden');
+                    if (submitBtn) submitBtn.disabled = true;
+                } else {
+                    errorElement.classList.add('hidden');
+                    if (submitBtn) submitBtn.disabled = false;
+                }
+            },
+
+            // Auto-save language setting
+            autoSaveLanguage() {
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    const selectedLanguage = languageSelect.value;
+                    localStorage.setItem('accountLanguage', selectedLanguage);
+                    this.showAccountNotification(`Đã thay đổi ngôn ngữ sang ${this.getLanguageDisplayName(selectedLanguage)}`, 'success');
+                }
+            },
+
+            getLanguageDisplayName(language) {
+                const names = {
+                    vi: 'Tiếng Việt',
+                    en: 'English',
+                    ko: '한국어'
+                };
+                return names[language] || language;
+            },
+
+            // Initialize animations specific to account page
+            setupAccountAnimations() {
+                const elements = document.querySelectorAll('.slide-in, .fade-in');
+                elements.forEach((element, index) => {
+                    element.style.animationDelay = `${index * 0.1}s`;
+                });
+            },
+
+            // Initialize stat counters
+            setupStatCounters() {
+                const counters = document.querySelectorAll('.stat-number[data-count]');
+                
+                const counterObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const counter = entry.target;
+                            const target = parseInt(counter.getAttribute('data-count'));
+                            this.animateStatCounter(counter, 0, target, 2000);
+                            counterObserver.unobserve(counter);
+                        }
+                    });
+                });
+                
+                counters.forEach(counter => counterObserver.observe(counter));
+            },
+
+            animateStatCounter(element, start, end, duration) {
+                const range = end - start;
+                const increment = range / (duration / 16);
+                let current = start;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= end) {
+                        current = end;
+                        clearInterval(timer);
+                    }
+                    
+                    element.textContent = Math.floor(current).toLocaleString();
+                }, 16);
+            },
+
+            // Form validation setup
+            setupFormValidation() {
+                // Real-time validation for forms
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    const inputs = form.querySelectorAll('input[required]');
+                    inputs.forEach(input => {
+                        input.addEventListener('blur', () => this.validateField(input));
+                        input.addEventListener('input', () => this.clearFieldError(input));
+                    });
+                });
+            },
+
+            validateField(field) {
+                const value = field.value.trim();
+                let isValid = true;
+                let errorMessage = '';
+
+                if (field.hasAttribute('required') && !value) {
+                    isValid = false;
+                    errorMessage = 'Trường này là bắt buộc';
+                } else if (field.type === 'email' && value && !this.isValidEmail(value)) {
+                    isValid = false;
+                    errorMessage = 'Email không hợp lệ';
+                } else if (field.type === 'tel' && value && !this.isValidPhone(value)) {
+                    isValid = false;
+                    errorMessage = 'Số điện thoại không hợp lệ';
+                }
+
+                this.showFieldError(field, isValid ? '' : errorMessage);
+                return isValid;
+            },
+
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            },
+
+            isValidPhone(phone) {
+                return /^[0-9+\-\s()]{10,15}$/.test(phone);
+            },
+
+            showFieldError(field, message) {
+                // Remove existing error
+                const existingError = field.parentNode.querySelector('.field-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                if (message) {
+                    field.classList.add('error');
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'field-error text-red-500 text-sm mt-1';
+                    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-1"></i>${message}`;
+                    field.parentNode.appendChild(errorDiv);
+                } else {
+                    field.classList.remove('error');
+                }
+            },
+
+            clearFieldError(field) {
+                field.classList.remove('error');
+                const errorDiv = field.parentNode.querySelector('.field-error');
+                if (errorDiv) {
+                    errorDiv.remove();
+                }
+            },
+
+            // Theme initialization
+            setupThemeManager() {
+                const savedTheme = localStorage.getItem('accountTheme') || 'auto';
+                this.setTheme(savedTheme);
+            },
+
+            // Load user settings
+            loadAccountSettings() {
+                const savedSettings = localStorage.getItem('accountSettings');
+                if (savedSettings) {
+                    this.settings = { ...this.settings, ...JSON.parse(savedSettings) };
+                }
+
+                // Apply saved settings to UI
+                Object.entries(this.settings).forEach(([key, value]) => {
+                    const toggle = document.querySelector(`[onclick*="${key}"]`);
+                    if (toggle) {
+                        if (value) {
+                            toggle.classList.add('active');
+                        } else {
+                            toggle.classList.remove('active');
+                        }
+                    }
+                });
+
+                // Load saved language
+                const savedLanguage = localStorage.getItem('accountLanguage');
+                const languageSelect = document.getElementById('languageSelect');
+                if (savedLanguage && languageSelect) {
+                    languageSelect.value = savedLanguage;
+                }
+            },
+
+            // Keyboard shortcuts
+            handleAccountKeyboardShortcuts(event) {
+                if (event.ctrlKey || event.metaKey) {
+                    switch (event.key) {
+                        case '1':
+                            event.preventDefault();
+                            this.showTab('personal');
+                            break;
+                        case '2':
+                            event.preventDefault();
+                            this.showTab('settings');
+                            break;
+                        case '3':
+                            event.preventDefault();
+                            this.showTab('security');
+                            break;
+                        case 's':
+                            event.preventDefault();
+                            // Focus on first form input in active tab
+                            const activeTab = document.querySelector('.tab-content.active');
+                            if (activeTab) {
+                                const firstInput = activeTab.querySelector('input:not([type="hidden"])');
+                                if (firstInput) firstInput.focus();
+                            }
+                            break;
+                    }
+                }
+
+                // ESC to close notifications
+                if (event.key === 'Escape') {
+                    const notifications = document.querySelectorAll('.account-notification');
+                    notifications.forEach(notification => notification.remove());
+                }
+            },
+
+            // Account-specific notification system (different from footer notifications)
+            showAccountNotification(message, type = 'info') {
+                // Remove existing notifications
+                const existingNotifications = document.querySelectorAll('.account-notification');
+                existingNotifications.forEach(notification => notification.remove());
+
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `account-notification fixed top-20 right-6 z-50 max-w-sm`;
+                
+                const bgColor = type === 'success' ? 'bg-green-500' : 
+                               type === 'error' ? 'bg-red-500' : 
+                               type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+                
+                const icon = type === 'success' ? 'fa-check-circle' : 
+                            type === 'error' ? 'fa-exclamation-triangle' : 
+                            type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle';
+
+        notification.innerHTML = `
+            <div class="${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3">
+                <i class="fas ${icon} text-lg"></i>
+                <span class="font-medium">${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+};
+
+// Initialize Account Manager when page loads
+AccountManager.init();
+</script>

@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài liệu dạy học | Giảng viên</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/teacher.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-3d:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        
+        .stats-speaking::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .stats-listening::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .stats-writing::before {
+            background: linear-gradient(90deg, #8b5cf6, #a855f7);
+        }
+        
+        .stats-vocabulary::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .stats-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .icon-speaking {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+        
+        .icon-listening {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .icon-writing {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+        }
+        
+        .icon-vocabulary {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .enhanced-tabs {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-btn {
+            position: relative;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #6b7280;
+            border: none;
+            background: transparent;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .tab-btn:not(.active):hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .material-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .material-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        
+        .material-speaking::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+        
+        .material-listening::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .material-writing::before {
+            background: linear-gradient(90deg, #8b5cf6, #a855f7);
+        }
+        
+        .material-vocabulary::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .material-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .file-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .icon-pdf {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+        
+        .icon-doc {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+        
+        .icon-ppt {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+        }
+        
+        .icon-mp3 {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+        
+        .icon-default {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+        }
+        
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .level-beginner {
+            background: linear-gradient(135deg, #34d399, #6ee7b7);
+            color: white;
+        }
+        
+        .level-intermediate {
+            background: linear-gradient(135deg, #fbbf24, #fcd34d);
+            color: white;
+        }
+        
+        .level-advanced {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+        
+        .level-all {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+        
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+        }
+        
+        .category-speaking {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+        
+        .category-listening {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+        
+        .category-writing {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+        }
+        
+        .category-vocabulary {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+        
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .action-button:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+        
+        .action-download {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+        
+        .action-preview {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+        
+        .action-edit {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+        }
+        
+        .action-delete {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+            overflow: hidden;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .modal-input {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .modal-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+            outline: none;
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .file-upload input[type=file] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            background: rgba(102, 126, 234, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover .file-upload-label {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+        }
+        
+        .empty-icon {
+            font-size: 80px;
+            color: #d1d5db;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 24px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal-input {
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .modal-input:hover {
+            border-color: #9CA3AF;
+        }
+
+        /* File upload area enhancements */
+        .file-upload-label {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover .file-upload-label {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animation for selected file */
+        .file-selected {
+            animation: slideInDown 0.3s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading state for upload */
+        .uploading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .uploading .file-upload-label {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="flex h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section -->
+                <div class="text-center mb-8 slide-in">
+                    <div class="header-icon floating-animation mx-auto">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold gradient-text mb-4">Tài liệu dạy học</h1>
+                    <p class="text-xl text-gray-600">Quản lý và chia sẻ tài liệu giảng dạy theo kỹ năng</p>
+                </div>
+
+                <!-- Enhanced Stats Section -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <!-- Luyện nói -->
+                    <div class="stats-card stats-speaking card-hover slide-in">
+                        <div class="stats-icon icon-speaking floating-animation">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Luyện nói</h3>
+                        <p class="text-4xl font-bold text-blue-600 mb-2">
+                            <%= materials.filter(m => m.category === 'speaking').length %>
+                        </p>
+                        <p class="text-sm text-gray-500">Tài liệu giao tiếp</p>
+                    </div>
+
+                    <!-- Luyện nghe -->
+                    <div class="stats-card stats-listening card-hover slide-in" style="animation-delay: 0.1s;">
+                        <div class="stats-icon icon-listening floating-animation" style="animation-delay: 0.5s;">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Luyện nghe</h3>
+                        <p class="text-4xl font-bold text-green-600 mb-2">
+                            <%= materials.filter(m => m.category === 'listening').length %>
+                        </p>
+                        <p class="text-sm text-gray-500">Audio & Podcast</p>
+                    </div>
+
+                    <!-- Luyện viết -->
+                    <div class="stats-card stats-writing card-hover slide-in" style="animation-delay: 0.2s;">
+                        <div class="stats-icon icon-writing floating-animation pulse-animation" style="animation-delay: 1s;">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Luyện viết</h3>
+                        <p class="text-4xl font-bold text-purple-600 mb-2">
+                            <%= materials.filter(m => m.category === 'writing').length %>
+                        </p>
+                        <p class="text-sm text-gray-500">Bài tập viết</p>
+                    </div>
+
+                    <!-- Từ vựng -->
+                    <div class="stats-card stats-vocabulary card-hover slide-in" style="animation-delay: 0.3s;">
+                        <div class="stats-icon icon-vocabulary floating-animation" style="animation-delay: 1.5s;">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Từ vựng</h3>
+                        <p class="text-4xl font-bold text-yellow-600 mb-2">
+                            <%= materials.filter(m => m.category === 'vocabulary').length %>
+                        </p>
+                        <p class="text-sm text-gray-500">Bộ từ vựng</p>
+                    </div>
+                </div>
+
+                <!-- Header Section with Search -->
+                <div class="glass-card rounded-2xl p-6 mb-8 slide-in card-hover">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                                <i class="fas fa-folder-open text-purple-500 mr-2"></i>
+                                Thư viện tài liệu
+                            </h2>
+                            <p class="text-gray-600">Tổng cộng <%= materials.length %> tài liệu được quản lý</p>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <!-- Search Box -->
+                            <div class="search-box">
+                                <input type="text" 
+                                       id="searchInput"
+                                       placeholder="Tìm kiếm tài liệu..."
+                                       class="search-input w-80">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                            
+                            <!-- Upload Button -->
+                            <button onclick="openUploadModal()" 
+                                    class="btn-3d bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                <i class="fas fa-upload mr-2"></i>
+                                Tải lên tài liệu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Category Tabs -->
+                <div class="enhanced-tabs mb-8 slide-in">
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="switchTab('all')" 
+                                class="tab-btn active">
+                            <i class="fas fa-th-large mr-2"></i>
+                            Tất cả
+                        </button>
+                        <button onclick="switchTab('speaking')" 
+                                class="tab-btn">
+                            <i class="fas fa-comments mr-2"></i>
+                            Luyện nói
+                        </button>
+                        <button onclick="switchTab('listening')" 
+                                class="tab-btn">
+                            <i class="fas fa-headphones mr-2"></i>
+                            Luyện nghe
+                        </button>
+                        <button onclick="switchTab('writing')" 
+                                class="tab-btn">
+                            <i class="fas fa-pen mr-2"></i>
+                            Luyện viết
+                        </button>
+                        <button onclick="switchTab('vocabulary')" 
+                                class="tab-btn">
+                            <i class="fas fa-book mr-2"></i>
+                            Từ vựng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enhanced Materials List -->
+                <div class="glass-card rounded-2xl p-4 slide-in fade-in">
+                    <% if (materials && materials.length > 0) { %>
+                        <% const categories = {
+                            speaking: 'Luyện nói',
+                            listening: 'Luyện nghe',
+                            writing: 'Luyện viết',
+                            vocabulary: 'Từ vựng'
+                        } %>
+
+                        <div class="space-y-12">
+                            <% Object.entries(categories).forEach(([categoryKey, categoryName], categoryIndex) => { %>
+                                <div id="<%= categoryKey %>-section" class="material-section slide-in" style="animation-delay: <%= categoryIndex * 0.1 %>s;">
+                                    <div class="section-title">
+                                        <h3 class="text-2xl font-bold text-gray-800">
+                                            <i class="fas <%= categoryKey === 'speaking' ? 'fa-comments' : 
+                                                              categoryKey === 'listening' ? 'fa-headphones' :
+                                                              categoryKey === 'writing' ? 'fa-pen' : 'fa-book' %> mr-3"></i>
+                                            <%= categoryName %>
+                                        </h3>
+                                    </div>
+
+                                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        <% 
+                                        // Sắp xếp tài liệu theo cấp độ: beginner -> intermediate -> advanced -> all
+                                        const levelOrder = { 'beginner': 1, 'intermediate': 2, 'advanced': 3, 'all': 4 };
+                                        const categoryMaterials = materials
+                                            .filter(m => m.category === categoryKey)
+                                            .sort((a, b) => (levelOrder[a.level] || 5) - (levelOrder[b.level] || 5));
+                                        %>
+                                        <% if (categoryMaterials.length > 0) { %>
+                                            <% categoryMaterials.forEach((material, materialIndex) => { %>
+                                                <div class="material-card material-<%= categoryKey %> card-hover slide-in" 
+                                                     style="animation-delay: <%= (categoryIndex * 0.1) + (materialIndex * 0.05) %>s;"
+                                                     data-category="<%= categoryKey %>"
+                                                     data-title="<%= material.title.toLowerCase() %>">
+                                                    <!-- File Icon -->
+                                                  
+
+                                                    <!-- Material Title -->
+                                                    <h4 class="text-xl font-bold text-gray-800 mb-3 truncate">
+                                                        <%= material.title %>
+                                                    </h4>
+
+                                                    <!-- Description -->
+                                                    <% if (material.description) { %>
+                                                        <p class="text-gray-600 mb-4 line-clamp-2">
+                                                            <%= material.description %>
+                                                        </p>
+                                                    <% } %>
+
+                                                    <!-- File Info -->
+                                                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                                                        <i class="fas fa-file-alt mr-2"></i>
+                                                        <span class="truncate"><%= material.originalName %></span>
+                                                    </div>
+
+                                                    <!-- Metadata Row -->
+                                                    <div class="flex items-center justify-between mb-4">
+                                                        <div class="text-xs text-gray-500">
+                                                            <div class="flex items-center mb-1">
+                                                                <i class="fas fa-calendar-alt mr-1"></i>
+                                                                <%= new Date(material.uploadedAt).toLocaleDateString('vi-VN') %>
+                                                            </div>
+                                                            <div class="flex items-center">
+                                                                <i class="fas fa-hdd mr-1"></i>
+                                                                <%= (material.fileSize / (1024 * 1024)).toFixed(2) %> MB
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Category and Level Badges -->
+                                                    <div class="flex items-center justify-between mb-6">
+                                                        <div class="flex items-center space-x-2">
+                                                            <!-- Category Badge -->
+                                                            <span class="category-badge category-<%= material.category %> text-xs px-3 py-1 rounded-full font-medium">
+                                                                <i class="fas <%= material.category === 'speaking' ? 'fa-comments' : 
+                                                                              material.category === 'listening' ? 'fa-headphones' :
+                                                                              material.category === 'writing' ? 'fa-pen' : 'fa-book' %> mr-1"></i>
+                                                                <%= material.category === 'speaking' ? 'Luyện nói' :
+                                                                   material.category === 'listening' ? 'Luyện nghe' :
+                                                                   material.category === 'writing' ? 'Luyện viết' : 
+                                                                   'Từ vựng' %>
+                                                            </span>
+                                                            <!-- Level Badge -->
+                                                            <span class="level-badge level-<%= material.level %>">
+                                                                <i class="fas fa-layer-group mr-1"></i>
+                                                                <%= material.level === 'beginner' ? 'Sơ cấp' :
+                                                                   material.level === 'intermediate' ? 'Trung cấp' :
+                                                                   material.level === 'advanced' ? 'Nâng cao' : 
+                                                                   'Tất cả cấp độ' %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Actions -->
+                                                    <div class="flex justify-end space-x-2">
+                                                        <button onclick="previewMaterial('<%= material._id %>', '<%= material.fileName %>', '<%= material.fileType %>')"
+                                                                class="action-button action-preview"
+                                                                title="Xem trước">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <a href="/teacher/materials/<%= material._id %>/download"
+                                                           class="action-button action-download"
+                                                           title="Tải xuống">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                        <button onclick="editMaterial('<%= material._id %>')"
+                                                                class="action-button action-edit"
+                                                                title="Chỉnh sửa tài liệu">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button onclick="deleteMaterial('<%= material._id %>')"
+                                                                class="action-button action-delete"
+                                                                title="Xóa tài liệu">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <div class="col-span-full">
+                                                <div class="empty-state">
+                                                    <div class="empty-icon floating-animation">
+                                                        <i class="fas fa-folder-open"></i>
+                                                    </div>
+                                                    <h3 class="text-xl font-bold text-gray-600 mb-2">Chưa có tài liệu</h3>
+                                                    <p class="text-gray-500 mb-4">
+                                                        Chưa có tài liệu nào trong mục <%= categoryName.toLowerCase() %>
+                                                    </p>
+                                                    <button onclick="openUploadModal(); setCategory('<%= categoryKey %>')" 
+                                                            class="btn-3d bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold">
+                                                        <i class="fas fa-plus mr-2"></i>
+                                                        Thêm tài liệu
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state slide-in">
+                            <div class="empty-icon floating-animation">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-600 mb-4">Chưa có tài liệu nào</h3>
+                            <p class="text-gray-500 text-lg mb-8">
+                                Hãy bắt đầu xây dựng thư viện tài liệu giảng dạy của bạn
+                            </p>
+                            <button onclick="openUploadModal()" 
+                                    class="btn-3d bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-4 rounded-xl font-semibold text-lg">
+                                <i class="fas fa-upload mr-2"></i>
+                                Tải lên tài liệu đầu tiên
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 modal-backdrop hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="modal-header p-6 pb-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold " style="color: ghostwhite;">Tải lên tài liệu mới</h3>
+                                <p class="text-gray-500 " style="color: ghostwhite;">Thêm tài liệu giảng dạy cho học viên</p>
+                            </div>
+                        </div>
+                        <button onclick="closeUploadModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <form id="uploadForm" class="p-6 pt-2 space-y-6">
+                    <!-- Hidden fields for updates -->
+                    <input type="hidden" id="materialId" name="materialId">
+                    <input type="hidden" id="isUpdate" name="isUpdate" value="false">
+                    
+                    <!-- Title Input -->
+                    <div class="space-y-2">
+                        <label for="title" class="block text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-heading text-blue-500 mr-2"></i>
+                            Tiêu đề tài liệu <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" 
+                               id="title" 
+                               name="title" 
+                               required 
+                               placeholder="Nhập tiêu đề tài liệu..."
+                               class="modal-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                    </div>
+
+                    <!-- Description Input -->
+                    <div class="space-y-2">
+                        <label for="description" class="block text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-align-left text-green-500 mr-2"></i>
+                            Mô tả (tùy chọn)
+                        </label>
+                        <textarea id="description" 
+                                  name="description" 
+                                  rows="3" 
+                                  placeholder="Mô tả ngắn về tài liệu..."
+                                  class="modal-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"></textarea>
+                    </div>
+
+                    <!-- Category and Level Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Category Selection -->
+                        <div class="space-y-2">
+                            <label for="category" class="block text-sm font-semibold text-gray-700 flex items-center">
+                                <i class="fas fa-tags text-purple-500 mr-2"></i>
+                                Phân loại <span class="text-red-500">*</span>
+                            </label>
+                            <select id="category" 
+                                    name="category" 
+                                    required
+                                    class="modal-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                <option value="">Chọn phân loại</option>
+                                <option value="speaking">🗣️ Nói (Speaking)</option>
+                                <option value="listening">👂 Nghe (Listening)</option>
+                                <option value="writing">✍️ Viết (Writing)</option>
+                                <option value="vocabulary">📖 Từ vựng (Vocabulary)</option>
+                            </select>
+                        </div>
+
+                        <!-- Level Selection -->
+                        <div class="space-y-2">
+                            <label for="level" class="block text-sm font-semibold text-gray-700 flex items-center">
+                                <i class="fas fa-layer-group text-orange-500 mr-2"></i>
+                                Cấp độ <span class="text-red-500">*</span>
+                            </label>
+                            <select id="level" 
+                                    name="level" 
+                                    required
+                                    class="modal-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                                <option value="">Chọn cấp độ</option>
+                                <option value="beginner">🌱 Sơ cấp (Beginner)</option>
+                                <option value="intermediate">🌿 Trung cấp (Intermediate)</option>
+                                <option value="advanced">🌳 Cao cấp (Advanced)</option>
+                                <option value="all">🌍 Tất cả cấp độ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="space-y-2">
+                        <label for="file" class="block text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-file-upload text-indigo-500 mr-2"></i>
+                            Chọn tài liệu <span class="text-red-500">*</span>
+                        </label>
+                        
+                        <!-- Current File Display -->
+                        <div id="currentFileDisplay" class="current-file mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg" style="display: none;">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file text-blue-500 mr-2"></i>
+                                    <span id="currentFileName" class="text-sm font-medium text-gray-700"></span>
+                                </div>
+                                <a id="currentFileLink" href="#" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-external-link-alt mr-1"></i>Xem file
+                                </a>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">File hiện tại (sẽ được thay thế nếu bạn chọn file mới)</p>
+                        </div>
+                        
+                        <div class="file-upload relative">
+                            <input type="file" 
+                                   id="file" 
+                                   name="file" 
+                                   required 
+                                   accept=".pdf,.doc,.docx,.mp3,.wav,.m4a,.jpg,.jpeg,.png,.ppt,.pptx"
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            <div class="file-upload-label bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-dashed border-blue-300 rounded-xl p-8 text-center transition-all duration-200 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-400">
+                                <div class="space-y-3">
+                                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto">
+                                        <i class="fas fa-cloud-upload-alt text-white text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-700">Kéo thả tài liệu vào đây</p>
+                                        <p class="text-sm text-gray-500">hoặc <span class="text-blue-600 font-medium">nhấn để chọn file</span></p>
+                                    </div>
+                                    <div class="text-xs text-gray-400">
+                                        Hỗ trợ: PDF, DOC, DOCX, MP3, WAV, JPG, PNG, PPT, PPTX (Max: 30MB)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Selected File Display -->
+                        <div id="fileName" class="hidden mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-green-800">Đã chọn file:</p>
+                                        <p id="selectedFileName" class="text-sm text-green-600"></p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="clearFile()" class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                        <button type="button" 
+                                onclick="closeUploadModal()" 
+                                class="px-6 py-3 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2">
+                            <i class="fas fa-times"></i>
+                            <span>Hủy</span>
+                        </button>
+                        <button type="submit" 
+                                class="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 transform hover:scale-105 flex items-center space-x-2 shadow-lg">
+                            <i class="fas fa-upload"></i>
+                            <span>Tải lên</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 modal-backdrop hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-4xl max-h-[90vh]">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">Xem trước tài liệu</h3>
+                            <p class="opacity-90" id="previewFileName">Tên file sẽ hiển thị ở đây</p>
+                        </div>
+                        <button onclick="closePreviewModal()" 
+                                class="text-white hover:text-gray-200 transition-colors p-2">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Modal Body -->
+                <div class="p-6 max-h-[70vh] overflow-auto bg-gray-50">
+                    <div id="previewContent" class="w-full h-full min-h-[500px] bg-white rounded-lg shadow-inner flex items-center justify-center">
+                        <div class="text-center text-gray-500">
+                            <i class="fas fa-file-alt text-4xl mb-4"></i>
+                            <p>Đang tải nội dung...</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="p-6 border-t bg-gray-50 flex justify-end space-x-3">
+                    <button onclick="closePreviewModal()"
+                            class="btn-3d bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-all duration-300">
+                        <i class="fas fa-times mr-2"></i>
+                        Đóng
+                    </button>
+                    <button onclick="downloadFromPreview()"
+                            class="btn-3d bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-download mr-2"></i>
+                        Tải xuống
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Helper functions for file icons
+    function getFileIcon(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        switch(ext) {
+            case 'pdf': return 'fas fa-file-pdf';
+            case 'doc':
+            case 'docx': return 'fas fa-file-word';
+            case 'ppt':
+            case 'pptx': return 'fas fa-file-powerpoint';
+            case 'xls':
+            case 'xlsx': return 'fas fa-file-excel';
+            case 'mp3': return 'fas fa-file-audio';
+            case 'mp4': return 'fas fa-file-video';
+            default: return 'fas fa-file-alt';
+        }
+    }
+
+    function getFileIconClass(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        switch(ext) {
+            case 'pdf': return 'icon-pdf';
+            case 'doc':
+            case 'docx': return 'icon-doc';
+            case 'ppt':
+            case 'pptx': return 'icon-ppt';
+            case 'mp3': return 'icon-mp3';
+            default: return 'icon-default';
+        }
+    }
+
+    // Tab switching functionality
+    function switchTab(category) {
+        // Update tab styling
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const selectedTab = document.querySelector(`[onclick="switchTab('${category}')"]`);
+        selectedTab.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.material-section').forEach(section => {
+            if (category === 'all' || section.id === `${category}-section`) {
+                section.style.display = 'block';
+                section.style.animation = 'slideIn 0.6s ease-out forwards';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const materials = document.querySelectorAll('.material-card');
+        
+        materials.forEach(material => {
+            const title = material.getAttribute('data-title');
+            const category = material.getAttribute('data-category');
+            
+            if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                material.style.display = 'block';
+                material.style.animation = 'fadeIn 0.3s ease';
+            } else {
+                material.style.display = 'none';
+            }
+        });
+        
+        // Update section visibility
+        document.querySelectorAll('.material-section').forEach(section => {
+            const visibleMaterials = section.querySelectorAll('.material-card[style*="display: block"]');
+            if (visibleMaterials.length > 0 || searchTerm === '') {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    });
+
+    // Preview Material Functions
+    let currentPreviewMaterialId = null;
+
+    function previewMaterial(materialId, fileName, fileType) {
+        currentPreviewMaterialId = materialId;
+        const modal = document.getElementById('previewModal');
+        const fileNameElement = document.getElementById('previewFileName');
+        const previewContent = document.getElementById('previewContent');
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        fileNameElement.textContent = fileName;
+        
+        // Show loading
+        previewContent.innerHTML = `
+            <div class="text-center text-gray-500">
+                <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                <p>Đang tải nội dung...</p>
+            </div>
+        `;
+        
+        // Determine file type and load appropriate preview
+        const ext = fileName.split('.').pop().toLowerCase();
+        loadPreviewContent(materialId, fileName, ext);
+    }
+
+    function loadPreviewContent(materialId, fileName, fileType) {
+        const previewContent = document.getElementById('previewContent');
+        const filePath = `/uploads/materials/${fileName}`;
+        
+        switch(fileType) {
+            case 'pdf':
+                previewContent.innerHTML = `
+                    <iframe src="${filePath}" 
+                            class="w-full h-full min-h-[500px] border-0 rounded-lg" 
+                            type="application/pdf">
+                        <div class="text-center text-gray-500 p-8">
+                            <i class="fas fa-file-pdf text-6xl mb-4 text-red-500"></i>
+                            <p class="text-xl mb-4">Không thể hiển thị file PDF trong trình duyệt</p>
+                            <button onclick="downloadFromPreview()" 
+                                    class="btn-3d bg-blue-500 text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-download mr-2"></i>Tải xuống để xem
+                            </button>
+                        </div>
+                    </iframe>
+                `;
+                break;
+                
+            case 'mp3':
+                previewContent.innerHTML = `
+                    <div class="text-center p-8">
+                        <i class="fas fa-music text-6xl mb-6 text-purple-500"></i>
+                        <h3 class="text-2xl font-bold mb-6 text-gray-800">File âm thanh</h3>
+                        <audio controls class="w-full max-w-md mx-auto">
+                            <source src="${filePath}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                        </audio>
+                        <p class="text-gray-600 mt-4">Sử dụng điều khiển phía trên để phát nhạc</p>
+                    </div>
+                `;
+                break;
+                
+            case 'mp4':
+                previewContent.innerHTML = `
+                    <div class="text-center">
+                        <video controls class="w-full h-auto max-h-[500px] rounded-lg">
+                            <source src="${filePath}" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ phát video.
+                        </video>
+                    </div>
+                `;
+                break;
+                
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'gif':
+                previewContent.innerHTML = `
+                    <div class="text-center">
+                        <img src="${filePath}" 
+                             alt="Preview" 
+                             class="max-w-full max-h-[500px] mx-auto rounded-lg shadow-lg"
+                             onerror="this.parentElement.innerHTML='<div class=\\"text-center text-gray-500 p-8\\"><i class=\\"fas fa-image text-6xl mb-4\\"></i><p>Không thể tải hình ảnh</p></div>'">
+                    </div>
+                `;
+                break;
+                
+            case 'doc':
+            case 'docx':
+                previewContent.innerHTML = `
+                    <div class="text-center text-gray-500 p-8">
+                        <i class="fas fa-file-word text-6xl mb-4 text-blue-500"></i>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Tài liệu Word</h3>
+                        <p class="text-lg mb-6">Không thể xem trước file Word trong trình duyệt</p>
+                        <button onclick="downloadFromPreview()" 
+                                class="btn-3d bg-blue-500 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Tải xuống để xem
+                        </button>
+                    </div>
+                `;
+                break;
+                
+            case 'ppt':
+            case 'pptx':
+                previewContent.innerHTML = `
+                    <div class="text-center text-gray-500 p-8">
+                        <i class="fas fa-file-powerpoint text-6xl mb-4 text-orange-500"></i>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Bài thuyết trình PowerPoint</h3>
+                        <p class="text-lg mb-6">Không thể xem trước file PowerPoint trong trình duyệt</p>
+                        <button onclick="downloadFromPreview()" 
+                                class="btn-3d bg-blue-500 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Tải xuống để xem
+                        </button>
+                    </div>
+                `;
+                break;
+                
+            default:
+                previewContent.innerHTML = `
+                    <div class="text-center text-gray-500 p-8">
+                        <i class="fas fa-file text-6xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Không thể xem trước</h3>
+                        <p class="text-lg mb-6">Loại file này không hỗ trợ xem trước</p>
+                        <button onclick="downloadFromPreview()" 
+                                class="btn-3d bg-blue-500 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-download mr-2"></i>Tải xuống
+                        </button>
+                    </div>
+                `;
+        }
+    }
+
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.add('hidden');
+        currentPreviewMaterialId = null;
+    }
+
+    function downloadFromPreview() {
+        if (currentPreviewMaterialId) {
+            window.location.href = `/teacher/materials/${currentPreviewMaterialId}/download`;
+        }
+    }
+
+    // Modal functions
+    function openUploadModal() {
+        resetModalForNewUpload();
+        document.getElementById('uploadModal').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('title').focus();
+        }, 300);
+    }
+
+    function closeUploadModal() {
+        document.getElementById('uploadModal').classList.add('hidden');
+        document.getElementById('uploadForm').reset();
+        document.getElementById('fileName').classList.add('hidden');
+        document.getElementById('currentFileDisplay').style.display = 'none';
+        resetUploadArea();
+        resetModalForNewUpload();
+    }
+
+    function setCategory(category) {
+        document.getElementById('category').value = category;
+    }
+
+    // Edit material function
+    async function editMaterial(materialId) {
+        try {
+            showLoading(true);
+            
+            // Open modal first
+            document.getElementById('uploadModal').classList.remove('hidden');
+            
+            // Fetch material data
+            const response = await fetch(`/teacher/materials/${materialId}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                const material = data.data;
+                
+                // Wait a bit for modal to be fully displayed
+                setTimeout(() => {
+                    // Populate form with material data
+                    document.getElementById('materialId').value = materialId;
+                    document.getElementById('isUpdate').value = 'true';
+                    document.getElementById('title').value = material.title;
+                    document.getElementById('description').value = material.description || '';
+                    
+                    // Set category with explicit method
+                    const categorySelect = document.getElementById('category');
+                    if (categorySelect) {
+                        categorySelect.value = material.category;
+                        // Trigger change event to ensure it's registered
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }
+                    
+                    document.getElementById('level').value = material.level;
+                    
+                    // Update modal title and button text
+                    const modalHeader = document.querySelector('#uploadModal h3');
+                    if (modalHeader) {
+                        modalHeader.textContent = 'Chỉnh sửa tài liệu';
+                    }
+                    
+                    const submitButton = document.querySelector('#uploadModal button[type="submit"] span');
+                    if (submitButton) {
+                        submitButton.textContent = 'Cập nhật';
+                    }
+                    
+                    const fileLabel = document.querySelector('label[for="file"]');
+                    if (fileLabel) {
+                        fileLabel.innerHTML = '<i class="fas fa-file-upload text-indigo-500 mr-2"></i>Thay đổi file tài liệu (tùy chọn)';
+                    }
+                    
+                    // Show current file info
+                    document.getElementById('currentFileName').textContent = material.originalName;
+                    document.getElementById('currentFileLink').href = material.fileUrl || '#';
+                    document.getElementById('currentFileDisplay').style.display = 'block';
+                    
+                    // Make file input optional for updates
+                    document.getElementById('file').removeAttribute('required');
+                    
+                    // Focus on title input
+                    document.getElementById('title').focus();
+                }, 100);
+                
+            } else {
+                showNotification(data.message || 'Không thể tải thông tin tài liệu', 'error');
+                document.getElementById('uploadModal').classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Có lỗi xảy ra khi tải thông tin tài liệu', 'error');
+            document.getElementById('uploadModal').classList.add('hidden');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Reset modal for new upload
+    function resetModalForNewUpload() {
+        document.getElementById('materialId').value = '';
+        document.getElementById('isUpdate').value = 'false';
+        
+        // Reset modal title and button text
+        const modalHeader = document.querySelector('#uploadModal h3');
+        if (modalHeader) {
+            modalHeader.textContent = 'Tải lên tài liệu mới';
+        }
+        
+        const submitButton = document.querySelector('#uploadModal button[type="submit"] span');
+        if (submitButton) {
+            submitButton.textContent = 'Tải lên';
+        }
+        
+        const fileLabel = document.querySelector('label[for="file"]');
+        if (fileLabel) {
+            fileLabel.innerHTML = '<i class="fas fa-file-upload text-indigo-500 mr-2"></i>Chọn tài liệu <span class="text-red-500">*</span>';
+        }
+        
+        // Hide current file display
+        document.getElementById('currentFileDisplay').style.display = 'none';
+        
+        // Make file input required for new uploads
+        document.getElementById('file').setAttribute('required', 'required');
+        
+        // Reset category selection
+        const categorySelect = document.getElementById('category');
+        if (categorySelect) {
+            categorySelect.value = '';
+        }
+    }
+
+    function showLoading(show = true) {
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-xl mr-3"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+
+    // File upload handling
+    document.getElementById('file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const fileNameDiv = document.getElementById('fileName');
+        const selectedFileNameSpan = document.getElementById('selectedFileName');
+        
+        if (file) {
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            const allowedTypes = ['.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.mp3', '.mp4', '.wav', '.m4a', '.jpg', '.jpeg', '.png'];
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+
+            if (file.size > maxSize) {
+                showNotification('File quá lớn. Kích thước tối đa là 50MB', 'error');
+                this.value = '';
+                fileNameDiv.classList.add('hidden');
+                resetUploadArea();
+                return;
+            }
+
+            if (!allowedTypes.includes(fileExt)) {
+                showNotification('Loại file không được hỗ trợ', 'error');
+                this.value = '';
+                fileNameDiv.classList.add('hidden');
+                resetUploadArea();
+                return;
+            }
+
+            fileNameDiv.classList.remove('hidden');
+            selectedFileNameSpan.textContent = file.name;
+            
+            // Update upload area appearance
+            const uploadLabel = document.querySelector('.file-upload-label');
+            uploadLabel.innerHTML = `
+                <div class="space-y-3">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-check text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-lg font-semibold text-green-700">File đã được chọn</p>
+                        <p class="text-sm text-green-600">${file.name}</p>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        Kích thước: ${(file.size / (1024 * 1024)).toFixed(2)} MB
+                    </div>
+                </div>
+            `;
+            uploadLabel.classList.remove('border-blue-300', 'from-blue-50', 'to-indigo-50');
+            uploadLabel.classList.add('border-green-300', 'from-green-50', 'to-emerald-50');
+        } else {
+            fileNameDiv.classList.add('hidden');
+            resetUploadArea();
+        }
+    });
+
+    // Clear file function
+    function clearFile() {
+        document.getElementById('file').value = '';
+        document.getElementById('fileName').classList.add('hidden');
+        resetUploadArea();
+    }
+
+    // Reset upload area to default state
+    function resetUploadArea() {
+        const uploadLabel = document.querySelector('.file-upload-label');
+        uploadLabel.innerHTML = `
+            <div class="space-y-3">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-cloud-upload-alt text-white text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-lg font-semibold text-gray-700">Kéo thả tài liệu vào đây</p>
+                    <p class="text-sm text-gray-500">hoặc <span class="text-blue-600 font-medium">nhấn để chọn file</span></p>
+                </div>
+                <div class="text-xs text-gray-400">
+                    Hỗ trợ: PDF, DOC, DOCX, MP3, WAV, JPG, PNG, PPT, PPTX (Max: 30MB)
+                </div>
+            </div>
+        `;
+        uploadLabel.classList.remove('border-green-300', 'from-green-50', 'to-emerald-50');
+        uploadLabel.classList.add('border-blue-300', 'from-blue-50', 'to-indigo-50');
+    }
+
+    // Form submission
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        showLoading(true);
+
+        const isUpdate = document.getElementById('isUpdate').value === 'true';
+        const materialId = document.getElementById('materialId').value;
+        
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('level', document.getElementById('level').value);
+        formData.append('description', document.getElementById('description').value);
+        
+        // Only append file if one is selected (for updates, file is optional)
+        const fileInput = document.getElementById('file');
+        if (fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+        }
+
+        try {
+            let url, method;
+            if (isUpdate) {
+                url = `/teacher/materials/${materialId}`;
+                method = 'PUT';
+            } else {
+                url = '/teacher/materials';
+                method = 'POST';
+            }
+
+            const response = await fetch(url, {
+                method: method,
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                const message = isUpdate ? 'Tài liệu đã được cập nhật thành công!' : 'Tài liệu đã được tải lên thành công!';
+                showNotification(message, 'success');
+                closeUploadModal();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                throw new Error(data.message || 'Có lỗi xảy ra');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            const errorMessage = isUpdate ? 'Có lỗi xảy ra khi cập nhật tài liệu' : 'Có lỗi xảy ra khi tải lên tài liệu';
+            showNotification(error.message || errorMessage, 'error');
+        } finally {
+            showLoading(false);
+        }
+    });
+
+    // Delete material function
+    async function deleteMaterial(materialId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa tài liệu này? Hành động này không thể hoàn tác.')) {
+            return;
+        }
+
+        showLoading(true);
+
+        try {
+            const response = await fetch(`/teacher/materials/${materialId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                showNotification('Tài liệu đã được xóa thành công!', 'success');
+                
+                // Remove the material card with animation
+                const materialCard = document.querySelector(`[onclick*="${materialId}"]`).closest('.material-card');
+                if (materialCard) {
+                    materialCard.style.opacity = '0';
+                    materialCard.style.transform = 'scale(0.8) translateY(-20px)';
+                    setTimeout(() => {
+                        materialCard.remove();
+                    }, 300);
+                }
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                throw new Error(data.message || 'Có lỗi xảy ra khi xóa tài liệu');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification(error.message || 'Có lỗi xảy ra khi xóa tài liệu', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('uploadModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeUploadModal();
+        }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('uploadModal').classList.contains('hidden')) {
+            closeUploadModal();
+        }
+    });
+
+    // Initialize
+    window.addEventListener('load', function() {
+        // Show all sections by default
+        document.querySelectorAll('.material-section').forEach(section => {
+            section.style.display = 'block';
+        });
+        
+        // Initialize animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.slide-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add drag and drop functionality
+        const uploadArea = document.querySelector('.file-upload');
+        if (uploadArea) {
+            const uploadLabel = uploadArea.querySelector('.file-upload-label');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight(e) {
+                uploadLabel.classList.add('border-blue-500', 'from-blue-100', 'to-indigo-100');
+                uploadLabel.classList.remove('border-blue-300', 'from-blue-50', 'to-indigo-50');
+            }
+
+            function unhighlight(e) {
+                uploadLabel.classList.remove('border-blue-500', 'from-blue-100', 'to-indigo-100');
+                uploadLabel.classList.add('border-blue-300', 'from-blue-50', 'to-indigo-50');
+            }
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    document.getElementById('file').files = files;
+                    // Trigger change event
+                    const event = new Event('change', { bubbles: true });
+                    document.getElementById('file').dispatchEvent(event);
+                }
+            }
+        }
+    });
+    </script>
+
+    <%- include('../partials/teacher_footer') %>
+</body>
+</html>

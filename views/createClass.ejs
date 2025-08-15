@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Class</title>
+</head>
+<body>
+    <h1>Create a New Class</h1>
+    <form action="/classes" method="POST">
+        <label for="name">Class Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="course">Course:</label>
+        <input type="text" id="course" name="course" required><br>
+
+        <label for="teacher">Teacher:</label>
+        <input type="text" id="teacher" name="teacher" required><br>
+
+        <label for="students">Students (comma separated):</label>
+        <input type="text" id="students" name="students"><br>
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required><br>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required><br>
+
+        <label for="scheduleDays">Schedule Days (comma separated):</label>
+        <input type="text" id="scheduleDays" name="scheduleDays"><br>
+
+        <label for="scheduleTime">Schedule Time:</label>
+        <input type="time" id="scheduleTime" name="scheduleTime"><br>
+
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status"><br>
+
+        <label for="maxStudents">Max Students:</label>
+        <input type="number" id="maxStudents" name="maxStudents" required><br>
+
+        <label for="classImage">Class Image:</label>
+        <input type="text" id="classImage" name="classImage"><br>
+
+        <button type="submit">Create Class</button>
+    </form>
+</body>
+</html>

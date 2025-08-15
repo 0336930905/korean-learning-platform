@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm tài khoản mới - Korea-DB Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Enhanced UI Styles */
+        .form-step {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .step-indicator.completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+        }
+        
+        .step-indicator.inactive {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .step-line {
+            height: 4px;
+            background: #e5e7eb;
+            transition: all 0.4s ease;
+        }
+        
+        .step-line.completed {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+        
+        .validation-message {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .validation-message.error {
+            color: #ef4444;
+        }
+        
+        .validation-message.success {
+            color: #10b981;
+        }
+        
+        input.error, select.error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        input.success, select.success {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+        }
+        
+        .role-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .role-card.selected {
+            border-color: #4f46e5;
+            background: linear-gradient(45deg, #dbeafe, #e0f2fe);
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(79, 70, 229, 0.15);
+        }
+        
+        .progress-bar {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 9999px;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f1f5f9;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+            
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+                <div class="max-w-5xl mx-auto">
+                    <!-- Header Section -->
+                    <div class="glass-card rounded-xl p-6 mb-6 animate-fade-in">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-user-plus text-indigo-600 mr-3"></i>
+                                    Thêm tài khoản mới
+                                </h1>
+                                <p class="text-gray-600 mt-2">Tạo tài khoản mới cho hệ thống quản lý học tập tiếng Hàn</p>
+                            </div>
+                            <a href="/account-management" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Quay lại
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="glass-card rounded-xl p-6 mb-6 animate-fade-in">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div id="step1" class="step-indicator active w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
+                                    1
+                                </div>
+                                <div class="text-sm ml-3">
+                                    <div class="font-medium text-gray-900">Thông tin cơ bản</div>
+                                    <div class="text-gray-500">Email, mật khẩu, họ tên</div>
+                                </div>
+                            </div>
+                            
+                            <div id="line1" class="step-line flex-1 mx-6"></div>
+                            
+                            <div class="flex items-center">
+                                <div id="step2" class="step-indicator inactive w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
+                                    2
+                                </div>
+                                <div class="text-sm ml-3">
+                                    <div class="font-medium text-gray-900">Vai trò & Quyền</div>
+                                    <div class="text-gray-500">Chọn vai trò và quyền hạn</div>
+                                </div>
+                            </div>
+                            
+                            <div id="line2" class="step-line flex-1 mx-6"></div>
+                            
+                            <div class="flex items-center">
+                                <div id="step3" class="step-indicator inactive w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
+                                    3
+                                </div>
+                                <div class="text-sm ml-3">
+                                    <div class="font-medium text-gray-900">Thông tin bổ sung</div>
+                                    <div class="text-gray-500">Chi tiết và cài đặt</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar mt-6">
+                            <div id="progressFill" class="progress-fill" style="width: 33%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Form Content -->
+                    <form id="addUserForm" action="/account-management/add" method="POST" class="space-y-6">
+                        <!-- Step 1: Basic Information -->
+                        <div id="formStep1" class="form-step glass-card rounded-xl p-8 active animate-fade-in">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i class="fas fa-user-circle text-blue-600 mr-3"></i>
+                                Thông tin cơ bản
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Email <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="email" id="email" name="email" required 
+                                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Nhập địa chỉ email"
+                                               value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+                                        <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <div id="emailMessage" class="validation-message"></div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Họ và tên <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" id="fullName" name="fullName" required 
+                                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Nhập họ và tên đầy đủ"
+                                               value="<%= typeof formData !== 'undefined' && formData.fullName ? formData.fullName : '' %>">
+                                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <div id="fullNameMessage" class="validation-message"></div>
+                                </div>
+                                
+                                <div>
+                                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Mật khẩu <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="password" id="password" name="password" required 
+                                               class="w-full px-4 py-3 pl-10 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Nhập mật khẩu">
+                                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div id="passwordMessage" class="validation-message"></div>
+                                    <div id="passwordStrength" class="mt-2"></div>
+                                </div>
+                                
+                                <div>
+                                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Xác nhận mật khẩu <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="password" id="confirmPassword" name="confirmPassword" required 
+                                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Nhập lại mật khẩu">
+                                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <div id="confirmPasswordMessage" class="validation-message"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end mt-8">
+                                <button type="button" onclick="nextStep()" 
+                                        class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    Tiếp theo
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Role & Permissions -->
+                        <div id="formStep2" class="form-step glass-card rounded-xl p-8 hidden">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i class="fas fa-user-shield text-green-600 mr-3"></i>
+                                Vai trò & Quyền hạn
+                            </h2>
+                            
+                            <div class="mb-8">
+                                <label class="block text-sm font-medium text-gray-700 mb-4">
+                                    Chọn vai trò <span class="text-red-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="role-card border-2 border-gray-200 rounded-lg p-6 text-center" onclick="selectRole('student')">
+                                        <input type="radio" id="roleStudent" name="role" value="student" class="hidden">
+                                        <i class="fas fa-graduation-cap text-4xl text-blue-500 mb-4"></i>
+                                        <h3 class="font-bold text-lg text-gray-900 mb-2">Học viên</h3>
+                                        <p class="text-sm text-gray-600">Tham gia học tập và làm bài tập</p>
+                                    </div>
+                                    
+                                    <div class="role-card border-2 border-gray-200 rounded-lg p-6 text-center" onclick="selectRole('teacher')">
+                                        <input type="radio" id="roleTeacher" name="role" value="teacher" class="hidden">
+                                        <i class="fas fa-chalkboard-teacher text-4xl text-green-500 mb-4"></i>
+                                        <h3 class="font-bold text-lg text-gray-900 mb-2">Giáo viên</h3>
+                                        <p class="text-sm text-gray-600">Quản lý lớp học và giảng dạy</p>
+                                    </div>
+                                    
+                                    <div class="role-card border-2 border-gray-200 rounded-lg p-6 text-center" onclick="selectRole('admin')">
+                                        <input type="radio" id="roleAdmin" name="role" value="admin" class="hidden">
+                                        <i class="fas fa-user-shield text-4xl text-purple-500 mb-4"></i>
+                                        <h3 class="font-bold text-lg text-gray-900 mb-2">Quản trị viên</h3>
+                                        <p class="text-sm text-gray-600">Quản lý toàn bộ hệ thống</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between mt-8">
+                                <button type="button" onclick="prevStep()" 
+                                        class="px-8 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    Quay lại
+                                </button>
+                                <button type="button" onclick="nextStep()" 
+                                        class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    Tiếp theo
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Additional Information -->
+                        <div id="formStep3" class="form-step glass-card rounded-xl p-8 hidden">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <i class="fas fa-user-plus text-purple-600 mr-3"></i>
+                                Thông tin bổ sung
+                            </h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Số điện thoại
+                                    </label>
+                                    <div class="relative">
+                                        <input type="tel" id="phone" name="phone" 
+                                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                               placeholder="Nhập số điện thoại"
+                                               value="<%= typeof formData !== 'undefined' && formData.phone ? formData.phone : '' %>">
+                                        <i class="fas fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <div id="phoneMessage" class="validation-message"></div>
+                                </div>
+                                
+                                <div>
+                                    <label for="level" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Trình độ học tập
+                                    </label>
+                                    <select id="level" name="level" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="beginner">Người mới bắt đầu</option>
+                                        <option value="intermediate">Trung cấp</option>
+                                        <option value="advanced">Nâng cao</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="koreanLevel" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Trình độ tiếng Hàn
+                                    </label>
+                                    <select id="koreanLevel" name="koreanLevel" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Chưa xác định</option>
+                                        <option value="TOPIK 1">TOPIK 1</option>
+                                        <option value="TOPIK 2">TOPIK 2</option>
+                                        <option value="TOPIK 3">TOPIK 3</option>
+                                        <option value="TOPIK 4">TOPIK 4</option>
+                                        <option value="TOPIK 5">TOPIK 5</option>
+                                        <option value="TOPIK 6">TOPIK 6</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="dateOfBirth" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Ngày sinh
+                                    </label>
+                                    <input type="date" id="dateOfBirth" name="dateOfBirth" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                           value="<%= typeof formData !== 'undefined' && formData.dateOfBirth ? formData.dateOfBirth : '' %>">
+                                    <div id="dateOfBirthMessage" class="validation-message"></div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Địa chỉ
+                                    </label>
+                                    <div class="relative">
+                                        <textarea id="address" name="address" rows="3" 
+                                                  class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                  placeholder="Nhập địa chỉ chi tiết"><%= typeof formData !== 'undefined' && formData.address ? formData.address : '' %></textarea>
+                                        <i class="fas fa-map-marker-alt absolute left-3 top-4 text-gray-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Cài đặt tài khoản</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="isActive" name="isActive" value="true" checked 
+                                                   class="w-4 h-4 text-blue-600 rounded">
+                                            <label for="isActive" class="ml-2 text-sm font-medium text-gray-900">Kích hoạt tài khoản ngay</label>
+                                        </div>
+                                        
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="sendWelcomeEmail" name="sendWelcomeEmail" value="true" checked 
+                                                   class="w-4 h-4 text-blue-600 rounded">
+                                            <label for="sendWelcomeEmail" class="ml-2 text-sm font-medium text-gray-900">Gửi email chào mừng</label>
+                                        </div>
+                                        
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="emailVerified" name="emailVerified" value="true" 
+                                                   class="w-4 h-4 text-blue-600 rounded">
+                                            <label for="emailVerified" class="ml-2 text-sm font-medium text-gray-900">Xác thực email ngay</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between mt-8">
+                                <button type="button" onclick="prevStep()" 
+                                        class="px-8 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    Quay lại
+                                </button>
+                                <button type="submit" id="submitBtn"
+                                        class="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Tạo tài khoản
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-sm w-full mx-4">
+            <div class="text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Đang tạo tài khoản...</h3>
+                <p class="text-gray-600">Vui lòng đợi trong giây lát</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Display -->
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="fixed top-4 right-4 z-50">
+        <div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><%= error %></span>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <% } %>
+
+    <script>
+        // Enhanced JavaScript for Multi-Step Form with Backend Integration
+        class AddUserManager {
+            constructor() {
+                this.currentStep = 1;
+                this.totalSteps = 3;
+                this.validationRules = {
+                    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    phone: /^[0-9]{10,11}$/,
+                    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/
+                };
+                this.init();
+            }
+            
+            init() {
+                console.log('🚀 Initializing AddUser Form with Backend Integration...');
+                this.bindEvents();
+                this.updateProgress();
+                
+                // Add form submit event
+                const form = document.getElementById('addUserForm');
+                if (form) {
+                    form.addEventListener('submit', (e) => this.handleSubmit(e));
+                    console.log('✅ Form submit event listener added');
+                } else {
+                    console.error('❌ Form not found!');
+                }
+            }
+            
+            bindEvents() {
+                // Form submission
+                const form = document.getElementById('addUserForm');
+                form.addEventListener('submit', this.handleSubmit.bind(this));
+                
+                // Real-time validation
+                document.querySelectorAll('input, select').forEach(input => {
+                    input.addEventListener('input', () => this.validateField(input));
+                    input.addEventListener('blur', () => this.validateField(input));
+                });
+                
+                // Password toggle
+                const togglePassword = document.getElementById('togglePassword');
+                if (togglePassword) {
+                    togglePassword.addEventListener('click', this.togglePassword);
+                }
+            }
+            
+            validateField(input) {
+                const value = input.value.trim();
+                const fieldName = input.name || input.id;
+                let isValid = true;
+                let message = '';
+                
+                // Clear previous states
+                input.classList.remove('error', 'success');
+                this.clearFieldError(input);
+                
+                // Required field check
+                if (input.hasAttribute('required') && !value) {
+                    message = 'Trường này là bắt buộc';
+                    isValid = false;
+                }
+                
+                // Specific validations
+                if (value && isValid) {
+                    switch (fieldName) {
+                        case 'email':
+                            if (!this.validationRules.email.test(value)) {
+                                message = 'Email không hợp lệ';
+                                isValid = false;
+                            }
+                            break;
+                            
+                        case 'fullName':
+                            if (value.length < 2) {
+                                message = 'Họ tên phải có ít nhất 2 ký tự';
+                                isValid = false;
+                            }
+                            break;
+                            
+                        case 'password':
+                            if (value.length < 8) {
+                                message = 'Mật khẩu phải có ít nhất 8 ký tự';
+                                isValid = false;
+                            }
+                            this.updatePasswordStrength(value);
+                            break;
+                            
+                        case 'confirmPassword':
+                            const password = document.getElementById('password').value;
+                            if (value !== password) {
+                                message = 'Mật khẩu xác nhận không khớp';
+                                isValid = false;
+                            }
+                            break;
+                            
+                        case 'phone':
+                            if (value && !/^[0-9]{10,11}$/.test(value)) {
+                                message = 'Số điện thoại phải có 10-11 chữ số';
+                                isValid = false;
+                            }
+                            break;
+                    }
+                }
+                
+                // Update UI
+                if (isValid && value) {
+                    input.classList.add('success');
+                } else if (!isValid) {
+                    input.classList.add('error');
+                    this.showFieldError(input, message);
+                }
+                
+                return isValid;
+            }
+            
+            updatePasswordStrength(password) {
+                const strengthElement = document.getElementById('passwordStrength');
+                if (!strengthElement) return;
+                
+                let strength = 0;
+                let strengthText = '';
+                let strengthClass = '';
+                
+                if (password.length >= 8) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[@$!%*?&]/.test(password)) strength++;
+                
+                switch (strength) {
+                    case 0:
+                    case 1:
+                        strengthText = 'Rất yếu';
+                        strengthClass = 'text-red-500';
+                        break;
+                    case 2:
+                        strengthText = 'Yếu';
+                        strengthClass = 'text-orange-500';
+                        break;
+                    case 3:
+                        strengthText = 'Trung bình';
+                        strengthClass = 'text-yellow-500';
+                        break;
+                    case 4:
+                        strengthText = 'Mạnh';
+                        strengthClass = 'text-blue-500';
+                        break;
+                    case 5:
+                        strengthText = 'Rất mạnh';
+                        strengthClass = 'text-green-500';
+                        break;
+                }
+                
+                strengthElement.innerHTML = `
+                    <div class="flex items-center ${strengthClass}">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        <span class="text-sm font-medium">Độ mạnh: ${strengthText}</span>
+                    </div>
+                `;
+            }
+            
+            togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const toggleIcon = document.querySelector('#togglePassword i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.className = 'fas fa-eye-slash';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.className = 'fas fa-eye';
+                }
+            }
+            
+            nextStep() {
+                console.log(`🔄 Moving from step ${this.currentStep} to step ${this.currentStep + 1}`);
+                
+                if (this.validateCurrentStep()) {
+                    if (this.currentStep < this.totalSteps) {
+                        // Hide current step
+                        document.getElementById(`formStep${this.currentStep}`).classList.add('hidden');
+                        
+                        // Update step indicator
+                        const currentStepIndicator = document.getElementById(`step${this.currentStep}`);
+                        currentStepIndicator.classList.remove('active');
+                        currentStepIndicator.classList.add('completed');
+                        
+                        // Move to next step
+                        this.currentStep++;
+                        
+                        // Show next step
+                        document.getElementById(`formStep${this.currentStep}`).classList.remove('hidden');
+                        
+                        // Update step indicator
+                        const nextStepIndicator = document.getElementById(`step${this.currentStep}`);
+                        nextStepIndicator.classList.remove('inactive');
+                        nextStepIndicator.classList.add('active');
+                        
+                        // Update progress line
+                        if (this.currentStep > 1) {
+                            document.getElementById(`line${this.currentStep - 1}`).classList.add('completed');
+                        }
+                        
+                        this.updateProgress();
+                        this.scrollToTop();
+                        
+                        console.log(`✅ Successfully moved to step ${this.currentStep}`);
+                    }
+                } else {
+                    console.log('❌ Validation failed');
+                    this.showToast('Vui lòng điền đầy đủ thông tin bắt buộc', 'error');
+                }
+            }
+            
+            prevStep() {
+                if (this.currentStep > 1) {
+                    // Hide current step
+                    document.getElementById(`formStep${this.currentStep}`).classList.add('hidden');
+                    
+                    // Update step indicator
+                    document.getElementById(`step${this.currentStep}`).classList.remove('active');
+                    document.getElementById(`step${this.currentStep}`).classList.add('inactive');
+                    
+                    // Move to previous step
+                    this.currentStep--;
+                    
+                    // Show previous step
+                    document.getElementById(`formStep${this.currentStep}`).classList.remove('hidden');
+                    
+                    // Update step indicator
+                    document.getElementById(`step${this.currentStep}`).classList.remove('completed');
+                    document.getElementById(`step${this.currentStep}`).classList.add('active');
+                    
+                    // Update progress line
+                    if (this.currentStep < this.totalSteps) {
+                        document.getElementById(`line${this.currentStep}`).classList.remove('completed');
+                    }
+                    
+                    this.updateProgress();
+                    this.scrollToTop();
+                }
+            }
+            
+            validateCurrentStep() {
+                console.log(`🔍 Validating step ${this.currentStep}...`);
+                
+                const currentStepElement = document.getElementById(`formStep${this.currentStep}`);
+                const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
+                let isValid = true;
+                
+                console.log(`📋 Found ${requiredInputs.length} required fields`);
+                
+                requiredInputs.forEach(input => {
+                    const fieldValid = this.validateField(input);
+                    if (!fieldValid) {
+                        isValid = false;
+                    }
+                });
+                
+                // Step 2 specific validation - check if role is selected
+                if (this.currentStep === 2) {
+                    const roleInputs = document.querySelectorAll('input[name="role"]');
+                    const isRoleSelected = Array.from(roleInputs).some(input => input.checked);
+                    
+                    if (!isRoleSelected) {
+                        this.showToast('Vui lòng chọn vai trò cho tài khoản', 'error');
+                        isValid = false;
+                    }
+                }
+                
+                console.log(isValid ? '✅ Step validation passed' : '❌ Step validation failed');
+                return isValid;
+            }
+            
+            showFieldError(field, message) {
+                const messageElement = document.getElementById(field.id + 'Message');
+                if (messageElement) {
+                    messageElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                    messageElement.className = 'validation-message error';
+                }
+            }
+            
+            clearFieldError(field) {
+                const messageElement = document.getElementById(field.id + 'Message');
+                if (messageElement) {
+                    messageElement.innerHTML = '';
+                    messageElement.className = 'validation-message';
+                }
+            }
+            
+            updateProgress() {
+                const progress = ((this.currentStep - 1) / (this.totalSteps - 1)) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+            
+            scrollToTop() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                console.log('📝 Form submission started...');
+                
+                // Validate all steps before submit
+                let allStepsValid = true;
+                for (let step = 1; step <= this.totalSteps; step++) {
+                    const stepElement = document.getElementById(`formStep${step}`);
+                    const requiredInputs = stepElement.querySelectorAll('input[required], select[required]');
+                    
+                    requiredInputs.forEach(input => {
+                        if (!this.validateField(input)) {
+                            allStepsValid = false;
+                        }
+                    });
+                }
+                
+                // Check role selection for step 2
+                const roleInputs = document.querySelectorAll('input[name="role"]');
+                const isRoleSelected = Array.from(roleInputs).some(input => input.checked);
+                
+                if (!isRoleSelected) {
+                    this.showToast('Vui lòng chọn vai trò cho tài khoản', 'error');
+                    allStepsValid = false;
+                }
+                
+                if (!allStepsValid) {
+                    this.showToast('Vui lòng kiểm tra lại thông tin tất cả các bước', 'error');
+                    return;
+                }
+                
+                // Use traditional form submission instead of AJAX
+                console.log('📤 Submitting form traditionally...');
+                this.showLoading(true);
+                
+                // Log form data for debugging
+                const formData = new FormData(document.getElementById('addUserForm'));
+                console.log('📊 Form data to be submitted:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`  ${key}: ${value}`);
+                }
+                
+                // Submit form traditionally
+                document.getElementById('addUserForm').submit();
+            }
+            
+            showLoading(show) {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (show) {
+                    loadingOverlay.classList.remove('hidden');
+                } else {
+                    loadingOverlay.classList.add('hidden');
+                }
+            }
+            
+            showToast(message, type = 'info') {
+                const toastContainer = document.getElementById('toastContainer');
+                
+                const colors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500',
+                    warning: 'bg-yellow-500',
+                    info: 'bg-blue-500'
+                };
+                
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+                
+                const toast = document.createElement('div');
+                toast.className = `${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 mb-2 transform transition-all duration-300`;
+                toast.innerHTML = `
+                    <i class="fas ${icons[type]}"></i>
+                    <span class="flex-1">${message}</span>
+                    <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Initialize when page loads
+        let addUserManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Content Loaded - Starting AddUserManager...');
+            addUserManager = new AddUserManager();
+        });
+
+        // Global functions for buttons
+        function nextStep() {
+            if (addUserManager) {
+                addUserManager.nextStep();
+            } else {
+                console.error('❌ AddUserManager not initialized');
+            }
+        }
+
+        function prevStep() {
+            if (addUserManager) {
+                addUserManager.prevStep();
+            } else {
+                console.error('❌ AddUserManager not initialized');
+            }
+        }
+
+        function selectRole(role) {
+            console.log(`🎯 Role selected: ${role}`);
+            
+            // Clear all selections
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select clicked role
+            event.currentTarget.classList.add('selected');
+            document.getElementById(`role${role.charAt(0).toUpperCase() + role.slice(1)}`).checked = true;
+            
+            // Update validation
+            if (addUserManager) {
+                addUserManager.updateProgress();
+            }
+        }
+    </script>
+</body>
+</html>

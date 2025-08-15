@@ -1,0 +1,496 @@
+<footer class="footer-premium">
+    <div class="footer-container">
+        <!-- Footer Background Effects -->
+        <div class="footer-bg-effects">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
+        
+        <!-- Main Footer Content -->
+        <div class="footer-content">
+            <div class="footer-section brand-section">
+                <div class="brand-info">
+                    <h3 class="footer-logo">Korea_DB</h3>
+                    <p class="brand-description">
+                        Nền tảng học tiếng Hàn hàng đầu với công nghệ AI và 3D, 
+                        giúp bạn thành thạo tiếng Hàn một cách hiệu quả và thú vị.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" data-platform="facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" data-platform="youtube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" data-platform="instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" data-platform="tiktok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="section-title">Khóa học</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Tiếng Hàn cơ bản</a></li>
+                    <li><a href="#">Tiếng Hàn giao tiếp</a></li>
+                    <li><a href="#">Luyện thi TOPIK</a></li>
+                    <li><a href="#">Tiếng Hàn thương mại</a></li>
+                    <li><a href="#">Phát âm chuẩn</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="section-title">Tài nguyên</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Từ điển tiếng Hàn</a></li>
+                    <li><a href="#">Ngữ pháp tiếng Hàn</a></li>
+                    <li><a href="#">Văn hóa Hàn Quốc</a></li>
+                    <li><a href="#">Blog học tập</a></li>
+                    <li><a href="#">Podcast tiếng Hàn</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="section-title">Hỗ trợ</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Trung tâm trợ giúp</a></li>
+                    <li><a href="#">Liên hệ hỗ trợ</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="section-title">Liên hệ</h4>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>support@koreadb.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>1900 1234</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>123 Đường ABC, Hà Nội</span>
+                    </div>
+                </div>
+                
+                <!-- Newsletter Signup -->
+                <div class="newsletter-signup">
+                    <h5>Đăng ký nhận tin tức</h5>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Email của bạn" class="email-input">
+                        <button type="submit" class="subscribe-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="copyright">
+                <p>&copy; 2025 Korea_DB. Tất cả quyền được bảo lưu.</p>
+            </div>
+            <div class="footer-bottom-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản dịch vụ</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+/* ==== PREMIUM FOOTER STYLES ==== */
+.footer-premium {
+    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 80px 0 20px;
+    margin-top: 0;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Footer Background Effects */
+.footer-bg-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.1;
+    animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    top: 60%;
+    right: 15%;
+    animation-delay: 3s;
+}
+
+.orb-3 {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    bottom: 20%;
+    left: 50%;
+    animation-delay: 6s;
+}
+
+/* Footer Content */
+.footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-section {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Brand Section */
+.brand-section {
+    max-width: 350px;
+}
+
+.footer-logo {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.brand-description {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.social-link[data-platform="facebook"]:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+}
+
+.social-link[data-platform="youtube"]:hover {
+    background: #ff0000;
+    border-color: #ff0000;
+}
+
+.social-link[data-platform="instagram"]:hover {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border-color: #bc1888;
+}
+
+.social-link[data-platform="tiktok"]:hover {
+    background: #000000;
+    border-color: #ff0050;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    border-radius: 2px;
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.footer-links a::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    transition: width 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.footer-links a:hover::before {
+    width: 100%;
+}
+
+/* Contact Info */
+.contact-info {
+    margin-bottom: 2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.contact-item i {
+    width: 20px;
+    color: #4facfe;
+}
+
+/* Newsletter Signup */
+.newsletter-signup h5 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.email-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.email-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.email-input:focus {
+    outline: none;
+    border-color: #4facfe;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.subscribe-btn {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subscribe-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: white;
+}
+
+/* Animations */
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-20px) scale(1.1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .footer-content {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .brand-section {
+        grid-column: 1 / -1;
+        max-width: none;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .footer-bottom-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-premium {
+        padding: 60px 0 20px;
+    }
+    
+    .footer-container {
+        padding: 0 1rem;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Newsletter form submission
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.email-input').value;
+            
+            if (email) {
+                // Show success message
+                const btn = this.querySelector('.subscribe-btn');
+                const originalHTML = btn.innerHTML;
+                
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                }, 2000);
+                
+                // Here you can add the code to actually subscribe the email
+                // For example, sending the email to your server using fetch()
+            } else {
+                // Show error message
+                alert('Vui lòng nhập địa chỉ email hợp lệ.');
+            }
+        });
+    }
+});
+</script>

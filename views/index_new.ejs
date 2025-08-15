@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korea_DB - Học Tiếng Hàn Theo Phong Cách Văn Hóa Hàn Quốc</title>
+    
+    <!-- Enhanced Meta Tags -->
+    <meta name="description" content="Nền tảng học tiếng Hàn hàng đầu với công nghệ AI và phong cách văn hóa Hàn Quốc đặc sắc">
+    <meta name="keywords" content="học tiếng hàn, korean culture, hanbok, seoul, 한국어, 한국문화">
+    
+    <!-- Enhanced CSS Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* ==== KOREAN CULTURAL COLOR PALETTE ==== */
+        :root {
+            /* Traditional Korean Colors */
+            --korea-red: #C2185B;
+            --korea-blue: #1976D2;
+            --korea-yellow: #FFB300;
+            --korea-white: #FFFFFF;
+            --korea-black: #263238;
+            
+            /* Modern Korean Palette */
+            --seoul-sky: #87CEEB;
+            --hanbok-pink: #FFB6C1;
+            --temple-brown: #8B4513;
+            --mountain-green: #228B22;
+            --cherry-blossom: #FFB7C5;
+            
+            /* Gradients */
+            --korean-sunset: linear-gradient(135deg, #FF6B9D 0%, #C2185B 50%, #8E24AA 100%);
+            --seoul-skyline: linear-gradient(180deg, #87CEEB 0%, #E1F5FE 50%, #F5F5F5 100%);
+            --hanbok-gradient: linear-gradient(45deg, #FFB6C1, #FF69B4, #C2185B);
+            
+            /* Glass Effects */
+            --glass-light: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            
+            /* Transitions */
+            --smooth-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --bounce-transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nanum Gothic', 'Noto Sans KR', 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--korea-black);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ==== HERO SECTION - SEOUL MODERN CITY ==== */
+        .hero-seoul {
+            min-height: 100vh;
+            background: url('/index/image-1753817529287.png') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--seoul-skyline);
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1000px;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .btn-hero {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: var(--bounce-transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary-hero {
+            background: var(--korean-sunset);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary-hero {
+            background: var(--glass-light);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Floating Korean Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .korean-symbol {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            color: white;
+        }
+
+        .korean-symbol:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .korean-symbol:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
+        .korean-symbol:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+
+        /* ==== FEATURES SECTION - TRADITIONAL PALACE ==== */
+        .features-palace {
+            padding: 100px 0;
+            background: url('/index/image-1753817537554.png') center/cover no-repeat;
+            position: relative;
+        }
+
+        .palace-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+            z-index: 1;
+        }
+
+        .features-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--korea-red);
+            margin-bottom: 1rem;
+            font-family: 'Nanum Myeongjo', serif;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--korea-black);
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--glass-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: var(--smooth-transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hanbok-gradient);
+            opacity: 0;
+            transition: var(--smooth-transition);
+            z-index: -1;
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(194, 24, 91, 0.2);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--korean-sunset);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(194, 24, 91, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--korea-red);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--korea-black);
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Korean Traditional Pattern Overlay */
+        .korean-pattern-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(194, 24, 91, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 182, 193, 0.1) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ==== COURSES SECTION - HANBOK CULTURE ==== */
+        .courses-hanbok {
+            padding: 100px 0;
+            background: url('/index/image-1753817544098.png') center/cover no-repeat;
+            position: relative;
+        }
+
+        .hanbok-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(25, 118, 210, 0.9) 0%, rgba(135, 206, 235, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .courses-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .course-card {
+            background: var(--glass-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--smooth-transition);
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .course-image {
+            height: 200px;
+            background: var(--korean-sunset);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .course-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--korea-yellow);
+        }
+
+        .course-btn {
+            background: var(--korean-sunset);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--bounce-transition);
+        }
+
+        .course-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4);
+        }
+
+        /* ==== CTA SECTION - MODERN SEOUL ==== */
+        .cta-seoul {
+            padding: 100px 0;
+            background: url('/index/image-1753817559673.png') center/cover no-repeat;
+            position: relative;
+            text-align: center;
+        }
+
+        .cta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(142, 36, 170, 0.9) 0%, rgba(194, 24, 91, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-description {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--korea-red);
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--bounce-transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ==== ANIMATIONS ==== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ==== RESPONSIVE DESIGN ==== */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2rem, 6vw, 3.5rem);
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid,
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .cta-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content,
+            .features-content,
+            .courses-content,
+            .cta-content {
+                padding: 0 1rem;
+            }
+            
+            .feature-card,
+            .course-card {
+                margin: 0 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include Header -->
+    <%- include('partials/Header') %>
+
+    <!-- Hero Section - Seoul Modern City -->
+    <section class="hero-seoul" id="home">
+        <div class="hero-overlay"></div>
+        <div class="floating-elements">
+            <div class="korean-symbol">한</div>
+            <div class="korean-symbol">국</div>
+            <div class="korean-symbol">어</div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Korea_DB</h1>
+            <p class="hero-subtitle">
+                🇰🇷 Học Tiếng Hàn Theo Phong Cách Văn Hóa Hàn Quốc Đặc Sắc
+                <br>Khám phá vẻ đẹp của ngôn ngữ và văn hóa xứ sở kim chi
+            </p>
+            <div class="hero-cta">
+                <a href="/browse-courses" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-graduation-cap"></i>
+                    Khám Phá Khóa Học
+                </a>
+                <a href="#features" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-play"></i>
+                    Tìm Hiểu Thêm
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Traditional Palace -->
+    <section class="features-palace" id="features">
+        <div class="palace-overlay"></div>
+        <div class="korean-pattern-overlay"></div>
+        
+        <div class="features-content">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Tính Năng Đặc Biệt</h2>
+                <p class="section-subtitle">
+                    Trải nghiệm học tiếng Hàn với công nghệ hiện đại và văn hóa truyền thống
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI Thông Minh</h3>
+                    <p class="feature-description">
+                        Hệ thống AI phân tích khả năng học và đưa ra lộ trình cá nhân hóa
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3 class="feature-title">Luyện Phát Âm</h3>
+                    <p class="feature-description">
+                        Công nghệ nhận diện giọng nói để hoàn thiện phát âm chuẩn Hàn Quốc
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Cộng Đồng</h3>
+                    <p class="feature-description">
+                        Kết nối với cộng đồng yêu thích văn hóa Hàn Quốc trên toàn thế giới
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="feature-title">Chứng Chỉ TOPIK</h3>
+                    <p class="feature-description">
+                        Chuẩn bị thi TOPIK với bộ đề thi thực tế và phân tích chi tiết
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="feature-title">Văn Hóa Hàn Quốc</h3>
+                    <p class="feature-description">
+                        Tìm hiểu sâu về văn hóa, lịch sử và phong tục tập quán Hàn Quốc
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Học Mọi Lúc</h3>
+                    <p class="feature-description">
+                        Ứng dụng mobile để học tiếng Hàn mọi lúc, mọi nơi một cách tiện lợi
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section - Hanbok Culture -->
+    <section class="courses-hanbok" id="courses">
+        <div class="hanbok-overlay"></div>
+        
+        <div class="courses-content">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title" style="color: white;">Khóa Học Phổ Biến</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">
+                    Các khóa học được thiết kế theo phong cách văn hóa Hàn Quốc độc đáo
+                </p>
+            </div>
+            
+            <div class="courses-grid">
+                <% if (typeof courses !== 'undefined' && courses && courses.length > 0) { %>
+                    <% courses.forEach((course) => { %>
+                        <div class="course-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="course-image" style="background-image: url('<%= course.image || '/images/default-course.jpg' %>');">
+                            </div>
+                            <div class="course-content">
+                                <h3 class="course-title"><%= course.title %></h3>
+                                <p class="course-description"><%= course.description %></p>
+                                <div class="course-meta">
+                                    <span class="course-price">
+                                        <%= course.price ? course.price.toLocaleString('vi-VN') + ' VNĐ' : 'Miễn phí' %>
+                                    </span>
+                                    <button class="course-btn" onclick="viewCourseDetail('<%= course._id %>')">
+                                        Xem Chi Tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">Tiếng Hàn Cơ Bản</h3>
+                            <p class="course-description">Khóa học dành cho người mới bắt đầu với tiếng Hàn</p>
+                            <div class="course-meta">
+                                <span class="course-price">Miễn phí</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">Văn Hóa Hàn Quốc</h3>
+                            <p class="course-description">Tìm hiểu văn hóa và phong tục tập quán Hàn Quốc</p>
+                            <div class="course-meta">
+                                <span class="course-price">299,000 VNĐ</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">TOPIK Prep</h3>
+                            <p class="course-description">Chuẩn bị thi chứng chỉ TOPIK hiệu quả</p>
+                            <div class="course-meta">
+                                <span class="course-price">599,000 VNĐ</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- Button xem tất cả khóa học -->
+            <div style="text-align: center; margin-top: 3rem;" data-aos="fade-up" data-aos-delay="400">
+                <a href="/browse-courses" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-list"></i>
+                    Xem Tất Cả Khóa Học
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section - Modern Seoul -->
+    <section class="cta-seoul">
+        <div class="cta-overlay"></div>
+        
+        <div class="cta-content" data-aos="fade-up">
+            <h2 class="cta-title">Bắt Đầu Hành Trình Học Tiếng Hàn</h2>
+            <p class="cta-description">
+                Tham gia cùng hàng nghìn học viên đang khám phá vẻ đẹp của ngôn ngữ và văn hóa Hàn Quốc
+            </p>
+            <a href="/browse-courses" class="cta-button">
+                🇰🇷 Đăng Ký Ngay Hôm Nay
+            </a>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <%- include('partials/Footer') %>
+
+    <!-- Enhanced JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS Animation
+        AOS.init({
+            duration: 1000,
+            offset: 120,
+            easing: 'ease-out-cubic',
+            once: true
+        });
+
+        // Function to view course detail
+        function viewCourseDetail(courseId) {
+            window.location.href = `/course-detail/${courseId}`;
+        }
+
+        // Add floating Korean characters animation
+        function createKoreanFloatingElements() {
+            const characters = ['한', '국', '어', '사', '랑', '해', '요', '감', '사', '합', '니', '다'];
+            const container = document.querySelector('.floating-elements');
+            
+            characters.forEach((char, index) => {
+                setTimeout(() => {
+                    const element = document.createElement('div');
+                    element.className = 'korean-symbol';
+                    element.textContent = char;
+                    element.style.left = Math.random() * 80 + 10 + '%';
+                    element.style.top = Math.random() * 80 + 10 + '%';
+                    element.style.animationDelay = Math.random() * 6 + 's';
+                    container.appendChild(element);
+                    
+                    // Remove element after animation
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.parentNode.removeChild(element);
+                        }
+                    }, 20000);
+                }, index * 2000);
+            });
+        }
+
+        // Initialize floating elements
+        createKoreanFloatingElements();
+        // Repeat every 30 seconds
+        setInterval(createKoreanFloatingElements, 30000);
+
+        // Add Korean greeting on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🇰🇷 안녕하세요! 한국어를 함께 배워요!');
+        });
+    </script>
+</body>
+</html>

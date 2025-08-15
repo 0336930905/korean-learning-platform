@@ -1,0 +1,3167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korea_DB - Học Tiếng Hàn Hiện Đại & Chuyên Nghiệp</title>
+    
+    <!-- Enhanced Meta Tags -->
+    <meta name="description" content="Nền tảng học tiếng Hàn hàng đầu với công nghệ 3D và AI">
+    <meta name="keywords" content="học tiếng hàn, korean learning, topik, 한국어">
+    
+    <!-- Enhanced CSS Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* ==== ENHANCED VARIABLES & RESET ==== */
+        :root {
+            /* Premium Color Palette - Korean Inspired */
+            --primary-korea: linear-gradient(135deg, #FF6B9D 0%, #C44EFF 50%, #4ECDC4 100%);
+            --secondary-korea: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-blue: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --accent-pink: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-elegant: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            --glass-premium: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-hover: rgba(255, 255, 255, 0.2);
+            
+            /* Enhanced Typography */
+            --text-white: #ffffff;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --text-dark: #2d3748;
+            
+            /* 3D Effects */
+            --shadow-premium: 0 25px 80px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(79, 172, 254, 0.3);
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: var(--dark-elegant);
+            color: var(--text-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* ==== PREMIUM HEADER 3D ==== */
+        .header-vip {
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.1);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: var(--transition-smooth);
+        }
+
+        .header-vip.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .nav-container-vip {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
+        }
+
+        .logo-vip {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            transform: perspective(1000px) rotateY(0deg);
+            transition: var(--transition-bounce);
+            position: relative;
+        }
+
+        .logo-vip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        .logo-vip:hover {
+            transform: perspective(1000px) rotateY(15deg) scale(1.1);
+        }
+
+        .nav-menu-vip {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-item-vip {
+            position: relative;
+        }
+
+        .nav-link-vip {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .nav-link-vip::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-premium);
+            border-radius: 50px;
+            opacity: 0;
+            transform: scale(0);
+            transition: var(--transition-bounce);
+        }
+
+        .nav-link-vip:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .nav-link-vip:hover {
+            color: var(--text-white);
+            transform: translateY(-3px) translateZ(15px);
+        }
+
+        .auth-section-vip {
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .btn-auth-vip {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition-bounce);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login-vip {
+            color: var(--text-white);
+            border: 2px solid var(--glass-border);
+            background: var(--glass-premium);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-register-vip {
+            background: var(--primary-korea);
+            color: white;
+            box-shadow: var(--shadow-glow);
+            border: none;
+        }
+
+        .btn-auth-vip:hover {
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* ==== VOICE SEARCH STYLES ==== */
+        .voice-search-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+            margin-right: 2rem;
+        }
+
+        .search-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input-group:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .voice-search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.8rem 1.2rem;
+            width: 300px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .voice-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .voice-search-btn, .text-search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .voice-search-btn:hover, .text-search-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .voice-search-btn.recording {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        .voice-status {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 107, 157, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .voice-status.recording {
+            animation: pulse 1.5s infinite;
+        }
+
+        .voice-status.processing {
+            background: rgba(102, 126, 234, 0.9);
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        /* Mobile Voice Search */
+        @media (max-width: 768px) {
+            .voice-search-container {
+                margin-right: 1rem;
+            }
+            
+            .voice-search-input {
+                width: 200px;
+                padding: 0.6rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .voice-search-input {
+                width: 150px;
+            }
+        }
+
+        /* ==== HERO SECTION REVOLUTIONARY ==== */
+        .hero-ultimate {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--dark-elegant);
+        }
+
+        /* Enhanced 3D Background */
+        .hero-bg-ultimate {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape-3d {
+            position: absolute;
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            animation: shape3dFloat 12s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .shape-circle {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-square {
+            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .shape-diamond {
+            width: 80px;
+            height: 80px;
+            transform: rotate(45deg);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        .shape-hexagon {
+            width: 90px;
+            height: 90px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            top: 30%;
+            right: 25%;
+            animation-delay: 9s;
+        }
+
+        /* Korean Characters Enhanced */
+        .korean-chars-ultimate {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .korean-char-ultimate {
+            position: absolute;
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.15;
+            animation: koreanUltimate 20s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
+        }
+
+        /* Hero Content Enhanced */
+        .hero-content-ultimate {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title-ultimate {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 900;
+            margin-bottom: 2.5rem;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .title-word-ultimate {
+            display: inline-block;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+            transform: translateZ(80px);
+            animation: titleUltimate 4s ease-in-out infinite alternate;
+            margin: 0 0.8rem;
+            position: relative;
+        }
+
+        .title-word-ultimate::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-pink);
+            opacity: 0;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .title-word-ultimate:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        .title-word-ultimate:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        .hero-subtitle-ultimate {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateZ(50px);
+            line-height: 1.8;
+        }
+
+        .hero-cta-ultimate {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            margin: 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-ultimate {
+            padding: 1.2rem 3rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            min-width: 220px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .btn-primary-ultimate {
+            background: var(--primary-korea);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary-ultimate {
+            background: var(--glass-premium);
+            color: var(--text-white);
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+        }
+
+        .btn-hero-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-hero-ultimate:hover::before {
+            left: 100%;
+        }
+
+        .btn-hero-ultimate:hover {
+            transform: translateY(-8px) scale(1.08) rotateX(15deg);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* Enhanced Stats Section */
+        .hero-stats-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2.5rem;
+            margin-top: 5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-blue);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .stat-card-ultimate:hover::before {
+            opacity: 0.1;
+        }
+
+        .stat-card-ultimate:hover {
+            transform: translateY(-15px) rotateX(10deg) rotateY(5deg) scale(1.05);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .stat-number-ultimate {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+        }
+
+        .stat-label-ultimate {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ==== FEATURES SECTION VIP PRO ==== */
+        .features-ultimate {
+            padding: 150px 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .feature-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            opacity: 0.1;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 { width: 300px; height: 300px; top: 10%; left: 5%; animation-delay: 0s; }
+        .orb-2 { width: 200px; height: 200px; top: 60%; right: 10%; animation-delay: 7s; }
+        .orb-3 { width: 150px; height: 150px; bottom: 20%; left: 15%; animation-delay: 14s; }
+
+        .section-header-ultimate {
+            text-align: center;
+            margin-bottom: 100px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title-ultimate {
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-subtitle-ultimate {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .features-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 3.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-korea);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .feature-card-ultimate:hover::before {
+            opacity: 0.05;
+        }
+
+        .feature-card-ultimate:hover {
+            transform: translateY(-25px) rotateX(15deg) rotateY(8deg) scale(1.03);
+            box-shadow: var(--shadow-premium);
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+
+        .feature-icon-ultimate {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 2.5rem;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            transform: translateZ(50px);
+            transition: var(--transition-bounce);
+            box-shadow: 0 25px 50px rgba(79, 172, 254, 0.4);
+            position: relative;
+        }
+
+        .feature-icon-ultimate::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .feature-card-ultimate:hover .feature-icon-ultimate {
+            transform: translateZ(70px) rotateY(360deg) scale(1.1);
+        }
+
+        .feature-title-ultimate {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-white);
+        }
+
+        .feature-description-ultimate {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* ==== COURSES SECTION PRO ==== */
+        .courses-ultimate {
+            padding: 150px 0;
+            background: var(--dark-elegant);
+            position: relative;
+        }
+
+        .courses-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .course-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .course-card-ultimate:hover {
+            transform: translateY(-20px) rotateX(8deg) scale(1.02);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .course-image-ultimate {
+            height: 220px;
+            background: var(--primary-korea);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) skewX(-25deg);
+            transition: var(--transition-smooth);
+        }
+
+        .course-card-ultimate:hover .course-image-ultimate::before {
+            transform: translateX(200%) skewX(-25deg);
+        }
+
+        .course-content-ultimate {
+            padding: 2.5rem;
+        }
+
+        .course-title-ultimate {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: var(--text-white);
+        }
+
+        .course-description-ultimate {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .course-meta-ultimate {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-price-ultimate {
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .course-btn-ultimate {
+            padding: 0.8rem 1.8rem;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        .course-btn-ultimate:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.5);
+        }
+
+        /* ==== TESTIMONIALS ULTIMATE ==== */
+        .testimonials-ultimate {
+            padding: 150px 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .testimonials-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .testimonial-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .testimonial-card-ultimate::before {
+            content: '"';
+            position: absolute;
+            top: 1.5rem;
+            left: 2.5rem;
+            font-size: 5rem;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: serif;
+            opacity: 0.7;
+        }
+
+        .testimonial-card-ultimate:hover {
+            transform: translateY(-15px) rotateX(8deg);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .testimonial-content-ultimate {
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+            font-size: 1.05rem;
+        }
+
+        .testimonial-author-ultimate {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .author-avatar-ultimate {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary-korea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .author-info-ultimate h4 {
+            color: var(--text-white);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info-ultimate p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ==== CTA SECTION ULTIMATE ==== */
+        .cta-ultimate {
+            padding: 150px 0;
+            background: var(--primary-korea);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cta-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: ctaParticle 10s linear infinite;
+        }
+
+        .cta-content-ultimate {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cta-title-ultimate {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 900;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-description-ultimate {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 4rem;
+            line-height: 1.7;
+        }
+
+        .cta-button-ultimate {
+            padding: 1.5rem 4rem;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(118, 75, 162, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .cta-button-ultimate:hover::before {
+            left: 100%;
+        }
+
+        .cta-button-ultimate:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ==== ENHANCED ANIMATIONS ==== */
+        @keyframes logoGlow {
+            0% { opacity: 0.3; transform: translateY(-50%) scale(1); }
+            100% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { 
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shape3dFloat {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            25% {
+                transform: translateY(-30px) rotateX(15deg) rotateY(15deg) rotateZ(5deg);
+            }
+            50% {
+                transform: translateY(-20px) rotateX(-10deg) rotateY(-10deg) rotateZ(-5deg);
+            }
+            75% {
+                transform: translateY(-40px) rotateX(10deg) rotateY(-15deg) rotateZ(10deg);
+            }
+        }
+
+        @keyframes koreanUltimate {
+            0% {
+                transform: translateY(100vh) rotateZ(0deg) scale(0.5);
+                opacity: 0;
+            }
+            5% { opacity: 0.15; }
+            95% { opacity: 0.15; }
+            100% {
+                transform: translateY(-50px) rotateZ(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes titleUltimate {
+            0% {
+                transform: translateZ(80px) scale(1) rotateY(0deg);
+            }
+            100% {
+                transform: translateZ(100px) scale(1.02) rotateY(2deg);
+            }
+        }
+
+        @keyframes titleGlow {
+            0% { opacity: 0; }
+            100% { opacity: 0.1; }
+        }
+
+        @keyframes orbFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            33% {
+                transform: translateY(-50px) scale(1.1);
+            }
+            66% {
+                transform: translateY(-30px) scale(0.9);
+            }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes ctaParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ==== RESPONSIVE DESIGN ENHANCED ==== */
+        @media (max-width: 768px) {
+            .nav-menu-vip {
+                display: none;
+            }
+            
+            .hero-cta-ultimate {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            
+            .hero-stats-ultimate {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .features-grid-ultimate {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .feature-card-ultimate {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats-ultimate {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container-vip {
+                padding: 0 1rem;
+            }
+            
+            .btn-hero-ultimate {
+                min-width: 180px;
+                padding: 1rem 2rem;
+            }
+        }
+        .voice-search-container{
+            padding-right: 255px;
+        }
+
+        /* ==== FAQ CHATBOT STYLES ==== */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chatbot-toggle {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary-korea);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+            transition: var(--transition-bounce);
+            overflow: hidden;
+        }
+
+        .chatbot-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(255, 107, 157, 0.6);
+        }
+
+        .chatbot-toggle:hover::before {
+            left: 100%;
+        }
+
+        .chat-notification {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #ff4757;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        .chatbot-widget {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 420px;
+            height: 580px;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-bounce);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-widget.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chatbot-header {
+            background: var(--primary-korea);
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatbot-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .chatbot-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            position: relative;
+        }
+
+        .status-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            bottom: 0;
+            right: 0;
+            border: 2px solid white;
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+
+        .chatbot-info h4 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chatbot-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .chatbot-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chatbot-messages {
+            height: 380px;
+            padding: 1.2rem;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            position: relative;
+            flex: 1;
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-korea);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 1.2rem;
+            animation: message-slide-in 0.4s ease-out;
+        }
+
+        .message-bot {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .bot-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            padding: 0.9rem 1.1rem;
+            max-width: 280px;
+            color: white;
+            line-height: 1.5;
+            position: relative;
+            backdrop-filter: blur(10px);
+            word-wrap: break-word;
+        }
+
+        .message-bot .message-content {
+            border-bottom-left-radius: 6px;
+        }
+
+        .message-user .message-content {
+            background: var(--primary-korea);
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .suggestions-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            max-height: 70px;
+            overflow-y: auto;
+            padding: 0.2rem;
+        }
+
+        .suggestions-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .suggestions-area::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .suggestions-area::-webkit-scrollbar-thumb {
+            background: var(--primary-korea);
+            border-radius: 10px;
+        }
+
+        .suggestion-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            line-height: 1.2;
+        }
+
+        .suggestion-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            border-color: rgba(79, 172, 254, 0.5);
+        }
+
+        .suggestion-btn.primary {
+            background: rgba(255, 107, 157, 0.2);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .suggestion-btn.primary:hover {
+            background: var(--accent-pink);
+            border-color: rgba(255, 107, 157, 0.6);
+        }
+
+        .suggestion-btn.api-suggestion {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .suggestion-btn.api-suggestion:hover {
+            background: rgba(78, 205, 196, 0.4);
+            border-color: rgba(78, 205, 196, 0.6);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .suggestion-btn.used {
+            opacity: 0.3;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .loading-suggestions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-suggestions span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition-smooth);
+        }
+
+        .typing-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 0.8rem 1.1rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            animation: typing-bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .chatbot-input {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .message-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 0.8rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .message-input:focus {
+            border-color: rgba(196, 78, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(196, 78, 255, 0.1);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-bounce);
+            font-size: 1rem;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chatbot-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .chat-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particle-float 8s linear infinite;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes status-pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes message-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typing-bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chatbot-container {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .chatbot-widget {
+                width: 340px;
+                height: 500px;
+                bottom: 80px;
+                right: -10px;
+            }
+
+            .chatbot-toggle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .chatbot-messages {
+                height: 320px;
+            }
+
+            .message-content {
+                max-width: 240px;
+            }
+
+            .suggestions-area {
+                max-height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-widget {
+                width: 300px;
+                height: 450px;
+                right: -20px;
+            }
+
+            .chatbot-messages {
+                height: 280px;
+                padding: 1rem;
+            }
+
+            .message-content {
+                max-width: 200px;
+            }
+
+            .suggestions-area {
+                max-height: 50px;
+            }
+
+            .suggestion-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced Premium Header -->
+    <header class="header-vip" id="header">
+        <nav class="nav-container-vip">
+            <a href="/" class="logo-vip">Korea_DB</a>
+            
+            <!-- Voice Search Container -->
+            <div class="voice-search-container">
+                <div class="search-input-group">
+                    <input type="text" 
+                           id="voiceSearchInput" 
+                           class="voice-search-input" 
+                           placeholder="Tìm kiếm khóa học bằng giọng nói hoặc nhập text..."
+                           autocomplete="off">
+                    
+                    <button type="button" id="voiceSearchBtn" class="voice-search-btn" title="Tìm kiếm bằng giọng nói">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    
+                    <button type="button" id="searchBtn" class="text-search-btn" title="Tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div id="voiceStatus" class="voice-status" style="display: none;">
+                    <i class="fas fa-microphone"></i>
+                    <span>Đang nghe...</span>
+                </div>
+            </div>
+            
+            <div class="auth-section-vip">
+                <a href="/login" class="btn-auth-vip btn-login-vip">Đăng nhập</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Revolutionary Hero Section -->
+    <section class="hero-ultimate" id="home">
+        <!-- Enhanced 3D Background -->
+        <div class="hero-bg-ultimate">
+            <!-- Particles -->
+            <div class="particles-container" id="particlesContainer"></div>
+            
+            <!-- 3D Floating Shapes -->
+            <div class="floating-shapes">
+                <div class="shape-3d shape-circle"></div>
+                <div class="shape-3d shape-square"></div>
+                <div class="shape-3d shape-diamond"></div>
+                <div class="shape-3d shape-hexagon"></div>
+            </div>
+            
+            <!-- Korean Characters Ultimate -->
+            <div class="korean-chars-ultimate" id="koreanCharsContainer"></div>
+        </div>
+
+        <!-- Hero Content Ultimate -->
+        <div class="hero-content-ultimate">
+            <h1 class="hero-title-ultimate">
+                <span class="title-word-ultimate">Học</span>
+                <span class="title-word-ultimate">Tiếng</span>
+                <span class="title-word-ultimate">Hàn</span>
+            </h1>
+            
+            <p class="hero-subtitle-ultimate">
+                Khám phá phương pháp học tiếng Hàn cách mạng với công nghệ 3D, AI thông minh 
+                và trải nghiệm học tập đỉnh cao. Chinh phục ngôn ngữ Hàn Quốc một cách hiệu quả và thú vị.
+            </p>
+            
+            <div class="hero-cta-ultimate">
+                <a href="/register" class="btn-hero-ultimate btn-primary-ultimate">
+                    <i class="fas fa-rocket"></i> Bắt đầu học ngay
+                </a>
+                <a href="#features" class="btn-hero-ultimate btn-secondary-ultimate scroll-link">
+                    <i class="fas fa-play-circle"></i> Xem demo
+                </a>
+            </div>
+            
+            <!-- Enhanced Hero Stats -->
+            <div class="hero-stats-ultimate">
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                    <span class="stat-number-ultimate" data-count="8500">0</span>
+                    <span class="stat-label-ultimate">Học viên thành công</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                    <span class="stat-number-ultimate" data-count="750">0</span>
+                    <span class="stat-label-ultimate">Bài học 3D</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                    <span class="stat-number-ultimate" data-count="95">0</span>
+                    <span class="stat-label-ultimate">Giáo viên chuyên nghiệp</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="400">
+                    <span class="stat-number-ultimate" data-count="99">0</span>
+                    <span class="stat-label-ultimate">% Hài lòng</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate Features Section -->
+    <section class="features-ultimate" id="features">
+        <!-- Background Effects -->
+        <div class="features-bg-effects">
+            <div class="feature-orb orb-1"></div>
+            <div class="feature-orb orb-2"></div>
+            <div class="feature-orb orb-3"></div>
+        </div>
+        
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Tại sao chọn Korea_DB?</h2>
+            <p class="section-subtitle-ultimate">
+                Nền tảng học tiếng Hàn đầu tiên tại Việt Nam ứng dụng công nghệ 3D và AI, 
+                mang đến trải nghiệm học tập không giới hạn
+            </p>
+        </div>
+        
+        <div class="features-grid-ultimate">
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title-ultimate">AI Thông minh Siêu việt</h3>
+                <p class="feature-description-ultimate">
+                    Hệ thống AI tiên tiến phân tích từng hành vi học tập, đề xuất lộ trình cá nhân hóa 
+                    và tối ưu hóa tiến độ học theo khả năng của bạn.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Công nghệ 3D Cách mạng</h3>
+                <p class="feature-description-ultimate">
+                    Trải nghiệm học tập 3D sống động chưa từng có, giúp ghi nhớ từ vựng và ngữ pháp 
+                    hiệu quả gấp 10 lần phương pháp truyền thống.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Nhận diện Giọng nói Chuẩn</h3>
+                <p class="feature-description-ultimate">
+                    Công nghệ nhận diện giọng nói AI chuẩn Seoul, chính xác đến 99.8%, 
+                    giúp bạn phát âm như người bản xứ.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Cộng đồng Học tập Sôi nổi</h3>
+                <p class="feature-description-ultimate">
+                    Kết nối với hơn 8,500 học viên, tham gia các hoạt động tương tác, 
+                    thực hành giao tiếp và chia sẻ kinh nghiệm học tập.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Chứng chỉ Quốc tế Uy tín</h3>
+                <p class="feature-description-ultimate">
+                    Chứng chỉ được công nhận bởi Viện Ngôn ngữ Hàn Quốc, 
+                    mở ra cơ hội việc làm và du học tại Hàn Quốc.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Học Mọi lúc Mọi nơi</h3>
+                <p class="feature-description-ultimate">
+                    Ứng dụng mobile cao cấp, đồng bộ trên mọi thiết bị, 
+                    học offline và online với trải nghiệm mượt mà tuyệt đối.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate Courses Section -->
+    <section class="courses-ultimate" id="courses">
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Khóa học Nổi bật</h2>
+            <p class="section-subtitle-ultimate">
+                Top 3 khóa học được yêu thích nhất với số lượng học viên đăng ký cao nhất
+            </p>
+        </div>
+        
+        <div class="courses-grid-ultimate">
+            <% if (courses && courses.length > 0) { %>
+                <% courses.forEach((course, index) => { %>
+                    <div class="course-card-ultimate" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+                        <div class="course-image-ultimate">
+                            <% if (course.imageUrl && course.imageUrl !== '/images/default-course.jpg') { %>
+                                <img src="<%= course.imageUrl %>" alt="<%= course.title %>" style="width: 100%; height: 100%; object-fit: cover;">
+                            <% } else { %>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 3rem;">
+                                    <% if (course.category === 'Ngữ pháp') { %>
+                                        <i class="fas fa-book"></i>
+                                    <% } else if (course.category === 'Từ vựng') { %>
+                                        <i class="fas fa-spell-check"></i>
+                                    <% } else if (course.category === 'Nghe nói') { %>
+                                        <i class="fas fa-microphone"></i>
+                                    <% } else if (course.category === 'Viết') { %>
+                                        <i class="fas fa-pen"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-graduation-cap"></i>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            <!-- Hiển thị badge số học viên -->
+                            <div style="position: absolute; top: 10px; right: 10px; background: rgba(255, 107, 157, 0.9); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                                <i class="fas fa-users"></i> <%= course.enrolledCount || 0 %> học viên
+                            </div>
+                        </div>
+                        <div class="course-content-ultimate">
+                            <h3 class="course-title-ultimate"><%= course.title %></h3>
+                            <p class="course-description-ultimate">
+                                <%= course.description.length > 120 ? course.description.substring(0, 120) + '...' : course.description %>
+                            </p>
+                            <div style="margin: 10px 0; color: rgba(255, 255, 255, 0.7);">
+                                <span><i class="fas fa-tag"></i> <%= course.category %></span>
+                                <span style="margin-left: 15px;"><i class="fas fa-signal"></i> 
+                                    <% if (course.level === 'beginner') { %>Cơ bản<% } else if (course.level === 'intermediate') { %>Trung cấp<% } else { %>Nâng cao<% } %>
+                                </span>
+                                <span style="margin-left: 15px;"><i class="fas fa-clock"></i> <%= course.duration %></span>
+                            </div>
+                            <% if (course.instructor && course.instructor.fullName) { %>
+                                <div style="margin: 10px 0; color: rgba(255, 255, 255, 0.8);">
+                                    <i class="fas fa-chalkboard-teacher"></i> Giảng viên: <%= course.instructor.fullName %>
+                                </div>
+                            <% } %>
+                            <div class="course-meta-ultimate">
+                                <span class="course-price-ultimate">
+                                    <%= new Intl.NumberFormat('vi-VN').format(course.price) %>₫
+                                </span>
+                                <button class="course-btn-ultimate" onclick="viewCourseDetail('<%= course._id %>')">
+                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- Hiển thị khi không có khóa học -->
+                <div style="grid-column: 1 / -1; text-align: center; color: rgba(255, 255, 255, 0.7); padding: 3rem;">
+                    <i class="fas fa-graduation-cap" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3>Chưa có khóa học nổi bật</h3>
+                    <p>Hiện tại chưa có khóa học nào trong hệ thống.</p>
+                </div>
+            <% } %>
+        </div>
+        
+        <!-- Button xem tất cả khóa học -->
+        <div style="text-align: center; margin-top: 3rem;" data-aos="fade-up" data-aos-delay="400">
+            <a href="/browse-courses" class="cta-button-ultimate" style="display: inline-block; text-decoration: none;">
+                <i class="fas fa-th-large"></i> Xem tất cả khóa học
+            </a>
+        </div>
+    </section>
+
+    <!-- Ultimate Testimonials -->
+    <section class="testimonials-ultimate" id="testimonials">
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Học viên Thành công nói gì</h2>
+            <p class="section-subtitle-ultimate">
+                Hàng nghìn câu chuyện thành công từ cộng đồng Korea_DB trên toàn thế giới
+            </p>
+        </div>
+        
+        <div class="testimonials-grid-ultimate">
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                <p class="testimonial-content-ultimate">
+                    Korea_DB đã thay đổi hoàn toàn cuộc đời tôi! Công nghệ 3D thật kỳ diệu, 
+                    tôi học như đang chơi game. Chỉ sau 6 tháng, tôi đã đạt TOPIK Level 5 
+                    và nhận được học bổng toàn phần tại đại học Seoul National.
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">NH</div>
+                    <div class="author-info-ultimate">
+                        <h4>Nguyễn Thanh Hà</h4>
+                        <p>Du học sinh Seoul National University</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                <p class="testimonial-content-ultimate">
+                    Phương pháp học 3D của Korea_DB quá tuyệt vời! AI phân tích điểm yếu 
+                    và tự động điều chỉnh bài học phù hợp. Tôi đã thăng tiến từ nhân viên 
+                    thành trưởng phòng tại công ty Samsung chỉ trong 1 năm.
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">TQ</div>
+                    <div class="author-info-ultimate">
+                        <h4>Trần Minh Quân</h4>
+                        <p>Trưởng phòng Samsung Electronics</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                <p class="testimonial-content-ultimate">
+                    Tôi đã thử nhiều ứng dụng học tiếng Hàn nhưng không có cái nào bằng Korea_DB. 
+                    Giao diện đẹp, tính năng rich, đặc biệt là cộng đồng học tập rất tích cực. 
+                    Giờ tôi đã thành thạo 4 ngôn ngữ và tiếng Hàn là mạnh nhất!
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">PT</div>
+                    <div class="author-info-ultimate">
+                        <h4>Phạm Thu Trang</h4>
+                        <p>Translator chuyên nghiệp</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate CTA -->
+    <section class="cta-ultimate">
+        <!-- Background Effects -->
+        <div class="cta-bg-effects" id="ctaEffects"></div>
+        
+        <div class="cta-content-ultimate" data-aos="fade-up">
+            <h2 class="cta-title-ultimate">Bắt đầu Hành trình Chinh phục Tiếng Hàn</h2>
+            <p class="cta-description-ultimate">
+                Đăng ký ngay để nhận <strong>14 ngày học thử MIỄN PHÍ</strong> và trải nghiệm 
+                phương pháp học tiếng Hàn cách mạng với công nghệ 3D và AI tiên tiến nhất thế giới.
+            </p>
+            <a href="/register" class="cta-button-ultimate">
+                <i class="fas fa-crown"></i> Đăng ký VIP miễn phí
+            </a>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <%- include('partials/Footer') %>
+
+    <!-- FAQ Chatbot Widget -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <!-- Chat Toggle Button -->
+        <button class="chatbot-toggle" id="chatbotToggle">
+            <i class="fas fa-comments"></i>
+            <div class="chat-notification">💬</div>
+        </button>
+
+        <!-- Chat Widget -->
+        <div class="chatbot-widget" id="chatbotWidget">
+            <!-- Chat Header -->
+            <div class="chatbot-header">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                    <div class="status-indicator"></div>
+                </div>
+                <div class="chatbot-info">
+                    <h4>Tư vấn AI</h4>
+                    <p>Tư vấn khóa học tiếng Hàn 🇰🇷</p>
+                </div>
+                <button class="chatbot-close" id="chatbotClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chatbot-messages" id="chatbotMessages">
+                <!-- Welcome Message -->
+                <div class="message message-bot">
+                    <div class="bot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div>Xin chào! Tôi là Tư vấn AI - trợ lý tư vấn khóa học tiếng Hàn của bạn! 👋<br><br>
+                        Hãy hỏi tôi về <strong>học phí</strong>, <strong>lịch học</strong>, <strong>giảng viên</strong> hoặc bất kỳ thông tin nào về khóa học!</div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="bot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area with Smart Suggestions -->
+            <div class="chatbot-input">
+                <!-- Smart Suggestions Area -->
+                <div class="suggestions-area" id="suggestionsArea">
+                    <!-- Suggestions will be loaded dynamically from FAQ database -->
+                    <div class="loading-suggestions">
+                        <span>📚 Đang tải gợi ý...</span>
+                    </div>
+                </div>
+                
+                <!-- Input Row -->
+                <div class="input-row">
+                    <div class="input-container">
+                        <input type="text" class="message-input" id="messageInput" 
+                               placeholder="Nhập câu hỏi của bạn..." 
+                               maxlength="500">
+                    </div>
+                    <button class="send-btn" id="sendBtn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating particles effect -->
+        <div class="chatbot-particles" id="chatbotParticles"></div>
+    </div>
+
+    <!-- Enhanced JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS with enhanced settings
+        AOS.init({
+            duration: 1200,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 120
+        });
+
+        // Enhanced Header scroll effect
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 20000);
+            }, 800);
+        }
+
+        // Enhanced Korean characters animation
+        function createKoreanChars() {
+            const container = document.getElementById('koreanCharsContainer');
+            const chars = [
+                '안녕하세요', '한국어', '공부', '감사합니다', '사랑해요', 
+                '친구', '행복', '가족', '학습', '교육', '꿈', '희망', 
+                '성공', '미래', '도전', '열정', '노력', '발전'
+            ];
+            
+            setInterval(() => {
+                const char = document.createElement('div');
+                char.className = 'korean-char-ultimate';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.fontSize = (Math.random() * 2 + 2) + 'rem';
+                char.style.animationDuration = (Math.random() * 8 + 15) + 's';
+                
+                container.appendChild(char);
+                
+                setTimeout(() => {
+                    char.remove();
+                }, 25000);
+            }, 3000);
+        }
+
+        // Enhanced counter animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number-ultimate[data-count]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        let current = 0;
+                        const increment = target / 150;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            counter.textContent = Math.floor(current);
+                            
+                            if (current >= target) {
+                                counter.textContent = target;
+                                clearInterval(timer);
+                            }
+                        }, 15);
+                        
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => observer.observe(counter));
+        }
+
+        // Create CTA particles
+        function createCTAParticles() {
+            const container = document.getElementById('ctaEffects');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'cta-particle';
+                
+                const size = Math.random() * 6 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 15000);
+            }, 1200);
+        }
+
+        // Enhanced smooth scroll for navigation links
+        document.querySelectorAll('.scroll-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 90;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Enhanced parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.shape-3d');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = (index + 1) * 0.05;
+                element.style.transform += ` translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Enhanced 3D mouse tilt effect
+        function addTiltEffect() {
+            const tiltElements = document.querySelectorAll(
+                '.feature-card-ultimate, .course-card-ultimate, .testimonial-card-ultimate, .stat-card-ultimate'
+            );
+            
+            tiltElements.forEach(element => {
+                element.addEventListener('mousemove', (e) => {
+                    const rect = element.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 15;
+                    const rotateY = (centerX - x) / 15;
+                    
+                    element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                });
+            });
+        }
+
+        // Function to view course detail
+        function viewCourseDetail(courseId) {
+            if (courseId) {
+                window.location.href = `/course-detail/${courseId}`;
+            } else {
+                alert('Không tìm thấy thông tin khóa học');
+            }
+        }
+
+        // ==== VOICE SEARCH FUNCTIONALITY ====
+        let recognition = null;
+        let isRecording = false;
+        
+        const voiceSearchBtn = document.getElementById('voiceSearchBtn');
+        const textSearchBtn = document.getElementById('searchBtn');
+        const voiceSearchInput = document.getElementById('voiceSearchInput');
+        const voiceStatus = document.getElementById('voiceStatus');
+
+        // Check for Web Speech API support
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'vi-VN';
+
+            recognition.onstart = function() {
+                isRecording = true;
+                voiceSearchBtn.classList.add('recording');
+                voiceStatus.style.display = 'flex';
+                voiceStatus.className = 'voice-status recording';
+                voiceStatus.innerHTML = '<i class="fas fa-microphone"></i><span>Đang nghe...</span>';
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                voiceSearchInput.value = transcript;
+                voiceStatus.className = 'voice-status processing';
+                voiceStatus.innerHTML = '<i class="fas fa-cog fa-spin"></i><span>Đang xử lý...</span>';
+                
+                setTimeout(() => {
+                    performSearch(transcript);
+                }, 1000);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Lỗi nhận dạng giọng nói:', event.error);
+                isRecording = false;
+                voiceSearchBtn.classList.remove('recording');
+                voiceStatus.style.display = 'none';
+                
+                let errorMessage = 'Có lỗi xảy ra khi nhận dạng giọng nói.';
+                if (event.error === 'no-speech') {
+                    errorMessage = 'Không phát hiện giọng nói. Vui lòng thử lại.';
+                } else if (event.error === 'not-allowed') {
+                    errorMessage = 'Vui lòng cho phép truy cập microphone.';
+                }
+                alert(errorMessage);
+            };
+
+            recognition.onend = function() {
+                isRecording = false;
+                voiceSearchBtn.classList.remove('recording');
+                setTimeout(() => {
+                    voiceStatus.style.display = 'none';
+                }, 2000);
+            };
+        } else {
+            console.warn('Trình duyệt không hỗ trợ Web Speech API');
+            if (voiceSearchBtn) {
+                voiceSearchBtn.style.display = 'none';
+            }
+        }
+
+        // Voice search button click
+        if (voiceSearchBtn) {
+            voiceSearchBtn.addEventListener('click', () => {
+                if (recognition && !isRecording) {
+                    try {
+                        recognition.start();
+                    } catch (error) {
+                        console.error('Không thể bắt đầu nhận dạng giọng nói:', error);
+                        alert('Không thể sử dụng tính năng nhận dạng giọng nói.');
+                    }
+                }
+            });
+        }
+
+        // Text search button click
+        if (textSearchBtn) {
+            textSearchBtn.addEventListener('click', () => {
+                const query = voiceSearchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            });
+        }
+
+        // Enter key search
+        if (voiceSearchInput) {
+            voiceSearchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = voiceSearchInput.value.trim();
+                    if (query) {
+                        performSearch(query);
+                    }
+                }
+            });
+        }
+
+        // Perform search function
+        function performSearch(query) {
+            if (query) {
+                window.location.href = `/browse-courses?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // ==== FAQ CHATBOT FUNCTIONALITY ====
+        class EnhancedFAQChatbot {
+            constructor() {
+                this.isOpen = false;
+                this.isTyping = false;
+                this.messagesContainer = document.getElementById('chatbotMessages');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                this.widget = document.getElementById('chatbotWidget');
+                this.toggle = document.getElementById('chatbotToggle');
+                this.closeBtn = document.getElementById('chatbotClose');
+                this.suggestionsArea = document.getElementById('suggestionsArea');
+                
+                // Enhanced Smart suggestion management with comprehensive scenarios
+                this.usedQuestions = new Set();
+                this.conversationContext = {
+                    lastTopic: null,
+                    userInterests: [],
+                    askedQuestions: [],
+                    sessionData: {}
+                };
+                
+                // Comprehensive suggestion sets covering all aspects
+                this.suggestionSets = {
+                    initial: [
+                        { text: '💰 Học phí', question: 'Giá khóa học như thế nào?', category: 'price', priority: 1 },
+                        { text: '📅 Lịch học', question: 'Lịch học ra sao?', category: 'schedule', priority: 1 },
+                        { text: '👨‍🏫 Giảng viên', question: 'Thông tin giảng viên?', category: 'teacher', priority: 1 },
+                        { text: '🎓 Đăng ký', question: 'Cách đăng ký học?', category: 'registration', priority: 1 }
+                    ],
+                    afterPrice: [
+                        { text: '💳 Thanh toán', question: 'Phương thức thanh toán như thế nào?', category: 'payment' },
+                        { text: '🎯 Ưu đãi', question: 'Có chương trình ưu đãi nào không?', category: 'discount' },
+                        { text: '⏰ Thời gian khóa', question: 'Thời gian của mỗi khóa học bao lâu?', category: 'duration' },
+                        { text: '📊 So sánh khóa', question: 'Khác biệt giữa các khóa học?', category: 'comparison' },
+                        { text: '💰 Trả góp', question: 'Có thể trả góp học phí không?', category: 'installment' },
+                        { text: '🎁 Khuyến mãi', question: 'Có khuyến mãi cho học viên mới không?', category: 'promotion' }
+                    ],
+                    afterSchedule: [
+                        { text: '🏫 Địa điểm', question: 'Học ở đâu? Địa chỉ trung tâm?', category: 'location' },
+                        { text: '👥 Sĩ số lớp', question: 'Sĩ số lớp học như thế nào?', category: 'classSize' },
+                        { text: '🔄 Chuyển lịch', question: 'Có thể chuyển lịch học không?', category: 'reschedule' },
+                        { text: '📱 Học online', question: 'Có hỗ trợ học online không?', category: 'online' },
+                        { text: '🕐 Ca học', question: 'Có những ca học nào trong ngày?', category: 'timeSlots' },
+                        { text: '📆 Thời khóa biểu', question: 'Thời khóa biểu cụ thể như thế nào?', category: 'timetable' }
+                    ],
+                    afterTeacher: [
+                        { text: '🎓 Trình độ GV', question: 'Trình độ và bằng cấp của giảng viên?', category: 'qualification' },
+                        { text: '🇰🇷 GV người Hàn', question: 'Có giảng viên người Hàn Quốc không?', category: 'native' },
+                        { text: '⭐ Kinh nghiệm', question: 'Kinh nghiệm giảng dạy của giảng viên?', category: 'experience' },
+                        { text: '📞 Liên hệ GV', question: 'Có thể liên hệ trực tiếp với giảng viên không?', category: 'contact' },
+                        { text: '🎯 Phương pháp', question: 'Phương pháp giảng dạy như thế nào?', category: 'methodology' },
+                        { text: '👩‍🏫 Chọn GV', question: 'Có thể chọn giảng viên yêu thích không?', category: 'selection' }
+                    ],
+                    afterRegister: [
+                        { text: '📋 Thủ tục', question: 'Thủ tục đăng ký gồm những bước nào?', category: 'procedure' },
+                        { text: '🆔 Giấy tờ', question: 'Cần chuẩn bị giấy tờ gì để đăng ký?', category: 'documents' },
+                        { text: '⏱️ Hạn đăng ký', question: 'Hạn cuối đăng ký khi nào?', category: 'deadline' },
+                        { text: '✅ Kiểm tra đầu vào', question: 'Có kiểm tra trình độ đầu vào không?', category: 'placement' },
+                        { text: '🔄 Hoàn phí', question: 'Chính sách hoàn phí như thế nào?', category: 'refund' },
+                        { text: '📱 Đăng ký online', question: 'Có thể đăng ký online không?', category: 'onlineReg' }
+                    ],
+                    afterCertificate: [
+                        { text: '📜 Loại chứng chỉ', question: 'Có những loại chứng chỉ nào?', category: 'certTypes' },
+                        { text: '🏆 TOPIK', question: 'Có hỗ trợ thi TOPIK không?', category: 'topik' },
+                        { text: '⏰ Thời gian cấp', question: 'Bao lâu sau khi hoàn thành sẽ có chứng chỉ?', category: 'certTime' },
+                        { text: '🌐 Quốc tế', question: 'Chứng chỉ có được công nhận quốc tế không?', category: 'international' }
+                    ],
+                    afterMaterials: [
+                        { text: '📖 Sách giáo khoa', question: 'Sách giáo khoa sử dụng là gì?', category: 'textbook' },
+                        { text: '📱 App học tập', question: 'Có ứng dụng hỗ trợ học tập không?', category: 'app' },
+                        { text: '🎧 Audio', question: 'Có tài liệu nghe không?', category: 'audio' },
+                        { text: '📺 Video', question: 'Có video bài giảng không?', category: 'video' }
+                    ],
+                    courses: [
+                        { text: '📚 Khóa cơ bản', question: 'Khóa học tiếng Hàn cơ bản như thế nào?', category: 'basic' },
+                        { text: '🚀 Khóa nâng cao', question: 'Khóa học tiếng Hàn nâng cao ra sao?', category: 'advanced' },
+                        { text: '💼 Tiếng Hàn thương mại', question: 'Có khóa tiếng Hàn thương mại không?', category: 'business' },
+                        { text: '🎯 TOPIK', question: 'Khóa luyện thi TOPIK như thế nào?', category: 'topikPrep' },
+                        { text: '👶 Trẻ em', question: 'Có khóa học cho trẻ em không?', category: 'kids' },
+                        { text: '🎨 Văn hóa', question: 'Có học về văn hóa Hàn Quốc không?', category: 'culture' }
+                    ],
+                    support: [
+                        { text: '📞 Hotline', question: 'Số điện thoại tư vấn là gì?', category: 'hotline' },
+                        { text: '💬 Chat', question: 'Có hỗ trợ chat trực tuyến không?', category: 'chat' },
+                        { text: '📧 Email', question: 'Email liên hệ là gì?', category: 'email' },
+                        { text: '🕐 Giờ hỗ trợ', question: 'Giờ hỗ trợ khách hàng là khi nào?', category: 'supportHours' },
+                        { text: '🗺️ Đường đi', question: 'Hướng dẫn đường đi đến trung tâm?', category: 'directions' },
+                        { text: '🚗 Bãi xe', question: 'Có chỗ để xe không?', category: 'parking' }
+                    ],
+                    general: [
+                        { text: '🏆 Chứng chỉ', question: 'Có cấp chứng chỉ sau khóa học không?', category: 'certificate' },
+                        { text: '📚 Tài liệu', question: 'Tài liệu học như thế nào?', category: 'materials' },
+                        { text: '🔍 Khóa khác', question: 'Còn khóa học nào khác?', category: 'courses' },
+                        { text: '💬 Tư vấn', question: 'Muốn được tư vấn trực tiếp', category: 'consultation' },
+                        { text: '🎯 Mục tiêu', question: 'Nên chọn khóa nào phù hợp với mình?', category: 'recommendation' },
+                        { text: '🆘 Hỗ trợ', question: 'Các hình thức hỗ trợ học viên?', category: 'support' }
+                    ]
+                };
+                
+                // Knowledge base for smart responses
+                this.knowledgeBase = {
+                    quickAnswers: {
+                        greeting: [
+                            "Xin chào! Tôi là Tư vấn AI - trợ lý tư vấn thông minh của Korea_DB! 🤖✨",
+                            "Annyeonghaseyo! Chào mừng bạn đến với Korea_DB - nơi học tiếng Hàn hiện đại nhất! 🇰🇷",
+                            "Hello! Tôi có thể giúp bạn tìm hiểu mọi thông tin về các khóa học tiếng Hàn tại đây! 👋"
+                        ],
+                        goodbye: [
+                            "Cảm ơn bạn đã quan tâm đến Korea_DB! Chúc bạn học tiếng Hàn thật hiệu quả! 안녕히 가세요! 👋✨",
+                            "Hẹn gặp lại bạn sớm! Đừng quên đăng ký khóa học nhé! 화이팅! 💪🇰🇷",
+                            "Tạm biệt và chúc bạn thành công trên con đường chinh phục tiếng Hàn! 📚🌟"
+                        ]
+                    }
+                };
+                
+                this.initEventListeners();
+                this.createParticles();
+                this.loadConversationHistory();
+                this.loadFAQSuggestions();
+            }
+
+            initEventListeners() {
+                // Toggle chatbot
+                this.toggle.addEventListener('click', () => this.toggleChatbot());
+                this.closeBtn.addEventListener('click', () => this.closeChatbot());
+
+                // Send message
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                // Enhanced input events with smart suggestions
+                this.messageInput.addEventListener('input', (e) => {
+                    const value = e.target.value.trim();
+                    this.sendBtn.disabled = !value;
+                    
+                    // Smart auto-suggest while typing
+                    if (value.length > 2) {
+                        this.showTypingHints(value);
+                    }
+                });
+
+                // Focus management
+                this.messageInput.addEventListener('focus', () => {
+                    this.updateSuggestionsBasedOnContext();
+                });
+            }
+
+            loadConversationHistory() {
+                // Load previous conversation context from localStorage
+                const saved = localStorage.getItem('korea_chatbot_context');
+                if (saved) {
+                    try {
+                        this.conversationContext = { ...this.conversationContext, ...JSON.parse(saved) };
+                    } catch (e) {
+                        console.log('Could not load conversation history');
+                    }
+                }
+            }
+
+            saveConversationContext() {
+                // Save conversation context for better user experience
+                localStorage.setItem('korea_chatbot_context', JSON.stringify({
+                    lastTopic: this.conversationContext.lastTopic,
+                    userInterests: this.conversationContext.userInterests,
+                    askedQuestions: this.conversationContext.askedQuestions.slice(-10) // Keep last 10
+                }));
+            }
+
+            toggleChatbot() {
+                this.isOpen = !this.isOpen;
+                if (this.isOpen) {
+                    this.widget.classList.add('open');
+                    this.messageInput.focus();
+                    this.showWelcomeMessage();
+                } else {
+                    this.widget.classList.remove('open');
+                }
+            }
+
+            closeChatbot() {
+                this.isOpen = false;
+                this.widget.classList.remove('open');
+                this.saveConversationContext();
+            }
+
+            showWelcomeMessage() {
+                // Show personalized welcome message if returning user
+                if (this.conversationContext.askedQuestions.length > 0) {
+                    // Bỏ tin nhắn "Chào mừng bạn quay lại!" 
+                    // Chỉ cập nhật suggestions dựa trên context
+                    setTimeout(() => {
+                        this.updateSuggestionsBasedOnContext();
+                    }, 500);
+                }
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                // Add user message
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                this.sendBtn.disabled = true;
+
+                // Update conversation context
+                this.conversationContext.askedQuestions.push(message);
+                this.usedQuestions.add(message);
+
+                // Analyze message for better context understanding
+                const analysis = this.analyzeMessage(message);
+                this.conversationContext.lastTopic = analysis.topic;
+                if (analysis.interests.length > 0) {
+                    this.conversationContext.userInterests = [...new Set([...this.conversationContext.userInterests, ...analysis.interests])];
+                }
+
+                // Show typing indicator
+                this.showTyping();
+
+                try {
+                    // Enhanced API call with context
+                    const response = await fetch('/api/faq-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            message,
+                            context: {
+                                lastTopic: this.conversationContext.lastTopic,
+                                userInterests: this.conversationContext.userInterests,
+                                conversationLength: this.conversationContext.askedQuestions.length
+                            }
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    this.hideTyping();
+
+                    if (data.success && data.data) {
+                        let { message: botMessage, suggestions, category } = data.data;
+                        
+                        // Enhanced message formatting
+                        botMessage = this.enhanceResponse(botMessage, analysis);
+                        
+                        this.addMessage(botMessage, 'bot');
+                        
+                        // Smart suggestion updates
+                        this.updateSmartSuggestions(suggestions, category, analysis);
+                    } else {
+                        this.handleError();
+                    }
+                } catch (error) {
+                    console.error('Chat error:', error);
+                    this.hideTyping();
+                    this.handleError();
+                }
+
+                this.saveConversationContext();
+            }
+
+            analyzeMessage(message) {
+                const normalizedMessage = message.toLowerCase();
+                let topic = 'general';
+                let interests = [];
+
+                // Advanced topic detection
+                if (normalizedMessage.includes('giá') || normalizedMessage.includes('phí') || normalizedMessage.includes('tiền')) {
+                    topic = 'price';
+                    interests.push('pricing');
+                }
+                if (normalizedMessage.includes('lịch') || normalizedMessage.includes('thời gian')) {
+                    topic = 'schedule';
+                    interests.push('scheduling');
+                }
+                if (normalizedMessage.includes('giảng viên') || normalizedMessage.includes('thầy') || normalizedMessage.includes('cô')) {
+                    topic = 'teacher';
+                    interests.push('teachers');
+                }
+                if (normalizedMessage.includes('đăng ký') || normalizedMessage.includes('tham gia')) {
+                    topic = 'registration';
+                    interests.push('enrollment');
+                }
+                if (normalizedMessage.includes('chứng chỉ') || normalizedMessage.includes('topik')) {
+                    topic = 'certificate';
+                    interests.push('certification');
+                }
+                if (normalizedMessage.includes('online') || normalizedMessage.includes('trực tuyến')) {
+                    interests.push('online_learning');
+                }
+                if (normalizedMessage.includes('cơ bản') || normalizedMessage.includes('beginner')) {
+                    interests.push('beginner_level');
+                }
+                if (normalizedMessage.includes('nâng cao') || normalizedMessage.includes('advanced')) {
+                    interests.push('advanced_level');
+                }
+
+                return { topic, interests };
+            }
+
+            enhanceResponse(message, analysis) {
+                // Add personalized touches based on user interests
+                let enhanced = message;
+                
+                // Add relevant follow-up information
+                if (analysis.topic === 'price' && !enhanced.includes('khuyến mãi')) {
+                    enhanced += '\n\n💡 <em>Tip: Chúng tôi thường có các chương trình khuyến mãi đặc biệt cho học viên mới!</em>';
+                }
+                
+                if (analysis.topic === 'schedule' && !enhanced.includes('linh hoạt')) {
+                    enhanced += '\n\n⏰ <em>Lưu ý: Lịch học rất linh hoạt và có thể điều chỉnh theo nhu cầu của bạn!</em>';
+                }
+
+                if (analysis.interests.includes('beginner_level')) {
+                    enhanced += '\n\n🌱 <em>Dành cho người mới: Chúng tôi có chương trình hỗ trợ đặc biệt cho người mới bắt đầu!</em>';
+                }
+
+                return enhanced;
+            }
+
+            updateSmartSuggestions(apiSuggestions, category, analysis) {
+                if (!this.suggestionsArea) return;
+
+                // Clear current suggestions
+                this.suggestionsArea.innerHTML = '';
+
+                let suggestionsToShow = [];
+
+                // Priority 1: API suggestions from FAQ database
+                if (apiSuggestions && apiSuggestions.length > 0) {
+                    suggestionsToShow = apiSuggestions
+                        .filter(s => !this.usedQuestions.has(s))
+                        .slice(0, 3)
+                        .map(s => ({ 
+                            text: this.getEmojiForCategory(category) + ' ' + this.shortenText(s, 18), 
+                            question: s, 
+                            source: 'api' 
+                        }));
+                }
+
+                // Priority 2: Fill remaining with database suggestions from appropriate category
+                if (suggestionsToShow.length < 4) {
+                    const contextSuggestions = this.getContextualSuggestions(category, analysis);
+                    suggestionsToShow = [...suggestionsToShow, ...contextSuggestions].slice(0, 4);
+                }
+
+                // Priority 3: If still not enough, get random suggestions from database
+                if (suggestionsToShow.length < 4) {
+                    this.fillWithRandomSuggestions(suggestionsToShow, 4 - suggestionsToShow.length);
+                }
+
+                // Render suggestions
+                suggestionsToShow.forEach(suggestion => {
+                    const btn = document.createElement('button');
+                    btn.className = `suggestion-btn ${suggestion.source === 'api' ? 'api-suggestion' : ''}`;
+                    btn.textContent = suggestion.text;
+                    btn.onclick = () => this.sendQuickMessage(suggestion.question);
+                    this.suggestionsArea.appendChild(btn);
+                });
+            }
+
+            // Fill with random suggestions from database
+            async fillWithRandomSuggestions(currentSuggestions, needed) {
+                try {
+                    const response = await fetch(`/api/faq-popular/${needed + 5}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.data.faqs.length > 0) {
+                            const randomSuggestions = data.data.faqs
+                                .filter(faq => !this.usedQuestions.has(faq.question))
+                                .filter(faq => !currentSuggestions.some(s => s.question === faq.question))
+                                .sort(() => 0.5 - Math.random())
+                                .slice(0, needed)
+                                .map(faq => ({
+                                    text: this.getEmojiForCategory(faq.category) + ' ' + this.shortenText(faq.question, 18),
+                                    question: faq.question,
+                                    source: 'api'
+                                }));
+
+                            currentSuggestions.push(...randomSuggestions);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading random suggestions:', error);
+                    // Fallback to static suggestions if API fails
+                    const fallbackSuggestions = this.getSmartSuggestions(needed, { topic: 'general', interests: [] });
+                    currentSuggestions.push(...fallbackSuggestions.slice(0, needed));
+                }
+            }
+
+            getContextualSuggestions(category, analysis) {
+                const contextKey = this.getContextKey(category, analysis);
+                const suggestions = this.suggestionSets[contextKey] || this.suggestionSets.general;
+                
+                return suggestions
+                    .filter(s => !this.usedQuestions.has(s.question))
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, 2);
+            }
+
+            getContextKey(category, analysis) {
+                if (category) return category;
+                
+                switch (analysis.topic) {
+                    case 'price': return 'afterPrice';
+                    case 'schedule': return 'afterSchedule';
+                    case 'teacher': return 'afterTeacher';
+                    case 'registration': return 'afterRegister';
+                    case 'certificate': return 'afterCertificate';
+                    default: return 'general';
+                }
+            }
+
+            getSmartSuggestions(count, analysis) {
+                // Get suggestions based on user interests and conversation history
+                let allSuggestions = [];
+                
+                // Add interest-based suggestions
+                if (analysis.interests.includes('online_learning')) {
+                    allSuggestions.push({ text: '📱 Học online', question: 'Có hỗ trợ học online không?' });
+                }
+                if (analysis.interests.includes('beginner_level')) {
+                    allSuggestions.push({ text: '📚 Khóa cơ bản', question: 'Khóa học tiếng Hàn cơ bản như thế nào?' });
+                }
+                if (analysis.interests.includes('certification')) {
+                    allSuggestions.push({ text: '🏆 TOPIK', question: 'Có hỗ trợ thi TOPIK không?' });
+                }
+
+                // Fill with general suggestions
+                const generalSuggestions = this.suggestionSets.general
+                    .filter(s => !this.usedQuestions.has(s.question));
+                
+                allSuggestions = [...allSuggestions, ...generalSuggestions];
+                
+                return allSuggestions
+                    .filter(s => !this.usedQuestions.has(s.question))
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, count);
+            }
+
+            updateSuggestionsBasedOnContext() {
+                // Update suggestions when user focuses on input
+                if (this.conversationContext.lastTopic) {
+                    const analysis = { topic: this.conversationContext.lastTopic, interests: this.conversationContext.userInterests };
+                    this.updateSmartSuggestions(null, null, analysis);
+                }
+            }
+
+            showTypingHints(inputValue) {
+                // Show smart hints while user is typing (optional feature)
+                // This could show quick autocomplete suggestions
+            }
+
+            handleError() {
+                const errorMessages = [
+                    'Xin lỗi, tôi gặp một chút trục trặc. Bạn có thể thử hỏi lại không? 😅',
+                    'Có lỗi kết nối. Vui lòng thử lại sau! 🔄',
+                    'Tôi đang có chút vấn đề kỹ thuật. Hãy thử lại nhé! 🛠️'
+                ];
+                
+                const randomMessage = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+                this.addMessage(randomMessage, 'bot');
+                
+                // Show fallback suggestions
+                this.updateSmartSuggestions(null, null, { topic: 'general', interests: [] });
+            }
+
+            addMessage(content, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message message-${type}`;
+
+                if (type === 'bot') {
+                    messageDiv.innerHTML = `
+                        <div class="bot-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div>${this.formatMessage(content)}</div>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="message-content">
+                            <div>${this.escapeHtml(content)}</div>
+                        </div>
+                    `;
+                }
+
+                this.messagesContainer.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            sendQuickMessage(message) {
+                this.messageInput.value = message;
+                this.sendMessage();
+            }
+
+            formatMessage(message) {
+                // Enhanced formatting with better visual elements
+                return message
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #FF6B9D;">$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em style="color: #4ECDC4;">$1</em>')
+                    .replace(/`(.*?)`/g, '<code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #FFD700;">$1</code>')
+                    .replace(/\n\n/g, '<br><br>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/💰|📅|👨‍🏫|🎓|📝|👥|⏰|📋|🔍|🆕|💳|📞|🏆|📱|🇰🇷|💻|🎯|🔄|📊|⭐|✅|🆔|📚|💬|🎉|💡|🌱|⏰|📜|🏫|💰/g, '<span style="font-size: 1.1em; margin-right: 2px;">$&</span>');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            showTyping() {
+                this.isTyping = true;
+                this.typingIndicator.classList.add('show');
+                this.scrollToBottom();
+            }
+
+            hideTyping() {
+                this.isTyping = false;
+                this.typingIndicator.classList.remove('show');
+            }
+
+            scrollToBottom() {
+                setTimeout(() => {
+                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+                }, 100);
+            }
+
+            // Load FAQ suggestions from database
+            async loadFAQSuggestions() {
+                try {
+                    console.log('🔄 Loading FAQ suggestions from database...');
+                    
+                    // Get popular FAQs for initial suggestions
+                    const popularResponse = await fetch('/api/faq-popular/20');
+                    if (popularResponse.ok) {
+                        const popularData = await popularResponse.json();
+                        if (popularData.success && popularData.data.faqs.length > 0) {
+                            // Update initial suggestions with real FAQ data
+                            this.suggestionSets.initial = popularData.data.faqs.slice(0, 4).map(faq => ({
+                                text: this.getEmojiForCategory(faq.category) + ' ' + this.shortenText(faq.question, 15),
+                                question: faq.question,
+                                category: faq.category.toLowerCase().replace(/\s+/g, ''),
+                                priority: 1,
+                                source: 'api'
+                            }));
+
+                            // Update general suggestions
+                            this.suggestionSets.general = popularData.data.faqs.map(faq => ({
+                                text: this.getEmojiForCategory(faq.category) + ' ' + this.shortenText(faq.question, 20),
+                                question: faq.question,
+                                category: faq.category.toLowerCase().replace(/\s+/g, ''),
+                                source: 'api'
+                            }));
+
+                            console.log('✅ FAQ suggestions loaded successfully:', this.suggestionSets.initial.length, 'initial suggestions');
+                            
+                            // Update initial suggestions in UI
+                            this.updateInitialSuggestions();
+                        }
+                    }
+
+                    // Load category-specific suggestions
+                    await this.loadCategorySuggestions();
+
+                } catch (error) {
+                    console.error('❌ Error loading FAQ suggestions:', error);
+                    // Keep default suggestions if API fails
+                }
+            }
+
+            // Load suggestions by category
+            async loadCategorySuggestions() {
+                try {
+                    const categories = ['Học phí', 'Lịch học', 'Giảng viên', 'Khóa học', 'Hỗ trợ', 'Chứng chỉ'];
+                    
+                    for (const category of categories) {
+                        const response = await fetch(`/api/faq-category/${encodeURIComponent(category)}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.success && data.data.faqs.length > 0) {
+                                const categoryKey = this.getCategoryKey(category);
+                                this.suggestionSets[categoryKey] = data.data.faqs.map(faq => ({
+                                    text: this.getEmojiForCategory(faq.category) + ' ' + this.shortenText(faq.question, 20),
+                                    question: faq.question,
+                                    category: faq.category.toLowerCase().replace(/\s+/g, ''),
+                                    source: 'api'
+                                }));
+                            }
+                        }
+                    }
+                    console.log('✅ Category suggestions loaded');
+                } catch (error) {
+                    console.error('❌ Error loading category suggestions:', error);
+                }
+            }
+
+            // Get emoji for category
+            getEmojiForCategory(category) {
+                const emojiMap = {
+                    'Học phí': '💰',
+                    'Lịch học': '📅',
+                    'Giảng viên': '👨‍🏫',
+                    'Khóa học': '📚',
+                    'Chứng chỉ': '🏆',
+                    'Hỗ trợ': '💬',
+                    'Hình thức học': '📱',
+                    'Lớp học': '👥',
+                    'Tuyển sinh': '🎓',
+                    'Bài tập': '📝',
+                    'Hệ thống': '⚙️',
+                    'Tư vấn': '🤝'
+                };
+                return emojiMap[category] || '❓';
+            }
+
+            // Get category key for suggestion sets
+            getCategoryKey(category) {
+                const categoryMap = {
+                    'Học phí': 'afterPrice',
+                    'Lịch học': 'afterSchedule', 
+                    'Giảng viên': 'afterTeacher',
+                    'Khóa học': 'courses',
+                    'Chứng chỉ': 'afterCertificate',
+                    'Hỗ trợ': 'support'
+                };
+                return categoryMap[category] || 'general';
+            }
+
+            // Shorten text for display
+            shortenText(text, maxLength) {
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength) + '...';
+            }
+
+            // Update initial suggestions in UI
+            updateInitialSuggestions() {
+                const suggestionsArea = document.getElementById('suggestionsArea');
+                if (suggestionsArea && this.suggestionSets.initial.length > 0) {
+                    // Clear existing suggestions
+                    suggestionsArea.innerHTML = '';
+                    
+                    // Add new suggestions from database
+                    this.suggestionSets.initial.forEach(suggestion => {
+                        const btn = document.createElement('button');
+                        btn.className = 'suggestion-btn primary';
+                        btn.textContent = suggestion.text;
+                        btn.onclick = () => this.sendQuickMessage(suggestion.question);
+                        suggestionsArea.appendChild(btn);
+                    });
+                }
+            }
+
+            createParticles() {
+                const container = document.getElementById('chatbotParticles');
+                if (!container) return;
+
+                setInterval(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'chat-particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                    container.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 8000);
+                }, 2000);
+            }
+        }
+
+        // Global function for quick messages
+        function sendQuickMessage(message) {
+            if (window.chatbot) {
+                window.chatbot.sendQuickMessage(message);
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createKoreanChars();
+            animateCounters();
+            createParticles();
+            createCTAParticles();
+            addTiltEffect();
+            
+            // Initialize enhanced chatbot
+            window.chatbot = new EnhancedFAQChatbot();
+        });
+    </script>
+</body>
+</html>

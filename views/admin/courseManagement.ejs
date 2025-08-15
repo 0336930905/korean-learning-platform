@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Khóa Học - Korea-DB Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Enhanced styles for modern UI */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+            
+        }
+        .grid-cols-1 > .animate-fade-in{
+            margin-left: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .course-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .level-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .level-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .level-badge:hover::before {
+            left: 100%;
+        }
+        
+        .action-button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .action-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
+        .form-slide-down {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .form-slide-down.active {
+            max-height: 1000px;
+        }
+        
+        .progress-bar {
+            position: relative;
+            background: #f3f4f6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .view-toggle {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 4px;
+            display: flex;
+        }
+        
+        .view-toggle button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .view-toggle button.active {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .grid-view .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .table-row-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .table-row-hover:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
+            transform: translateX(4px);
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 40;
+        }
+        
+        .filter-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .action-button {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .action-button .hover-text {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 8px;
+            white-space: nowrap;
+            background: #1f2937;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .action-button:hover .hover-text {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex h-screen">
+        <%- include('../partials/admin_sidebar', { user: user }) %>
+        
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header', { user: user }) %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
+                <!-- Enhanced Page Header -->
+                <div class="gradient-bg py-8 px-8 text-white">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">
+                                    <i class="fas fa-graduation-cap mr-3"></i>
+                                    Quản Lý Khóa Học
+                                </h1>
+                                <p class="text-indigo-100">Tạo và quản lý các khóa học tiếng Hàn chất lượng cao</p>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="flex items-center space-x-4">
+                                <button onclick="exportCourses()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Xuất báo cáo
+                                </button>
+                                <button onclick="importCourses()" 
+                                        class="action-button px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg hover:bg-white/30 transition-all">
+                                    <i class="fas fa-upload mr-2"></i>
+                                    Nhập khóa học
+                                </button>
+                                <button id="showAddFormBtn" 
+                                        class="action-button px-6 py-2 bg-white text-indigo-600 rounded-lg hover:bg-gray-100 font-semibold">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Thêm khóa học
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Breadcrumb -->
+                        <nav class="flex" aria-label="Breadcrumb">
+                            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                                <li class="inline-flex items-center">
+                                    <a href="/dashboard/admin" class="text-indigo-100 hover:text-white transition-colors">
+                                        <i class="fas fa-home mr-2"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-chevron-right text-indigo-200 mx-2"></i>
+                                    <span class="text-white font-medium">Quản lý khóa học</span>
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-8 py-8">
+                    <!-- Enhanced Stats Grid -->
+                   
+
+                    <!-- Enhanced Search and Filter Section -->
+                    <div class="glass-card rounded-xl p-6 mb-8 animate-fade-in" style="animation-delay: 0.4s">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+                            <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                                <!-- Enhanced Search -->
+                                <div class="flex-1 max-w-md">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-search text-gray-400"></i>
+                                        </div>
+                                        <input id="searchInput" 
+                                               type="text" 
+                                               placeholder="Tìm kiếm khóa học, giảng viên..." 
+                                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                                        <div id="searchSpinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden">
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                               
+                                
+                                <!-- Level Filter -->
+                                <select id="levelFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="">⭐ Tất cả cấp độ</option>
+                                    <option value="beginner">🟢 Sơ cấp</option>
+                                    <option value="intermediate">🔵 Trung cấp</option>
+                                    <option value="advanced">🟣 Cao cấp</option>
+                                </select>
+                                
+                                <!-- Instructor Filter -->
+                                <select id="instructorFilter" class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="">👨‍🏫 Tất cả giảng viên</option>
+                                    <% teachers.forEach(function(teacher) { %>
+                                        <option value="<%= teacher.fullName %>"><%= teacher.fullName %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center gap-4">
+                                <!-- Reset Filters -->
+                                <button id="resetFilters" class="px-4 py-3 text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="fas fa-refresh mr-2"></i>Đặt lại
+                                </button>
+                                
+                                <!-- Result Count -->
+                                <div class="text-sm text-gray-500">
+                                    <span id="resultCount" class="font-semibold text-indigo-600">0</span> khóa học
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Filters Display -->
+                        <div id="activeFilters" class="flex flex-wrap gap-2 hidden">
+                            <!-- Active filter badges will be inserted here -->
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Course List -->
+                    <div class="glass-card rounded-xl shadow-lg overflow-hidden animate-fade-in" style="animation-delay: 0.5s">
+                        <!-- Table Header -->
+                        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900 mb-1">
+                                        <i class="fas fa-list-ul mr-2 text-indigo-600"></i>
+                                        Danh sách khóa học
+                                    </h2>
+                                    <p class="text-sm text-gray-600">Quản lý và theo dõi tất cả khóa học trong hệ thống</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Table -->
+                        <div id="tableViewContainer" class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khóa học</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giảng viên</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cấp độ</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="courseTableBody" class="bg-white divide-y divide-gray-200">
+                                    <% courses.forEach(function(course) { %>
+                                    <tr class="table-row-hover course-row" data-course-id="<%= course._id %>">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-12 w-12 mr-4">
+                                                    <% if (course.imageUrl) { %>
+                                                        <img class="h-12 w-12 rounded-lg object-cover border" src="<%= course.imageUrl %>" alt="<%= course.title %>">
+                                                    <% } else { %>
+                                                        <div class="h-12 w-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
+                                                            <i class="fas fa-book text-white"></i>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-semibold text-gray-900 mb-1 max-w-xs truncate">
+                                                        <%= course.title %>
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        <i class="fas fa-clock mr-1"></i>
+                                                        <%= course.duration %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                                                    <i class="fas fa-user text-gray-500 text-xs"></i>
+                                                </div>
+                                                <span class="text-sm text-gray-900">
+                                                    <%= course.instructor ? course.instructor.fullName : 'Chưa phân công' %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="level-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                       <%= course.level === 'beginner' ? 'bg-green-100 text-green-800' : 
+                                                          course.level === 'intermediate' ? 'bg-blue-100 text-blue-800' : 
+                                                          'bg-purple-100 text-purple-800' %>">
+                                                <%= course.level === 'beginner' ? '🟢 Sơ cấp' : 
+                                                   course.level === 'intermediate' ? '🔵 Trung cấp' : '🟣 Cao cấp' %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-semibold text-gray-900">
+                                                <%= course.price.toLocaleString('vi-VN') %> VNĐ
+                                            </div>
+                                        </td>
+                                        
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full bg-green-100 text-green-800">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                Hoạt động
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex items-center space-x-3">
+                                                <button class="action-button text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-all relative"
+                                                        onclick="viewCourse('<%= course._id %>')">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span class="hover-text">Chi tiết</span>
+                                                </button>
+                                                <button class="action-button text-indigo-600 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition-all edit-course relative"
+                                                        data-id="<%= course._id %>"
+                                                        data-title="<%= course.title %>"
+                                                        data-description="<%= course.description %>"
+                                                        data-level="<%= course.level %>"
+                                                        data-category="<%= course.category %>"
+                                                        data-price="<%= course.price %>"
+                                                        data-duration="<%= course.duration %>"
+                                                        data-instructor="<%= course.instructor ? course.instructor._id : '' %>"
+                                                        data-image="<%= course.imageUrl || '' %>">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="hover-text">Sửa</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Grid View -->
+                        <div id="gridViewContainer" class="hidden p-6">
+                            <div class="course-grid">
+                                <% courses.forEach(function(course) { %>
+                                <div class="course-card bg-white rounded-xl p-6 hover-scale">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex-1">
+                                            <% if (course.imageUrl) { %>
+                                                <img src="<%= course.imageUrl %>" alt="<%= course.title %>" class="w-full h-32 object-cover rounded-lg mb-3">
+                                            <% } else { %>
+                                                <div class="w-full h-32 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
+                                                    <i class="fas fa-book text-white text-2xl"></i>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-3">
+                                        <h3 class="font-semibold text-gray-900 text-lg line-clamp-2">
+                                            <%= course.title %>
+                                        </h3>
+                                        
+                                        <div class="flex items-center space-x-2">
+                                            <span class="level-badge px-2 py-1 text-xs leading-4 font-semibold rounded-full 
+                                                       <%= course.level === 'beginner' ? 'bg-green-100 text-green-800' : 
+                                                          course.level === 'intermediate' ? 'bg-blue-100 text-blue-800' : 
+                                                          'bg-purple-100 text-purple-800' %>">
+                                                <%= course.level === 'beginner' ? '🟢 Sơ cấp' : 
+                                                   course.level === 'intermediate' ? '🔵 Trung cấp' : '🟣 Cao cấp' %>
+                                            </span>
+                                            <span class="px-2 py-1 text-xs leading-4 font-medium bg-gray-100 text-gray-800 rounded-md">
+                                                <%= course.category %>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between text-sm text-gray-600">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-user mr-1"></i>
+                                                <%= course.instructor ? course.instructor.fullName : 'Chưa phân công' %>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                <%= course.duration %>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between">
+                                            <div class="text-lg font-bold text-indigo-600">
+                                                <%= course.price.toLocaleString('vi-VN') %> VNĐ
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                156 học viên
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-2 pt-2 border-t border-gray-100">
+                                            <button class="flex-1 px-3 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                                                <i class="fas fa-eye mr-1"></i>Xem
+                                            </button>
+                                            <button class="flex-1 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors edit-course"
+                                                    data-id="<%= course._id %>"
+                                                    data-title="<%= course.title %>"
+                                                    data-description="<%= course.description %>"
+                                                    data-level="<%= course.level %>"
+                                                    data-category="<%= course.category %>"
+                                                    data-price="<%= course.price %>"
+                                                    data-duration="<%= course.duration %>"
+                                                    data-instructor="<%= course.instructor ? course.instructor._id : '' %>"
+                                                    data-image="<%= course.imageUrl || '' %>">
+                                                <i class="fas fa-edit mr-1"></i>Sửa
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-500">Hiển thị</span>
+                                    <select id="pageSize" class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                    <span class="text-sm text-gray-500">trên trang</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-sm text-gray-500">
+                                        Trang <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                                    </span>
+                                    <div class="flex space-x-1">
+                                        <button id="prevPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <button id="nextPage" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced Delete Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl max-w-md w-full mx-4 p-6 animate-fade-in">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Xác nhận xóa khóa học</h3>
+                <p class="text-sm text-gray-500 mb-6">
+                    Bạn có chắc chắn muốn xóa khóa học này? Tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn và không thể khôi phục.
+                </p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelDelete" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Hủy
+                </button>
+                <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>Xóa khóa học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Course Modal -->
+    <div id="editCourseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto">
+        <div class="bg-white rounded-xl max-w-4xl w-full mx-4 my-8 p-6 animate-fade-in max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 mb-1" id="editModalTitle">
+                        <i class="fas fa-edit text-indigo-600 mr-2"></i>
+                        Chỉnh sửa khóa học
+                    </h2>
+                    <p class="text-sm text-gray-600">Cập nhật thông tin khóa học</p>
+                </div>
+                <button id="closeEditModal" class="action-button text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="editCourseForm" enctype="multipart/form-data" class="space-y-6">
+                <input type="hidden" id="editCourseId">
+                
+                <!-- Basic Information -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                        Thông tin cơ bản
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-heading text-gray-400 mr-1"></i>
+                                Tên khóa học
+                            </label>
+                            <input type="text" 
+                                   name="title" 
+                                   required
+                                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                   placeholder="Ví dụ: Tiếng Hàn cơ bản cho người mới bắt đầu">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user-tie text-gray-400 mr-1"></i>
+                                Giảng viên
+                            </label>
+                            <select name="instructor" 
+                                    required
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Chọn giảng viên</option>
+                                <% teachers.forEach(function(teacher) { %>
+                                    <option value="<%= teacher._id %>"><%= teacher.fullName %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-align-left text-gray-400 mr-1"></i>
+                            Mô tả khóa học
+                        </label>
+                        <textarea name="description" 
+                                  required
+                                  rows="4"
+                                  class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                  placeholder="Mô tả chi tiết về nội dung, mục tiêu và lợi ích của khóa học..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Course Details -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-cogs text-green-600 mr-2"></i>
+                        Chi tiết khóa học
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-layer-group text-gray-400 mr-1"></i>
+                                Cấp độ
+                            </label>
+                            <select name="level" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="beginner">🟢 Sơ cấp (Beginner)</option>
+                                <option value="intermediate">🔵 Trung cấp (Intermediate)</option>
+                                <option value="advanced">🟣 Cao cấp (Advanced)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tags text-gray-400 mr-1"></i>
+                                Danh mục
+                            </label>
+                            <select name="category" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="Ngữ pháp">📚 Ngữ pháp</option>
+                                <option value="Từ vựng">📖 Từ vựng</option>
+                                <option value="Nghe nói">🎧 Nghe nói</option>
+                                <option value="Viết">✍️ Viết</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-clock text-gray-400 mr-1"></i>
+                                Thời lượng
+                            </label>
+                            <input type="text" 
+                                   name="duration" 
+                                   required
+                                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                   placeholder="Ví dụ: 8 tuần, 24 giờ">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing & Media -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-dollar-sign text-yellow-600 mr-2"></i>
+                        Giá cả & Hình ảnh
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-money-bill-wave text-gray-400 mr-1"></i>
+                                Giá khóa học (VNĐ)
+                            </label>
+                            <div class="relative">
+                                <input type="number" 
+                                       name="price" 
+                                       required
+                                       min="0"
+                                       class="block w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                       placeholder="500000">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 text-sm">VNĐ</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-image text-gray-400 mr-1"></i>
+                                Hình ảnh khóa học
+                            </label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="flex flex-col items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-2">
+                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-xl mb-1"></i>
+                                        <p class="text-xs text-gray-500">Chọn hình ảnh</p>
+                                    </div>
+                                    <input type="file" name="image" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                            
+                            <!-- Image Preview -->
+                            <div id="editImagePreview" class="mt-3 hidden">
+                                <div class="relative inline-block">
+                                    <img src="" alt="Preview" class="h-20 w-20 object-cover rounded-lg border">
+                                    <button type="button" 
+                                            id="removeEditImage"
+                                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <button type="button" 
+                            id="cancelEditBtn" 
+                            class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all">
+                        <i class="fas fa-times mr-2"></i>Hủy
+                    </button>
+                    <button type="submit" 
+                            id="updateBtn" 
+                            class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all">
+                        <i class="fas fa-save mr-2"></i>Cập nhật khóa học
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div id="addCourseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto">
+        <div class="bg-white rounded-xl max-w-4xl w-full mx-4 my-8 p-6 animate-fade-in max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 mb-1">
+                        <i class="fas fa-plus-circle text-indigo-600 mr-2"></i>
+                        Thêm khóa học mới
+                    </h2>
+                    <p class="text-sm text-gray-600">Tạo khóa học tiếng Hàn chất lượng cao cho học viên</p>
+                </div>
+                <button id="closeAddModal" class="action-button text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="addCourseForm" enctype="multipart/form-data" class="space-y-6">
+                <!-- Basic Information -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                        Thông tin cơ bản
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-heading text-gray-400 mr-1"></i>
+                                Tên khóa học
+                            </label>
+                            <input type="text" 
+                                   name="title" 
+                                   required
+                                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                   placeholder="Ví dụ: Tiếng Hàn cơ bản cho người mới bắt đầu">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-user-tie text-gray-400 mr-1"></i>
+                                Giảng viên
+                            </label>
+                            <select name="instructor" 
+                                    required
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="">Chọn giảng viên</option>
+                                <% teachers.forEach(function(teacher) { %>
+                                    <option value="<%= teacher._id %>"><%= teacher.fullName %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-align-left text-gray-400 mr-1"></i>
+                            Mô tả khóa học
+                        </label>
+                        <textarea name="description" 
+                                  required
+                                  rows="4"
+                                  class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                                  placeholder="Mô tả chi tiết về nội dung, mục tiêu và lợi ích của khóa học..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Course Details -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-cogs text-green-600 mr-2"></i>
+                        Chi tiết khóa học
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-layer-group text-gray-400 mr-1"></i>
+                                Cấp độ
+                            </label>
+                            <select name="level" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="beginner">🟢 Sơ cấp (Beginner)</option>
+                                <option value="intermediate">🔵 Trung cấp (Intermediate)</option>
+                                <option value="advanced">🟣 Cao cấp (Advanced)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tags text-gray-400 mr-1"></i>
+                                Danh mục
+                            </label>
+                            <select name="category" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <option value="Ngữ pháp">📚 Ngữ pháp</option>
+                                <option value="Từ vựng">📖 Từ vựng</option>
+                                <option value="Nghe nói">🎧 Nghe nói</option>
+                                <option value="Viết">✍️ Viết</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-clock text-gray-400 mr-1"></i>
+                                Thời lượng
+                            </label>
+                            <input type="text" 
+                                   name="duration" 
+                                   required
+                                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                   placeholder="Ví dụ: 8 tuần, 24 giờ">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pricing & Media -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-dollar-sign text-yellow-600 mr-2"></i>
+                        Giá cả & Hình ảnh
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-money-bill-wave text-gray-400 mr-1"></i>
+                                Giá khóa học (VNĐ)
+                            </label>
+                            <div class="relative">
+                                <input type="number" 
+                                       name="price" 
+                                       required
+                                       min="0"
+                                       class="block w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                       placeholder="500000">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 text-sm">VNĐ</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-image text-gray-400 mr-1"></i>
+                                Hình ảnh khóa học
+                            </label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="flex flex-col items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div class="flex flex-col items-center justify-center pt-2 pb-2">
+                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-xl mb-1"></i>
+                                        <p class="text-xs text-gray-500">Chọn hình ảnh</p>
+                                    </div>
+                                    <input type="file" name="image" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                            
+                            <!-- Image Preview -->
+                            <div id="addImagePreview" class="mt-3 hidden">
+                                <div class="relative inline-block">
+                                    <img src="" alt="Preview" class="h-20 w-20 object-cover rounded-lg border">
+                                    <button type="button" 
+                                            id="removeAddImage"
+                                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <button type="button" 
+                            id="cancelAddBtn" 
+                            class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all">
+                        <i class="fas fa-times mr-2"></i>Hủy
+                    </button>
+                    <button type="submit" 
+                            id="submitAddBtn" 
+                            class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all">
+                        <i class="fas fa-save mr-2"></i>Thêm khóa học
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 flex items-center space-x-4">
+            <div class="loading-spinner"></div>
+            <span class="text-gray-700">Đang xử lý...</span>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// Simplified Course Management System
+class CourseManager {
+    constructor() {
+        this.isEditing = false;
+        this.filters = {
+            search: '',
+            category: '',
+            level: '',
+            instructor: ''
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.updateResultCount();
+    }
+    
+    bindEvents() {
+        // Add modal controls
+        $('#showAddFormBtn').click(() => this.showAddModal());
+        $('#closeAddModal, #cancelAddBtn').click(() => this.hideAddModal());
+        $('#addCourseForm').on('submit', (e) => this.handleAddFormSubmit(e));
+        
+        // Edit modal controls
+        $('#closeEditModal, #cancelEditBtn').click(() => this.hideEditModal());
+        $('#editCourseForm').on('submit', (e) => this.handleEditFormSubmit(e));
+        
+        // Filters
+        $('#searchInput').on('input', this.debounce(() => this.applyFilters(), 300));
+        $('#categoryFilter, #levelFilter, #instructorFilter').on('change', () => this.applyFilters());
+        $('#resetFilters').click(() => this.resetFilters());
+        
+        // Add form image upload
+        $('#addCourseForm [name="image"]').change((e) => this.handleAddImageUpload(e));
+        $('#removeAddImage').click(() => this.removeAddImage());
+        
+        // Edit form image upload
+        $('#editCourseForm [name="image"]').change((e) => this.handleEditImageUpload(e));
+        $('#removeEditImage').click(() => this.removeEditImage());
+        
+        // Course actions
+        $(document).on('click', '.edit-course', (e) => this.editCourse(e));
+        
+        // Close dropdowns when clicking outside
+        $(document).click((e) => this.handleOutsideClick(e));
+    }
+    
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    showAddModal() {
+        $('#addCourseModal').removeClass('hidden');
+        this.resetAddForm();
+    }
+    
+    hideAddModal() {
+        $('#addCourseModal').addClass('hidden');
+        this.resetAddForm();
+    }
+    
+    resetAddForm() {
+        $('#addCourseForm')[0].reset();
+        $('#addImagePreview').addClass('hidden');
+    }
+    
+    handleAddImageUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                $('#addImagePreview img').attr('src', e.target.result);
+                $('#addImagePreview').removeClass('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    removeAddImage() {
+        $('#addCourseForm [name="image"]').val('');
+        $('#addImagePreview').addClass('hidden');
+    }
+    
+    async handleAddFormSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const url = '/admin/course-management/create';
+        
+        this.showLoading(true);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showToast('success', 'Thêm khóa học thành công!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                this.showToast('error', data.message || 'Có lỗi xảy ra!');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showToast('error', 'Không thể kết nối với server!');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+    
+    editCourse(e) {
+        const button = $(e.currentTarget);
+        const courseData = {
+            _id: button.data('id'),
+            title: button.data('title'),
+            description: button.data('description'),
+            level: button.data('level'),
+            category: button.data('category'),
+            price: button.data('price'),
+            duration: button.data('duration'),
+            instructor: {
+                _id: button.data('instructor')
+            },
+            imageUrl: button.data('image')
+        };
+        
+        this.populateEditForm(courseData);
+        this.showEditModal();
+    }
+    
+    showEditModal() {
+        $('#editCourseModal').removeClass('hidden');
+    }
+    
+    hideEditModal() {
+        $('#editCourseModal').addClass('hidden');
+        this.resetEditForm();
+    }
+    
+    resetEditForm() {
+        $('#editCourseForm')[0].reset();
+        $('#editCourseId').val('');
+        $('#editImagePreview').addClass('hidden');
+    }
+    
+    populateEditForm(course) {
+        $('#editCourseId').val(course._id);
+        $('#editCourseForm [name="title"]').val(course.title);
+        $('#editCourseForm [name="description"]').val(course.description);
+        $('#editCourseForm [name="level"]').val(course.level);
+        $('#editCourseForm [name="category"]').val(course.category);
+        $('#editCourseForm [name="price"]').val(course.price);
+        $('#editCourseForm [name="duration"]').val(course.duration);
+        
+        // Add null check for instructor
+        if (course.instructor && course.instructor._id) {
+            $('#editCourseForm [name="instructor"]').val(course.instructor._id);
+        } else {
+            $('#editCourseForm [name="instructor"]').val(''); // Set to empty or default value
+        }
+        
+        // Show current image if exists
+        if (course.imageUrl) {
+            $('#editImagePreview img').attr('src', course.imageUrl);
+            $('#editImagePreview').removeClass('hidden');
+        } else {
+            $('#editImagePreview').addClass('hidden');
+        }
+    }
+    
+    handleEditImageUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                $('#editImagePreview img').attr('src', e.target.result);
+                $('#editImagePreview').removeClass('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    removeEditImage() {
+        $('#editCourseForm [name="image"]').val('');
+        $('#editImagePreview').addClass('hidden');
+    }
+    
+    async handleEditFormSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const courseId = $('#editCourseId').val();
+        const url = `/admin/course-management/update/${courseId}`;
+        
+        this.showLoading(true);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showToast('success', 'Cập nhật khóa học thành công!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                this.showToast('error', data.message || 'Có lỗi xảy ra!');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showToast('error', 'Không thể kết nối với server!');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+    
+    async deleteCourse() {
+        if (!this.courseToDelete) return;
+        
+        this.showLoading(true);
+        
+        try {
+            const response = await fetch(`/admin/course-management/delete/${this.courseToDelete}`, {
+                method: 'DELETE'
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showToast('success', 'Xóa khóa học thành công!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                this.showToast('error', data.message || 'Có lỗi xảy ra!');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showToast('error', 'Không thể kết nối với server!');
+        } finally {
+            this.hideDeleteModal();
+            this.showLoading(false);
+        }
+    }
+    
+    showDeleteModal(e) {
+        this.courseToDelete = $(e.currentTarget).data('id');
+        $('#deleteModal').removeClass('hidden');
+    }
+    
+    resetFilters() {
+        $('#searchInput').val('');
+        $('#categoryFilter').val('');
+        $('#levelFilter').val('');
+        $('#instructorFilter').val('');
+        this.applyFilters();
+    }
+    
+    applyFilters() {
+        const searchTerm = $('#searchInput').val().toLowerCase();
+        const selectedCategory = $('#categoryFilter').val();
+        const selectedLevel = $('#levelFilter').val();
+        const selectedInstructor = $('#instructorFilter').val();
+
+        $('.course-row').each(function() {
+            const row = $(this);
+            const title = row.find('td:eq(0)').text().toLowerCase();
+            const category = row.find('td:eq(3)').text().trim();
+            const level = row.find('td:eq(2)').text().trim();
+            const instructor = row.find('td:eq(1)').text().trim();
+
+            const matchesSearch = title.includes(searchTerm);
+            const matchesCategory = !selectedCategory || category === selectedCategory;
+            const matchesLevel = !selectedLevel || 
+                              (selectedLevel === 'beginner' && level.includes('Sơ cấp')) ||
+                              (selectedLevel === 'intermediate' && level.includes('Trung cấp')) ||
+                              (selectedLevel === 'advanced' && level.includes('Cao cấp'));
+            const matchesInstructor = !selectedInstructor || instructor === selectedInstructor;
+
+            if (matchesSearch && matchesCategory && matchesLevel && matchesInstructor) {
+                row.show();
+            } else {
+                row.hide();
+            }
+        });
+
+        this.updateResultCount();
+    }
+    
+    updateResultCount() {
+        const visibleRows = $('.course-row:visible').length;
+        $('#resultCount').text(`${visibleRows}`);
+    }
+    
+    showToast(type, message) {
+        const toastId = `toast-${Date.now()}`;
+        const toastHtml = `
+            <div id="${toastId}" class="fixed bottom-4 right-4 bg-gray-800 text-white py-2 px-4 rounded-md shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0">
+                <div class="flex items-center">
+                    <div class="mr-2">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    </div>
+                    <div>${message}</div>
+                </div>
+            </div>
+        `;
+        
+        $('#toastContainer').append(toastHtml);
+        
+        setTimeout(() => {
+            $(`#${toastId}`).removeClass('translate-y-20 opacity-0');
+        }, 100);
+        
+        setTimeout(() => {
+            $(`#${toastId}`).addClass('translate-y-20 opacity-0');
+        }, 3000);
+        
+        setTimeout(() => {
+            $(`#${toastId}`).remove();
+        }, 3500);
+    }
+    
+    showLoading(isLoading) {
+        if (isLoading) {
+            $('#loadingOverlay').removeClass('hidden');
+        } else {
+            $('#loadingOverlay').addClass('hidden');
+        }
+    }
+    
+    // Click outside modal to close
+    handleOutsideClick(e) {
+        const $target = $(e.target);
+        if ($target.closest('#deleteModal').length === 0 && $target.closest('.action-button').length === 0) {
+            $('#deleteModal').addClass('hidden');
+        }
+        if ($target.closest('#editCourseModal').length === 0 && $target.closest('.edit-course').length === 0) {
+            $('#editCourseModal').addClass('hidden');
+        }
+        if ($target.closest('#addCourseModal').length === 0 && $target.closest('#showAddFormBtn').length === 0) {
+            $('#addCourseModal').addClass('hidden');
+        }
+    }
+}
+
+// Course detail view function
+function viewCourse(courseId) {
+    // Redirect to course detail page
+    window.location.href = `/admin/course-management/${courseId}`;
+}
+
+// Initialize the Course Manager
+$(document).ready(function() {
+    const courseManager = new CourseManager();
+});
+    </script>
+</body>
+</html>

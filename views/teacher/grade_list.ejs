@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điểm chi tiết | Giảng viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sticky-column {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: white;
+            border-right: 2px solid #e5e7eb;
+        }
+        .grade-cell {
+            min-width: 80px;
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: 600;
+        }
+        .assignment-col {
+            background: #eff6ff;
+            border-left: 1px solid #dbeafe;
+        }
+        .test-col {
+            background: #fef2f2;
+            border-left: 1px solid #fecaca;
+        }
+        .summary-col {
+            background: #f0fdf4;
+            border-left: 2px solid #bbf7d0;
+        }
+        .final-col {
+            background: #fffbeb;
+            border-left: 2px solid #fde68a;
+        }
+        .grade-excellent { 
+            background: #10b981; 
+            color: white; 
+            border-radius: 6px; 
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .grade-good { 
+            background: #3b82f6; 
+            color: white; 
+            border-radius: 6px; 
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .grade-average { 
+            background: #f59e0b; 
+            color: white; 
+            border-radius: 6px; 
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .grade-poor { 
+            background: #ef4444; 
+            color: white; 
+            border-radius: 6px; 
+            padding: 4px 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .grade-empty { 
+            color: #9ca3af; 
+            font-style: italic; 
+            font-size: 0.875rem;
+        }
+        .student-row:hover {
+            background-color: #f8fafc;
+        }
+        .table-container {
+            max-height: 70vh;
+            overflow: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+        .header-cell {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 0.875rem;
+        }
+        .assignment-header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 0.8rem;
+        }
+        .test-header {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 0.8rem;
+        }
+        .summary-header {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 0.8rem;
+        }
+        .final-header {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Print Styles - Ẩn toàn bộ và chỉ hiển thị nội dung print */
+        @media print {
+            /* Ẩn hoàn toàn body gốc */
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                font-family: 'Times New Roman', serif !important;
+                font-size: 12px !important;
+                color: black !important;
+            }
+            
+            /* Ẩn toàn bộ layout web */
+            body > * {
+                display: none !important;
+            }
+            
+            /* Chỉ hiển thị print content */
+            .print-only {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 15mm !important;
+                box-sizing: border-box !important;
+                background: white !important;
+            }
+            
+            /* Print header */
+            .print-only .print-header {
+                position: relative;
+                margin-bottom: 25px;
+                page-break-inside: avoid;
+            }
+            
+            .print-only .print-logo {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 60px;
+                height: 60px;
+                z-index: 1;
+            }
+            
+            .print-only .print-datetime {
+                position: absolute;
+                right: 0;
+                top: 5px;
+                font-size: 10px;
+                font-weight: bold;
+                z-index: 1;
+                text-align: right;
+            }
+            
+            .print-only .header-content {
+                text-align: center;
+                margin: 0 70px; /* Space for logo and datetime */
+            }
+            
+            .print-only .header-title {
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 3px;
+                text-transform: uppercase;
+                line-height: 1.2;
+            }
+            
+            .print-only .header-subtitle {
+                font-size: 12px;
+                margin-bottom: 8px;
+                line-height: 1.2;
+            }
+            
+            .print-only .separator-line {
+                border-bottom: 2px solid black;
+                width: 250px;
+                margin: 8px auto;
+            }
+            
+            .print-only .table-title {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 15px 0 8px 0;
+                text-transform: uppercase;
+                line-height: 1.2;
+            }
+            
+            .print-only .class-info {
+                font-size: 13px;
+                font-weight: bold;
+                margin: 8px 0;
+                line-height: 1.2;
+            }
+            
+            .print-only .date-info {
+                font-size: 11px;
+                margin-bottom: 15px;
+                line-height: 1.2;
+            }
+            
+            /* Print table container */
+            .print-only .print-table-container {
+                width: 100%;
+                border: 2px solid black;
+                margin: 15px 0;
+                page-break-inside: avoid;
+            }
+            
+            /* Print table */
+            .print-only .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 9px;
+                table-layout: fixed;
+            }
+            
+            .print-only .print-table th {
+                background: #f5f5f5;
+                border: 1px solid black;
+                padding: 6px 3px;
+                font-weight: bold;
+                text-align: center;
+                font-size: 8px;
+                color: black;
+                vertical-align: middle;
+                line-height: 1.1;
+            }
+            
+            .print-only .print-table td {
+                border: 1px solid black;
+                padding: 4px 3px;
+                text-align: center;
+                font-size: 8px;
+                color: black;
+                background: white;
+                vertical-align: middle;
+                line-height: 1.1;
+            }
+            
+            .print-only .student-name-cell {
+                text-align: left !important;
+                padding: 4px 6px !important;
+                font-weight: bold !important;
+                width: 120px !important;
+            }
+            
+            .print-only .grade-cell {
+                min-width: 30px !important;
+                width: 30px !important;
+                font-weight: bold !important;
+            }
+            
+            /* Print footer */
+            .print-only .print-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+                page-break-inside: avoid;
+                width: 100%;
+            }
+            
+            .print-only .signature-left,
+            .print-only .signature-right {
+                text-align: center;
+                width: 180px;
+                flex: 0 0 180px;
+            }
+            
+            .print-only .signature-title {
+                font-size: 11px;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+            }
+            
+            .print-only .signature-date {
+                font-size: 10px;
+                margin-bottom: 50px;
+                font-style: italic;
+            }
+            
+            .print-only .signature-name {
+                font-size: 11px;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+    <!-- Print Only Content - Hidden by default -->
+    <div class="print-only" style="display: none;">
+        <!-- Print Header -->
+        <div class="print-header">
+            <!-- Logo ở góc trái -->
+            <img src="/images/logo.png" alt="Logo" class="print-logo" onerror="this.style.display='none'">
+            
+            <!-- DateTime ở góc phải -->
+            <div class="print-datetime">
+                <script type="text/javascript">
+                    document.write(new Date().toLocaleString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                    }));
+                </script>
+            </div>
+            
+            <!-- Header Info -->
+            <div class="header-content">
+                <div class="header-title">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                <div class="header-subtitle">Độc lập - Tự do - Hạnh phúc</div>
+                <div class="separator-line"></div>
+                
+                <!-- Table Title -->
+                <div class="table-title">BẢNG ĐIỂM CHI TIẾT</div>
+                
+                <% if (selectedClass) { %>
+                <!-- Class Info -->
+                <div class="class-info">
+                    <%= selectedClass.course.title %> - <%= selectedClass.name %>
+                </div>
+                
+                <!-- Date -->
+                <div class="date-info">
+                    Ngày in: <%= new Date().toLocaleDateString('vi-VN') %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <% if (selectedClass && studentsWithGrades && studentsWithGrades.length > 0) { %>
+        <!-- Print Table -->
+        <div class="print-table-container">
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Học viên</th>
+                        
+                        <!-- Assignment Headers -->
+                        <% if (assignments && assignments.length > 0) { %>
+                            <% assignments.forEach(function(assignment, index) { %>
+                                <th style="width: 40px;">
+                                    BT<%= index + 1 %><br>
+                                    <small>Luyện tập</small>
+                                </th>
+                            <% }); %>
+                        <% } %>
+                        
+                        <!-- Test Headers -->
+                        <% if (classTests && classTests.length > 0) { %>
+                            <% classTests.forEach(function(test, index) { %>
+                                <th style="width: 40px;">
+                                    KT<%= index + 1 %><br>
+                                    <small>Kiểm tra</small>
+                                </th>
+                            <% }); %>
+                        <% } %>
+                        
+                        <!-- Summary Headers -->
+                        <th style="width: 50px;">
+                            TB<br>Bài tập
+                        </th>
+                        <th style="width: 50px;">
+                            TB<br>Kiểm tra
+                        </th>
+                        <th style="width: 60px;">
+                            TỔNG<br>KẾT
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <% studentsWithGrades.forEach((student, studentIndex) => { %>
+                    <tr>
+                        <!-- Student Info -->
+                        <td class="student-name-cell">
+                            <%= student.fullName %>
+                        </td>
+
+                        <!-- Assignment Grades -->
+                        <% if (assignments && assignments.length > 0) { %>
+                            <% assignments.forEach(function(assignment) { %>
+                                <td class="grade-cell">
+                                    <%
+                                        const submission = student.submissions.find(sub => 
+                                            sub.assignment && sub.assignment._id.toString() === assignment._id.toString()
+                                        );
+                                        const grade = submission && submission.grade ? submission.grade.score : null;
+                                    %>
+                                    <%= grade !== null ? parseFloat(grade).toFixed(1) : '--' %>
+                                </td>
+                            <% }); %>
+                        <% } %>
+
+                        <!-- Test Grades -->
+                        <% if (classTests && classTests.length > 0) { %>
+                            <% classTests.forEach(function(test) { %>
+                                <td class="grade-cell">
+                                    <%
+                                        const testScore = student.testScores.find(ts => 
+                                            ts.testId.toString() === test._id.toString()
+                                        );
+                                        const score = testScore ? testScore.score : null;
+                                    %>
+                                    <%= score !== null ? parseFloat(score).toFixed(1) : '--' %>
+                                </td>
+                            <% }); %>
+                        <% } %>
+
+                        <!-- Assignment Average -->
+                        <td class="grade-cell">
+                            <%= student.assignmentAverage !== null ? parseFloat(student.assignmentAverage).toFixed(1) : '--' %>
+                        </td>
+
+                        <!-- Test Average -->
+                        <td class="grade-cell">
+                            <%= student.testAverage !== null ? parseFloat(student.testAverage).toFixed(1) : '--' %>
+                        </td>
+
+                        <!-- Final Grade -->
+                        <td class="grade-cell">
+                            <%= student.finalGrade !== null ? parseFloat(student.finalGrade).toFixed(1) : '--' %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Print Footer with Signature -->
+        <div class="print-footer">
+            <div class="signature-left">
+                <div class="signature-title">BGH TRƯỜNG</div>
+                <div class="signature-date">Ngày .... tháng .... năm <%= new Date().getFullYear() %></div>
+                <div class="signature-name">(Ký và ghi rõ họ tên)</div>
+            </div>
+            
+            <div class="signature-right">
+                <div class="signature-title">GIẢNG VIÊN</div>
+                <div class="signature-date">Ngày .... tháng .... năm <%= new Date().getFullYear() %></div>
+                <div class="signature-name">
+                    <% if (user && user.fullName) { %>
+                        <%= user.fullName.toUpperCase() %>
+                    <% } else { %>
+                        (Ký và ghi rõ họ tên)
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+
+    <!-- Normal Web View -->
+    <div class="flex min-h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+        
+        <div class="flex-1 flex flex-col">
+            <%- include('../partials/dashboards_header') %>
+            
+            <main class="flex-1 px-6 py-8 overflow-y-auto">
+                <!-- Page Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4">
+                        <i class="fas fa-chart-line text-2xl text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                        Bảng điểm chi tiết
+                    </h1>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        Xem điểm số chi tiết từng bài tập và bài kiểm tra của học viên
+                    </p>
+                </div>
+
+                <!-- Class Selector with Button -->
+                <div class="max-w-2xl mx-auto mb-8">
+                    <label for="classSelector" class="block text-center font-semibold text-gray-700 mb-3">
+                        <i class="fas fa-graduation-cap text-indigo-500 mr-2"></i>
+                        Chọn lớp học để xem bảng điểm:
+                    </label>
+                    <div class="flex gap-3 items-center">
+                        <div class="flex-1 relative">
+                            <select id="classSelector"
+                                    class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 font-medium focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all duration-200 bg-white shadow-sm appearance-none"
+                                    onchange="updateSelectedClass(this.value)">
+                                <option value="">-- Chọn lớp học --</option>
+                                <% if (classes && classes.length > 0) { %>
+                                    <% classes.forEach(function(classItem) { %>
+                                        <option value="<%= classItem._id %>"
+                                            <%= (selectedClass && selectedClass._id.toString() === classItem._id.toString()) ? 'selected' : '' %>>
+                                            <%= classItem.course.title %> - <%= classItem.name %> 
+                                            (<%= classItem.students.length %> học viên)
+                                        </option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <button id="loadClassBtn" 
+                                onclick="handleLoadClass()"
+                                disabled
+                                class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg shadow-lg flex items-center transition-all duration-200">
+                            <i class="fas fa-search mr-2"></i>
+                            Xem bảng điểm
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p class="text-sm text-gray-500">
+                            Chọn lớp học từ danh sách và nhấn "Xem bảng điểm" để hiển thị kết quả
+                        </p>
+                    </div>
+                </div>
+
+                <% if (selectedClass && studentsWithGrades && studentsWithGrades.length > 0) { %>
+                
+                <!-- Class Info and Stats -->
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 mb-8 text-white" 
+                     data-selected-class="true" 
+                     data-class-info="<%= selectedClass.course.title %> - <%= selectedClass.name %>">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold mb-2">
+                            <%= selectedClass.course.title %>
+                        </h2>
+                        <p class="text-indigo-100">
+                            Lớp: <%= selectedClass.name %> • 
+                            Cấp độ: <%= selectedClass.course.level %> • 
+                            <%= studentsWithGrades.length %> học viên
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold mb-1"><%= classStats.totalAssignments %></div>
+                            <div class="text-indigo-100 text-sm">Bài tập</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold mb-1"><%= classStats.totalTests %></div>
+                            <div class="text-indigo-100 text-sm">Bài kiểm tra</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold mb-1">
+                                <%= classStats.averageGrade !== null ? parseFloat(classStats.averageGrade).toFixed(1) : 'N/A' %>
+                            </div>
+                            <div class="text-indigo-100 text-sm">Điểm TB</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold mb-1">
+                                <%= Math.round((classStats.gradedSubmissions / Math.max(classStats.totalSubmissions, 1)) * 100) %>%
+                            </div>
+                            <div class="text-indigo-100 text-sm">Đã chấm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center gap-4 mb-6">
+                    <button onclick="exportToExcel()" 
+                            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center transition-all duration-200">
+                        <i class="fas fa-file-excel mr-2"></i> 
+                        Xuất Excel
+                    </button>
+                    <button onclick="printGradeTable()" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center transition-all duration-200">
+                        <i class="fas fa-print mr-2"></i> 
+                        In bảng điểm
+                    </button>
+                    <button onclick="refreshData()" 
+                            class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center transition-all duration-200">
+                        <i class="fas fa-sync-alt mr-2"></i> 
+                        Làm mới
+                    </button>
+                </div>
+
+                <!-- Grade Table -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="table-container">
+                        <table class="min-w-full">
+                            <thead>
+                                <!-- Main Header Row -->
+                                <tr>
+                                    <th class="sticky-column header-cell">
+                                        <i class="fas fa-user mr-2"></i>
+                                        Học viên
+                                    </th>
+                                    
+                                    <!-- Assignment Headers -->
+                                    <% if (assignments && assignments.length > 0) { %>
+                                        <% assignments.forEach(function(assignment, index) { %>
+                                            <th class="assignment-header">
+                                                <div class="flex flex-col items-center">
+                                                    <div class="font-bold text-xs mb-1">BT<%= index + 1 %></div>
+                                                    <div class="text-xs leading-tight">
+                                                        Luyện tập
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        <% }); %>
+                                    <% } %>
+                                    
+                                    <!-- Test Headers -->
+                                    <% if (classTests && classTests.length > 0) { %>
+                                        <% classTests.forEach(function(test, index) { %>
+                                            <th class="test-header">
+                                                <div class="flex flex-col items-center">
+                                                    <div class="font-bold text-xs mb-1">KT<%= index + 1 %></div>
+                                                    <div class="text-xs leading-tight">
+                                                        Kiểm tra
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        <% }); %>
+                                    <% } %>
+                                    
+                                    <!-- Summary Headers -->
+                                    <th class="summary-header">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-calculator text-sm mb-1"></i>
+                                            <div class="text-xs">TB Bài tập</div>
+                                        </div>
+                                    </th>
+                                    <th class="summary-header">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-clipboard-check text-sm mb-1"></i>
+                                            <div class="text-xs">TB Kiểm tra</div>
+                                        </div>
+                                    </th>
+                                    <th class="final-header">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-trophy text-sm mb-1"></i>
+                                            <div class="text-sm font-bold">TỔNG KẾT</div>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <% studentsWithGrades.forEach((student, studentIndex) => { %>
+                                <tr class="student-row border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                                    <!-- Student Info -->
+                                    <td class="sticky-column px-4 py-4">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center mr-3 text-white font-bold text-xs">
+                                                <%= studentIndex + 1 %>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-semibold text-gray-900 text-sm">
+                                                    <%= student.fullName %>
+                                                </div>
+                                                <div class="text-xs text-gray-500">
+                                                    <%= student.studentId || student.email %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Assignment Grades -->
+                                    <% if (assignments && assignments.length > 0) { %>
+                                        <% assignments.forEach(function(assignment) { %>
+                                            <td class="grade-cell assignment-col">
+                                                <%
+                                                    const submission = student.submissions.find(sub => 
+                                                        sub.assignment && sub.assignment._id.toString() === assignment._id.toString()
+                                                    );
+                                                    const grade = submission && submission.grade ? submission.grade.score : null;
+                                                %>
+                                                <% if (grade !== null) { %>
+                                                    <span class="<%= 
+                                                        grade >= 8 ? 'grade-excellent' :
+                                                        grade >= 6 ? 'grade-good' :
+                                                        grade >= 4 ? 'grade-average' : 'grade-poor'
+                                                    %>">
+                                                        <%= parseFloat(grade).toFixed(1) %>
+                                                    </span>
+                                                <% } else { %>
+                                                    <span class="grade-empty">--</span>
+                                                <% } %>
+                                            </td>
+                                        <% }); %>
+                                    <% } %>
+
+                                    <!-- Test Grades -->
+                                    <% if (classTests && classTests.length > 0) { %>
+                                        <% classTests.forEach(function(test) { %>
+                                            <td class="grade-cell test-col">
+                                                <%
+                                                    const testScore = student.testScores.find(ts => 
+                                                        ts.testId.toString() === test._id.toString()
+                                                    );
+                                                    const score = testScore ? testScore.score : null;
+                                                %>
+                                                <% if (score !== null) { %>
+                                                    <span class="<%= 
+                                                        score >= 8 ? 'grade-excellent' :
+                                                        score >= 6 ? 'grade-good' :
+                                                        score >= 4 ? 'grade-average' : 'grade-poor'
+                                                    %>">
+                                                        <%= parseFloat(score).toFixed(1) %>
+                                                    </span>
+                                                <% } else { %>
+                                                    <span class="grade-empty">--</span>
+                                                <% } %>
+                                            </td>
+                                        <% }); %>
+                                    <% } %>
+
+                                    <!-- Assignment Average -->
+                                    <td class="grade-cell summary-col">
+                                        <% if (student.assignmentAverage !== null) { %>
+                                            <span class="<%= 
+                                                student.assignmentAverage >= 8 ? 'grade-excellent' :
+                                                student.assignmentAverage >= 6 ? 'grade-good' :
+                                                student.assignmentAverage >= 4 ? 'grade-average' : 'grade-poor'
+                                            %>">
+                                                <%= parseFloat(student.assignmentAverage).toFixed(1) %>
+                                            </span>
+                                        <% } else { %>
+                                            <span class="grade-empty">--</span>
+                                        <% } %>
+                                    </td>
+
+                                    <!-- Test Average -->
+                                    <td class="grade-cell summary-col">
+                                        <% if (student.testAverage !== null) { %>
+                                            <span class="<%= 
+                                                student.testAverage >= 8 ? 'grade-excellent' :
+                                                student.testAverage >= 6 ? 'grade-good' :
+                                                student.testAverage >= 4 ? 'grade-average' : 'grade-poor'
+                                            %>">
+                                                <%= parseFloat(student.testAverage).toFixed(1) %>
+                                            </span>
+                                        <% } else { %>
+                                            <span class="grade-empty">--</span>
+                                        <% } %>
+                                    </td>
+
+                                    <!-- Final Grade -->
+                                    <td class="grade-cell final-col">
+                                        <% if (student.finalGrade !== null) { %>
+                                            <div class="flex flex-col items-center">
+                                                <div class="<%= 
+                                                    student.finalGrade >= 8 ? 'grade-excellent' :
+                                                    student.finalGrade >= 6 ? 'grade-good' :
+                                                    student.finalGrade >= 4 ? 'grade-average' : 'grade-poor'
+                                                %> text-base font-bold">
+                                                    <%= parseFloat(student.finalGrade).toFixed(1) %>
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-1">
+                                                    <%= 
+                                                        student.finalGrade >= 8 ? 'Xuất sắc' :
+                                                        student.finalGrade >= 6 ? 'Khá' :
+                                                        student.finalGrade >= 4 ? 'TB' : 'Yếu'
+                                                    %>
+                                                </div>
+                                            </div>
+                                        <% } else { %>
+                                            <span class="grade-empty text-lg">--</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Grade Legend -->
+                <div class="mt-6 bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        Chú thích và hướng dẫn đọc bảng điểm
+                    </h3>
+                    
+                    <!-- Grade Scale -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="flex items-center justify-center p-3 bg-green-50 rounded-lg">
+                            <span class="grade-excellent mr-3">8.0-10</span>
+                            <span class="text-green-800 font-semibold">Xuất sắc</span>
+                        </div>
+                        <div class="flex items-center justify-center p-3 bg-blue-50 rounded-lg">
+                            <span class="grade-good mr-3">6.0-7.9</span>
+                            <span class="text-blue-800 font-semibold">Khá</span>
+                        </div>
+                        <div class="flex items-center justify-center p-3 bg-yellow-50 rounded-lg">
+                            <span class="grade-average mr-3">4.0-5.9</span>
+                            <span class="text-yellow-800 font-semibold">Trung bình</span>
+                        </div>
+                        <div class="flex items-center justify-center p-3 bg-red-50 rounded-lg">
+                            <span class="grade-poor mr-3">0-3.9</span>
+                            <span class="text-red-800 font-semibold">Yếu</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend Explanation -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Ký hiệu cột:</h4>
+                            <ul class="space-y-1 text-gray-600">
+                                <li><span class="font-medium text-blue-600">BT1, BT2, ...</span> - Điểm các bài tập</li>
+                                <li><span class="font-medium text-red-600">KT1, KT2, ...</span> - Điểm các bài kiểm tra</li>
+                                <li><span class="font-medium text-green-600">TB Bài tập</span> - Trung bình điểm bài tập</li>
+                                <li><span class="font-medium text-green-600">TB Kiểm tra</span> - Trung bình điểm kiểm tra</li>
+                                <li><span class="font-medium text-orange-600">TỔNG KẾT</span> - Điểm cuối khóa</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-2">Cách tính điểm:</h4>
+                            <ul class="space-y-1 text-gray-600">
+                                <li><strong>Điểm tổng kết:</strong> 60% kiểm tra + 40% bài tập</li>
+                                <li><strong>Ký hiệu "--":</strong> Chưa có điểm hoặc chưa làm bài</li>
+                                <li><strong>Màu sắc:</strong> Thể hiện mức độ đạt được</li>
+                                <li><strong>Hover:</strong> Di chuột để xem chi tiết</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <% } else if (selectedClass && (!studentsWithGrades || studentsWithGrades.length === 0)) { %>
+                <!-- Empty State - No Students -->
+                <div class="bg-white rounded-xl shadow-lg p-16 text-center">
+                    <div class="text-6xl text-gray-300 mb-6"><i class="fas fa-user-graduate"></i></div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-4">Chưa có học viên nào</h3>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                        Lớp học "<%= selectedClass.name %>" chưa có học viên nào đăng ký hoặc chưa có điểm số.
+                    </p>
+                    <div class="flex justify-center gap-4">
+                        <a href="/teacher/classes/<%= selectedClass._id %>" 
+                           class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-xl shadow-lg transition-colors">
+                            <i class="fas fa-users mr-2"></i> Quản lý học viên
+                        </a>
+                        <button onclick="refreshData()" 
+                                class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl shadow-lg transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i> Làm mới dữ liệu
+                        </button>
+                    </div>
+                </div>
+
+                <% } else { %>
+                <!-- Empty State - No Class Selected -->
+                <div class="bg-white rounded-xl shadow-lg p-16 text-center">
+                    <div class="text-6xl text-gray-300 mb-6"><i class="fas fa-search"></i></div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-4">Chọn lớp học để xem bảng điểm</h3>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                        Vui lòng chọn một lớp học từ menu trên và nhấn "Xem bảng điểm" để hiển thị kết quả chi tiết.
+                    </p>
+                    <div class="flex justify-center">
+                        <button onclick="document.getElementById('classSelector').focus()" 
+                                class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-10 py-4 rounded-xl shadow-lg text-lg transition-all duration-200 transform hover:scale-105">
+                            <i class="fas fa-graduation-cap mr-3"></i> Chọn lớp học
+                        </button>
+                    </div>
+                </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+
+    <!-- Include external JavaScript file -->
+    <script src="/js/grade-list.js"></script>
+</body>
+</html>

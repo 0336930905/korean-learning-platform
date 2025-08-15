@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle || 'Teacher Dashboard' %> | Korea-DB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            --info-gradient: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+            --emerald-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            --orange-gradient: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --backdrop-blur: blur(20px);
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 48px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .hero-icon {
+            width: 96px;
+            height: 96px;
+            background: var(--primary-gradient);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin: 0 auto 24px;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: var(--shadow-md);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        .hero-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .stat-card.classes::before { background: var(--info-gradient); }
+        .stat-card.students::before { background: var(--success-gradient); }
+        .stat-card.assignments::before { background: var(--warning-gradient); }
+        .stat-card.submissions::before { background: var(--purple-gradient); }
+        .stat-card.performance::before { background: var(--emerald-gradient); }
+        .stat-card.trends::before { background: var(--orange-gradient); }
+        
+        .stat-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .stat-icon.classes { background: var(--info-gradient); }
+        .stat-icon.students { background: var(--success-gradient); }
+        .stat-icon.assignments { background: var(--warning-gradient); }
+        .stat-icon.submissions { background: var(--purple-gradient); }
+        .stat-icon.performance { background: var(--emerald-gradient); }
+        .stat-icon.trends { background: var(--orange-gradient); }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stat-change.positive { color: #10b981; }
+        .stat-change.negative { color: #ef4444; }
+        .stat-change.neutral { color: rgba(255, 255, 255, 0.7); }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .quick-action-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .quick-action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .quick-action-card:hover::before {
+            left: 100%;
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            text-decoration: none;
+        }
+        
+        .quick-action-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quick-action-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: var(--shadow-md);
+            flex-shrink: 0;
+        }
+        
+        .quick-action-icon.create-class { background: var(--info-gradient); }
+        .quick-action-icon.manage-assignments { background: var(--success-gradient); }
+        .quick-action-icon.grade-submissions { background: var(--warning-gradient); }
+        .quick-action-icon.student-progress { background: var(--purple-gradient); }
+        .quick-action-icon.materials { background: var(--emerald-gradient); }
+        .quick-action-icon.analytics { background: var(--orange-gradient); }
+        
+        .quick-action-text {
+            flex: 1;
+        }
+        
+        .quick-action-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quick-action-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+        
+        .section-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 32px;
+        }
+        
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 32px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        }
+        
+        .table-header th {
+            padding: 20px 24px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .table-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .table-row td {
+            padding: 20px 24px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .class-performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            padding: 32px;
+        }
+        
+        .class-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .class-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .class-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .class-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .class-info {
+            flex: 1;
+        }
+        
+        .class-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .class-course {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .class-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .stat-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success-gradient);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        
+        .chart-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 24px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section { padding: 32px; margin-bottom: 24px; }
+            .hero-title { font-size: 28px; }
+            .stat-value { font-size: 28px; }
+            .quick-actions-grid { grid-template-columns: 1fr; }
+            .class-performance-grid { grid-template-columns: 1fr; }
+            .section-header { padding: 24px; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen">
+        <%- include('../partials/teacher_sidebar') %>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <%- include('../partials/dashboards_header') %>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6">
+                <!-- Hero Section -->
+                <div class="hero-section fade-in">
+                    <div class="hero-content">
+                        <div class="hero-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h1 class="hero-title">
+                            Chào mừng, <%= user.fullName %>!
+                        </h1>
+                        <p class="hero-subtitle">
+                            Quản lý lớp học và theo dõi tiến độ học tập của học viên
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+                    <!-- Classes Card -->
+                    <div class="stat-card classes fade-in">
+                        <div class="stat-icon classes">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <div class="stat-label">Lớp học</div>
+                        <div class="stat-value"><%= dashboardStats.classes.total %></div>
+                        <div class="stat-change neutral">
+                            <i class="fas fa-users"></i>
+                            <span><%= dashboardStats.classes.active %> đang hoạt động</span>
+                        </div>
+                    </div>
+
+                    <!-- Students Card -->
+                    <div class="stat-card students fade-in" style="animation-delay: 0.1s;">
+                        <div class="stat-icon students">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-label">Học viên</div>
+                        <div class="stat-value"><%= dashboardStats.students.total %></div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>Trong <%= dashboardStats.students.activeClasses %> lớp</span>
+                        </div>
+                    </div>
+
+                    <!-- Assignments Card -->
+                    <div class="stat-card assignments fade-in" style="animation-delay: 0.2s;">
+                        <div class="stat-icon assignments">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-label">Bài tập</div>
+                        <div class="stat-value"><%= dashboardStats.assignments.total %></div>
+                        <div class="stat-change neutral">
+                            <i class="fas fa-clock"></i>
+                            <span><%= dashboardStats.assignments.active %> đang mở</span>
+                        </div>
+                    </div>
+
+                    <!-- Submissions Card -->
+                    <div class="stat-card submissions fade-in" style="animation-delay: 0.3s;">
+                        <div class="stat-icon submissions">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-label">Bài nộp</div>
+                        <div class="stat-value"><%= dashboardStats.submissions.total %></div>
+                        <div class="stat-change <%= dashboardStats.submissions.pending > 0 ? 'negative' : 'positive' %>">
+                            <i class="fas <%= dashboardStats.submissions.pending > 0 ? 'fa-exclamation-triangle' : 'fa-check-circle' %>"></i>
+                            <span><%= dashboardStats.submissions.pending %> chờ chấm</span>
+                        </div>
+                    </div>
+
+                    <!-- Performance Card -->
+                    <div class="stat-card performance fade-in" style="animation-delay: 0.4s;">
+                        <div class="stat-icon performance">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-label">Điểm TB</div>
+                        <div class="stat-value"><%= dashboardStats.performance.averageGrade %></div>
+                        <div class="stat-change <%= dashboardStats.performance.averageGrade >= 7 ? 'positive' : dashboardStats.performance.averageGrade >= 5 ? 'neutral' : 'negative' %>">
+                            <i class="fas fa-star"></i>
+                            <span><%= dashboardStats.performance.completionRate %>% hoàn thành</span>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Trends Card -->
+                    <div class="stat-card trends fade-in" style="animation-delay: 0.5s;">
+                        <div class="stat-icon trends">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <div class="stat-label">Tuần này</div>
+                        <div class="stat-value"><%= dashboardStats.submissions.weeklyCount %></div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-trending-up"></i>
+                            <span><%= dashboardStats.performance.onTimeRate %>% đúng hạn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions-grid">
+                    <a href="/teacher/classes/new" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon create-class">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Tạo lớp học mới</h3>
+                                <p class="quick-action-desc">Khởi tạo lớp học mới và mời học viên tham gia</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/teacher/assignments" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon manage-assignments">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Quản lý bài tập</h3>
+                                <p class="quick-action-desc">Tạo, chỉnh sửa và theo dõi bài tập của lớp</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/teacher/grading" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon grade-submissions">
+                                <i class="fas fa-pen-alt"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Chấm điểm</h3>
+                                <p class="quick-action-desc">Đánh giá và phản hồi bài làm của học viên</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/teacher/academic-stats" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon student-progress">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Thống kê học lực</h3>
+                                <p class="quick-action-desc">Xem báo cáo tiến độ và thành tích học tập</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/teacher/materials" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon materials">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Tài liệu giảng dạy</h3>
+                                <p class="quick-action-desc">Quản lý và chia sẻ tài liệu học tập</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="/teacher/grade-list" class="quick-action-card">
+                        <div class="quick-action-content">
+                            <div class="quick-action-icon analytics">
+                                <i class="fas fa-table"></i>
+                            </div>
+                            <div class="quick-action-text">
+                                <h3 class="quick-action-title">Bảng điểm</h3>
+                                <p class="quick-action-desc">Xem và xuất bảng điểm chi tiết</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Class Performance Overview -->
+                <% if (classPerformance && classPerformance.length > 0) { %>
+                <div class="section-card fade-in">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            Tổng quan hiệu suất lớp học
+                        </h2>
+                    </div>
+                    <div class="class-performance-grid">
+                        <% classPerformance.forEach(function(performance, index) { %>
+                        <div class="class-card slide-in" style="animation-delay: <%= index * 0.1 %>s;">
+                            <div class="class-header">
+                                <div class="class-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="class-info">
+                                    <h3 class="class-title"><%= performance.class.name %></h3>
+                                    <p class="class-course"><%= performance.class.course ? performance.class.course.title : 'Chưa có khóa học' %></p>
+                                </div>
+                            </div>
+                            <div class="class-stats">
+                                <div class="stat-item">
+                                    <div class="stat-number"><%= performance.studentCount %></div>
+                                    <div class="stat-text">Học viên</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number"><%= performance.assignmentCount %></div>
+                                    <div class="stat-text">Bài tập</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number"><%= performance.averageGrade %></div>
+                                    <div class="stat-text">Điểm TB</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number"><%= performance.completionRate %>%</div>
+                                    <div class="stat-text">Hoàn thành</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: <%= performance.completionRate %>%"></div>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- Recent Submissions -->
+                <% if (recentSubmissions && recentSubmissions.length > 0) { %>
+                <div class="section-card fade-in">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <div class="section-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            Bài nộp gần đây
+                        </h2>
+                    </div>
+                    <div class="overflow-hidden">
+                        <table class="data-table">
+                            <thead class="table-header">
+                                <tr>
+                                    <th>Học viên</th>
+                                    <th>Bài tập</th>
+                                    <th>Lớp học</th>
+                                    <th>Ngày nộp</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentSubmissions.forEach(function(submission, index) { %>
+                                <tr class="table-row slide-in" style="animation-delay: <%= index * 0.05 %>s;">
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                                <%= submission.student.fullName.charAt(0).toUpperCase() %>
+                                            </div>
+                                            <span class="font-medium"><%= submission.student.fullName %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="font-medium"><%= submission.assignment.title %></div>
+                                    </td>
+                                    <td>
+                                        <div class="text-sm opacity-75">
+                                            <%= submission.assignment.class ? submission.assignment.class.name : 'Không xác định' %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-sm">
+                                            <%= new Date(submission.submittedAt).toLocaleDateString('vi-VN') %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <% if (submission.grade && submission.grade.score) { %>
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                Đã chấm: <%= submission.grade.score %>/10
+                                            </span>
+                                        <% } else { %>
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                Chờ chấm điểm
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <% } else { %>
+                <div class="section-card fade-in">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Chưa có bài nộp</h3>
+                        <p class="text-gray-300">Khi học viên nộp bài, chúng sẽ hiển thị ở đây.</p>
+                    </div>
+                </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+
+    <%- include('../partials/teacher_footer') %>
+
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAnimations();
+            animateStatNumbers();
+            initializeCharts();
+        });
+
+        function initializeAnimations() {
+            // Animate elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in, .slide-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add hover effects for cards
+            document.querySelectorAll('.stat-card, .quick-action-card, .class-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = this.classList.contains('stat-card') ? 
+                        'translateY(-8px) scale(1.02)' : 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+
+        function initializeCharts() {
+            // Chart initialization would go here
+            // For now, we'll just animate the progress bars
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        }
+
+        function animateStatNumbers() {
+            document.querySelectorAll('.stat-value').forEach(element => {
+                const finalValue = parseInt(element.textContent) || 0;
+                animateNumber(element, 0, finalValue, 1000);
+            });
+        }
+
+        function animateNumber(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 16);
+        }
+
+        // Real-time updates simulation
+        setInterval(() => {
+            updateRealtimeStats();
+        }, 30000); // Update every 30 seconds
+
+        function updateRealtimeStats() {
+            // Simulate real-time data updates
+            // This would connect to your backend API in a real application
+            console.log('Updating real-time stats...');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        window.location.href = '/teacher/classes/new';
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        window.location.href = '/teacher/assignments';
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        window.location.href = '/teacher/grading';
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

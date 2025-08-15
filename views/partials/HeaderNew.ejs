@@ -1,0 +1,364 @@
+<style>
+/* ==== HEADER STYLES ==== */
+.header-vip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(15, 15, 35, 0.1);
+    backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-vip.scrolled {
+    background: rgba(15, 15, 35, 0.95);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+}
+
+.nav-container-vip {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+}
+
+.logo-vip {
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF6B9D 0%, #C44EFF 50%, #4ECDC4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+}
+
+.logo-vip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    animation: logoGlow 2s ease-in-out infinite alternate;
+}
+
+.logo-vip:hover {
+    transform: perspective(1000px) rotateY(15deg) scale(1.1);
+}
+
+/* Voice Search Styles */
+.voice-search-container {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 2rem;
+}
+
+.search-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 0.5rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-input-group:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.voice-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    font-family: inherit;
+}
+
+.voice-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.voice-search-btn, .text-search-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 0.5rem;
+}
+
+.voice-search-btn:hover, .text-search-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.voice-search-btn.recording {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    animation: pulse 1.5s infinite;
+}
+
+.voice-status {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    min-height: 1.2rem;
+}
+
+.voice-status.recording {
+    color: #ff6b9d;
+    font-weight: 600;
+}
+
+.voice-status.processing {
+    color: #4facfe;
+    font-weight: 600;
+}
+
+/* Auth Section */
+.auth-section-vip {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.btn-auth-vip {
+    padding: 0.8rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login-vip {
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.btn-auth-vip:hover {
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Animations */
+@keyframes logoGlow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .nav-container-vip {
+        padding: 0 1rem;
+    }
+    
+    .voice-search-container {
+        margin: 0 1rem;
+        max-width: none;
+    }
+
+    .voice-search-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .voice-search-btn, .text-search-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+</style>
+
+<!-- Enhanced Premium Header -->
+<header class="header-vip" id="header">
+    <nav class="nav-container-vip">
+        <a href="/" class="logo-vip">Korea_DB</a>
+        
+        <!-- Voice Search Container -->
+        <div class="voice-search-container">
+            <div class="search-input-group">
+                <input type="text" 
+                       id="voiceSearchInput" 
+                       class="voice-search-input" 
+                       placeholder="Tìm kiếm khóa học bằng giọng nói hoặc nhập text..."
+                       autocomplete="off">
+                
+                <button type="button" id="voiceSearchBtn" class="voice-search-btn" title="Tìm kiếm bằng giọng nói">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <button type="button" id="searchBtn" class="text-search-btn" title="Tìm kiếm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div id="voiceStatus" class="voice-status" style="display: none;">
+                <i class="fas fa-microphone"></i>
+                <span>Đang nghe...</span>
+            </div>
+        </div>
+        
+        <div class="auth-section-vip">
+            <a href="/login" class="btn-auth-vip btn-login-vip">Đăng nhập</a>
+        </div>
+    </nav>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Header scroll effect
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const header = document.getElementById('header');
+        
+        if (scrollTop > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+
+    // ==== VOICE SEARCH FUNCTIONALITY ====
+    let recognition = null;
+    let isRecording = false;
+    
+    const voiceSearchBtn = document.getElementById('voiceSearchBtn');
+    const textSearchBtn = document.getElementById('searchBtn');
+    const voiceSearchInput = document.getElementById('voiceSearchInput');
+    const voiceStatus = document.getElementById('voiceStatus');
+
+    // Check for Web Speech API support
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'vi-VN';
+
+        recognition.onstart = function() {
+            isRecording = true;
+            voiceSearchBtn.classList.add('recording');
+            voiceStatus.style.display = 'flex';
+            voiceStatus.className = 'voice-status recording';
+            voiceStatus.innerHTML = '<i class="fas fa-microphone"></i><span>Đang nghe...</span>';
+        };
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            voiceSearchInput.value = transcript;
+            voiceStatus.className = 'voice-status processing';
+            voiceStatus.innerHTML = '<i class="fas fa-cog fa-spin"></i><span>Đang xử lý...</span>';
+            
+            setTimeout(() => {
+                performSearch(transcript);
+            }, 1000);
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Lỗi nhận dạng giọng nói:', event.error);
+            isRecording = false;
+            voiceSearchBtn.classList.remove('recording');
+            voiceStatus.style.display = 'none';
+            
+            let errorMessage = 'Có lỗi xảy ra khi nhận dạng giọng nói.';
+            if (event.error === 'no-speech') {
+                errorMessage = 'Không phát hiện giọng nói. Vui lòng thử lại.';
+            } else if (event.error === 'not-allowed') {
+                errorMessage = 'Vui lòng cho phép truy cập microphone.';
+            }
+            alert(errorMessage);
+        };
+
+        recognition.onend = function() {
+            isRecording = false;
+            voiceSearchBtn.classList.remove('recording');
+            setTimeout(() => {
+                voiceStatus.style.display = 'none';
+            }, 2000);
+        };
+    } else {
+        console.warn('Trình duyệt không hỗ trợ Web Speech API');
+        if (voiceSearchBtn) {
+            voiceSearchBtn.style.display = 'none';
+        }
+    }
+
+    // Voice search button click
+    if (voiceSearchBtn) {
+        voiceSearchBtn.addEventListener('click', () => {
+            if (recognition && !isRecording) {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('Không thể bắt đầu nhận dạng giọng nói:', error);
+                    alert('Không thể sử dụng tính năng nhận dạng giọng nói.');
+                }
+            }
+        });
+    }
+
+    // Text search button click
+    if (textSearchBtn) {
+        textSearchBtn.addEventListener('click', () => {
+            const query = voiceSearchInput.value.trim();
+            if (query) {
+                performSearch(query);
+            }
+        });
+    }
+
+    // Enter key search
+    if (voiceSearchInput) {
+        voiceSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = voiceSearchInput.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            }
+        });
+    }
+
+    // Perform search function
+    function performSearch(query) {
+        if (query) {
+            window.location.href = `/courses?search=${encodeURIComponent(query)}`;
+        }
+    }
+});
+</script>

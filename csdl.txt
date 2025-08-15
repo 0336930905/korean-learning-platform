@@ -1,0 +1,449 @@
+// Collection Users - Thông tin người dùng
+db.users.insertOne({
+  _id: ObjectId(),
+  username: "user123",
+  email: "user@example.com",
+  password: "hashedPassword", // Lưu ý: Nên mã hóa mật khẩu
+  fullName: "Nguyễn Văn A",
+  profileImage: "url_to_image",
+  role: "student", // ["student", "teacher", "admin"]
+  level: "beginner", // ["beginner", "intermediate", "advanced"]
+  joinedDate: new Date(),
+  lastLogin: new Date(),
+  progress: {
+    completedLessons: [ObjectId(), ObjectId()], // Danh sách bài học đã hoàn thành
+    completedCourses: [ObjectId()], // Danh sách khóa học đã hoàn thành
+    totalPoints: 250
+  },
+  subscription: {
+    type: "premium", // ["free", "basic", "premium"]
+    expiryDate: new Date()
+  }
+});
+
+// Collection Courses - Thông tin khóa học
+db.courses.insertOne({
+  _id: ObjectId(),
+  title: "Tiếng Hàn cho người mới bắt đầu",
+  description: "Khóa học cơ bản dành cho người mới học tiếng Hàn",
+  level: "beginner", // ["beginner", "intermediate", "advanced"]
+  imageUrl: "url_to_course_image",
+  lessons: [ObjectId(), ObjectId()], // Danh sách các bài học
+  category: "grammar", // ["grammar", "vocabulary", "conversation", "writing"]
+  instructor: ObjectId(), // Reference đến user là giáo viên
+  duration: "8 weeks",
+  price: 150000,
+  rating: 4.7,
+  enrolledStudents: [ObjectId(), ObjectId()], // Danh sách học viên đã đăng ký
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection Lessons - Thông tin bài học
+db.lessons.insertOne({
+  _id: ObjectId(),
+  title: "Bảng chữ cái Hangul",
+  description: "Học các nguyên âm và phụ âm tiếng Hàn",
+  courseId: ObjectId(), // Reference đến course
+  content: {
+    text: "Nội dung bài học về bảng chữ cái Hangul...",
+    videoUrl: "url_to_video",
+    attachments: ["url_to_pdf", "url_to_slides"]
+  },
+  order: 1, // Thứ tự bài học trong khóa học
+  duration: 30, // Thời lượng bài học (phút)
+  exercises: [ObjectId(), ObjectId()], // Danh sách bài tập
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection Exercises - Bài tập
+db.exercises.insertOne({
+  _id: ObjectId(),
+  title: "Luyện tập chữ cái Hangul",
+  type: "quiz", // ["quiz", "writing", "listening", "speaking"]
+  lessonId: ObjectId(), // Reference đến lesson
+  questions: [
+    {
+      questionText: "Đâu là cách phát âm đúng của chữ 'ㄱ'?",
+      options: ["k/g", "n", "m", "l/r"],
+      correctAnswer: "k/g",
+      explanation: "ㄱ tương tự như âm k/g trong tiếng Việt"
+    },
+    {
+      questionText: "Chữ 'ㅏ' được phát âm như thế nào?",
+      options: ["a", "o", "u", "e"],
+      correctAnswer: "a",
+      explanation: "ㅏ tương tự như nguyên âm a trong tiếng Việt"
+    }
+  ],
+  points: 10, // Điểm cho bài tập này
+  timeLimit: 5 // Thời gian làm bài (phút)
+});
+
+// Collection Vocabulary - Từ vựng
+db.vocabulary.insertOne({
+  _id: ObjectId(),
+  korean: "안녕하세요",
+  romanization: "annyeonghaseyo",
+  meaning: "Xin chào",
+  example: "안녕하세요, 저는 민수입니다.",
+  exampleTranslation: "Xin chào, tôi là Minsu.",
+  category: "greeting", // ["greeting", "food", "daily", "business", ...]
+  level: "beginner", // ["beginner", "intermediate", "advanced"]
+  imageUrl: "url_to_image",
+  audioUrl: "url_to_audio"
+});
+
+// Collection ProgressTracking - Theo dõi tiến độ học tập
+db.progressTracking.insertOne({
+  _id: ObjectId(),
+  userId: ObjectId(), // Reference đến user
+  lessonId: ObjectId(), // Reference đến lesson
+  completed: true,
+  score: 85, // Điểm số
+  mistakes: [
+    {
+      exerciseId: ObjectId(),
+      questionIndex: 1,
+      userAnswer: "o",
+      correctAnswer: "a"
+    }
+  ],
+  timeTaken: 25, // Thời gian hoàn thành (phút)
+  completedAt: new Date()
+});
+
+// Collection Discussion - Diễn đàn thảo luận
+db.discussion.insertOne({
+  _id: ObjectId(),
+  title: "Cách phát âm đúng chữ ㄹ",
+  content: "Xin chào mọi người, tôi đang gặp khó khăn với phát âm chữ ㄹ...",
+  author: ObjectId(), // Reference đến user
+  relatedCourse: ObjectId(), // Reference đến course (nếu có)
+  relatedLesson: ObjectId(), // Reference đến lesson (nếu có)
+  tags: ["pronunciation", "hangul", "consonants"],
+  comments: [
+    {
+      author: ObjectId(),
+      content: "Bạn có thể phát âm tương tự như âm 'r' trong tiếng Anh...",
+      createdAt: new Date()
+    }
+  ],
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection FlashcardDecks - Bộ thẻ ghi nhớ
+db.flashcardDecks.insertOne({
+  _id: ObjectId(),
+  title: "Từ vựng hàng ngày",
+  description: "Các từ vựng thông dụng hàng ngày",
+  level: "beginner",
+  category: "daily",
+  createdBy: ObjectId(), // Reference đến user
+  isPublic: true,
+  cards: [
+    {
+      front: "안녕하세요",
+      back: "Xin chào",
+      example: "안녕하세요, 저는 민수입니다.",
+      audioUrl: "url_to_audio"
+    },
+    {
+      front: "감사합니다",
+      back: "Cảm ơn",
+      example: "도와줘서 감사합니다.",
+      audioUrl: "url_to_audio"
+    }
+  ],
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection StudyPlans - Kế hoạch học tập
+db.studyPlans.insertOne({
+  _id: ObjectId(),
+  userId: ObjectId(), // Reference đến user
+  title: "Lộ trình học tiếng Hàn trong 3 tháng",
+  description: "Kế hoạch học chi tiết để đạt trình độ TOPIK I",
+  goals: ["Học xong bảng chữ cái", "Nắm vững 500 từ vựng cơ bản", "Giao tiếp cơ bản"],
+  schedule: [
+    {
+      week: 1,
+      focus: "Học bảng chữ cái và phát âm",
+      activities: ["Hoàn thành khóa Hangul", "Luyện viết 1 tiếng mỗi ngày"]
+    },
+    {
+      week: 2,
+      focus: "Ngữ pháp cơ bản và từ vựng chào hỏi",
+      activities: ["Học 20 từ mỗi ngày", "Luyện tập với flashcard"]
+    }
+  ],
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection Resources - Tài nguyên học tập
+db.resources.insertOne({
+  _id: ObjectId(),
+  title: "Top 10 ứng dụng học tiếng Hàn",
+  type: "article", // ["article", "video", "book", "link"]
+  content: "Nội dung bài viết về các ứng dụng học tiếng Hàn...",
+  author: ObjectId(), // Reference đến user
+  tags: ["resources", "apps", "self-study"],
+  url: "url_to_resource",
+  likes: 45,
+  views: 1250,
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Collection Notifications - Thông báo
+db.notifications.insertOne({
+  _id: ObjectId(),
+  userId: ObjectId(), // Reference đến user nhận thông báo
+  title: "Bài học mới đã được thêm",
+  content: "Bài học 'Từ vựng gia đình' đã được thêm vào khóa học của bạn",
+  type: "course_update", // ["course_update", "reminder", "achievement", "system"]
+  isRead: false,
+  relatedItem: {
+    type: "lesson",
+    id: ObjectId() // ID của bài học mới
+  },
+  createdAt: new Date()
+});
+
+const { MongoClient, ObjectId } = require('mongodb');
+
+async function run() {
+  const uri = "your_mongodb_connection_string";
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+    const db = client.db("your_database_name");
+
+    // Collection Users - Thông tin người dùng
+    await db.collection('users').insertOne({
+      _id: ObjectId(),
+      username: "user123",
+      email: "user@example.com",
+      password: "hashedPassword", // Lưu ý: Nên mã hóa mật khẩu
+      fullName: "Nguyễn Văn A",
+      profileImage: "url_to_image",
+      role: "student", // ["student", "teacher", "admin"]
+      level: "beginner", // ["beginner", "intermediate", "advanced"]
+      joinedDate: new Date(),
+      lastLogin: new Date(),
+      progress: {
+        completedLessons: [ObjectId(), ObjectId()], // Danh sách bài học đã hoàn thành
+        completedCourses: [ObjectId()], // Danh sách khóa học đã hoàn thành
+        totalPoints: 250
+      },
+      subscription: {
+        type: "premium", // ["free", "basic", "premium"]
+        expiryDate: new Date()
+      }
+    });
+
+    // Collection Courses - Thông tin khóa học
+    await db.collection('courses').insertOne({
+      _id: ObjectId(),
+      title: "Tiếng Hàn cho người mới bắt đầu",
+      description: "Khóa học cơ bản dành cho người mới học tiếng Hàn",
+      level: "beginner", // ["beginner", "intermediate", "advanced"]
+      imageUrl: "url_to_course_image",
+      lessons: [ObjectId(), ObjectId()], // Danh sách các bài học
+      category: "grammar", // ["grammar", "vocabulary", "conversation", "writing"]
+      instructor: ObjectId(), // Reference đến user là giáo viên
+      duration: "8 weeks",
+      price: 150000,
+      rating: 4.7,
+      enrolledStudents: [ObjectId(), ObjectId()], // Danh sách học viên đã đăng ký
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection Lessons - Thông tin bài học
+    await db.collection('lessons').insertOne({
+      _id: ObjectId(),
+      title: "Bảng chữ cái Hangul",
+      description: "Học các nguyên âm và phụ âm tiếng Hàn",
+      courseId: ObjectId(), // Reference đến course
+      content: {
+        text: "Nội dung bài học về bảng chữ cái Hangul...",
+        videoUrl: "url_to_video",
+        attachments: ["url_to_pdf", "url_to_slides"]
+      },
+      order: 1, // Thứ tự bài học trong khóa học
+      duration: 30, // Thời lượng bài học (phút)
+      exercises: [ObjectId(), ObjectId()], // Danh sách bài tập
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection Exercises - Bài tập
+    await db.collection('exercises').insertOne({
+      _id: ObjectId(),
+      title: "Luyện tập chữ cái Hangul",
+      type: "quiz", // ["quiz", "writing", "listening", "speaking"]
+      lessonId: ObjectId(), // Reference đến lesson
+      questions: [
+        {
+          questionText: "Đâu là cách phát âm đúng của chữ 'ㄱ'?",
+          options: ["k/g", "n", "m", "l/r"],
+          correctAnswer: "k/g",
+          explanation: "ㄱ tương tự như âm k/g trong tiếng Việt"
+        },
+        {
+          questionText: "Chữ 'ㅏ' được phát âm như thế nào?",
+          options: ["a", "o", "u", "e"],
+          correctAnswer: "a",
+          explanation: "ㅏ tương tự như nguyên âm a trong tiếng Việt"
+        }
+      ],
+      points: 10, // Điểm cho bài tập này
+      timeLimit: 5 // Thời gian làm bài (phút)
+    });
+
+    // Collection Vocabulary - Từ vựng
+    await db.collection('vocabulary').insertOne({
+      _id: ObjectId(),
+      korean: "안녕하세요",
+      romanization: "annyeonghaseyo",
+      meaning: "Xin chào",
+      example: "안녕하세요, 저는 민수입니다.",
+      exampleTranslation: "Xin chào, tôi là Minsu.",
+      category: "greeting", // ["greeting", "food", "daily", "business", ...]
+      level: "beginner", // ["beginner", "intermediate", "advanced"]
+      imageUrl: "url_to_image",
+      audioUrl: "url_to_audio"
+    });
+
+    // Collection ProgressTracking - Theo dõi tiến độ học tập
+    await db.collection('progressTracking').insertOne({
+      _id: ObjectId(),
+      userId: ObjectId(), // Reference đến user
+      lessonId: ObjectId(), // Reference đến lesson
+      completed: true,
+      score: 85, // Điểm số
+      mistakes: [
+        {
+          exerciseId: ObjectId(),
+          questionIndex: 1,
+          userAnswer: "o",
+          correctAnswer: "a"
+        }
+      ],
+      timeTaken: 25, // Thời gian hoàn thành (phút)
+      completedAt: new Date()
+    });
+
+    // Collection Discussion - Diễn đàn thảo luận
+    await db.collection('discussion').insertOne({
+      _id: ObjectId(),
+      title: "Cách phát âm đúng chữ ㄹ",
+      content: "Xin chào mọi người, tôi đang gặp khó khăn với phát âm chữ ㄹ...",
+      author: ObjectId(), // Reference đến user
+      relatedCourse: ObjectId(), // Reference đến course (nếu có)
+      relatedLesson: ObjectId(), // Reference đến lesson (nếu có)
+      tags: ["pronunciation", "hangul", "consonants"],
+      comments: [
+        {
+          author: ObjectId(),
+          content: "Bạn có thể phát âm tương tự như âm 'r' trong tiếng Anh...",
+          createdAt: new Date()
+        }
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection FlashcardDecks - Bộ thẻ ghi nhớ
+    await db.collection('flashcardDecks').insertOne({
+      _id: ObjectId(),
+      title: "Từ vựng hàng ngày",
+      description: "Các từ vựng thông dụng hàng ngày",
+      level: "beginner",
+      category: "daily",
+      createdBy: ObjectId(), // Reference đến user
+      isPublic: true,
+      cards: [
+        {
+          front: "안녕하세요",
+          back: "Xin chào",
+          example: "안녕하세요, 저는 민수입니다.",
+          audioUrl: "url_to_audio"
+        },
+        {
+          front: "감사합니다",
+          back: "Cảm ơn",
+          example: "도와줘서 감사합니다.",
+          audioUrl: "url_to_audio"
+        }
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection StudyPlans - Kế hoạch học tập
+    await db.collection('studyPlans').insertOne({
+      _id: ObjectId(),
+      userId: ObjectId(), // Reference đến user
+      title: "Lộ trình học tiếng Hàn trong 3 tháng",
+      description: "Kế hoạch học chi tiết để đạt trình độ TOPIK I",
+      goals: ["Học xong bảng chữ cái", "Nắm vững 500 từ vựng cơ bản", "Giao tiếp cơ bản"],
+      schedule: [
+        {
+          week: 1,
+          focus: "Học bảng chữ cái và phát âm",
+          activities: ["Hoàn thành khóa Hangul", "Luyện viết 1 tiếng mỗi ngày"]
+        },
+        {
+          week: 2,
+          focus: "Ngữ pháp cơ bản và từ vựng chào hỏi",
+          activities: ["Học 20 từ mỗi ngày", "Luyện tập với flashcard"]
+        }
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection Resources - Tài nguyên học tập
+    await db.collection('resources').insertOne({
+      _id: ObjectId(),
+      title: "Top 10 ứng dụng học tiếng Hàn",
+      type: "article", // ["article", "video", "book", "link"]
+      content: "Nội dung bài viết về các ứng dụng học tiếng Hàn...",
+      author: ObjectId(), // Reference đến user
+      tags: ["resources", "apps", "self-study"],
+      url: "url_to_resource",
+      likes: 45,
+      views: 1250,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Collection Notifications - Thông báo
+    await db.collection('notifications').insertOne({
+      _id: ObjectId(),
+      userId: ObjectId(), // Reference đến user nhận thông báo
+      title: "Bài học mới đã được thêm",
+      content: "Bài học 'Từ vựng gia đình' đã được thêm vào khóa học của bạn",
+      type: "course_update", // ["course_update", "reminder", "achievement", "system"]
+      isRead: false,
+      relatedItem: {
+        type: "lesson",
+        id: ObjectId() // ID của bài học mới
+      },
+      createdAt: new Date()
+    });
+
+    console.log("Data inserted successfully");
+  } finally {
+    await client.close();
+  }
+}
+
+run().catch(console.dir);

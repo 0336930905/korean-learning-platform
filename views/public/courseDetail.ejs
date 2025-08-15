@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= course.title %> - Korea_DB</title>
+    
+    <!-- Enhanced Meta Tags -->
+    <meta name="description" content="<%= course.description %>">
+    <meta name="keywords" content="<%= course.title %>, <%= course.category %>, korean course">
+    
+    <!-- CSS Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: var(--dark-gradient);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 1rem 0;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .breadcrumb-nav a {
+            color: #4facfe;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .breadcrumb-nav a:hover {
+            color: white;
+        }
+
+        /* Course Header */
+        .course-header {
+            padding: 3rem 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .course-header-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .course-info h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .course-instructor {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-instructor h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-instructor p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Course Sidebar */
+        .course-sidebar {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .course-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .course-image {
+            width: 100%;
+            height: 200px;
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 107, 157, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .course-price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #4facfe;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 1rem;
+        }
+
+        .course-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.4);
+        }
+
+        .course-btn:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .course-features {
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .course-features h4 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .course-features ul {
+            list-style: none;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .course-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-features li i {
+            color: #4facfe;
+            width: 16px;
+        }
+
+        /* Course Content */
+        .course-content {
+            padding: 3rem 0;
+        }
+
+        .content-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .content-section p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        /* Related Courses */
+        .related-courses {
+            padding: 3rem 0;
+            background: rgba(15, 15, 35, 0.5);
+        }
+
+        .related-courses h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .related-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .related-card-image {
+            height: 150px;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .related-card-content {
+            padding: 1.5rem;
+        }
+
+        .related-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .related-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .related-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .related-price {
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .related-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .related-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .course-header-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .course-info h1 {
+                font-size: 2rem;
+            }
+
+            .course-sidebar {
+                position: static;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include Header -->
+    <%- include('../partials/Header') %>
+
+    <main>
+        <!-- Breadcrumb -->
+        <section class="breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb-nav">
+                    <a href="/"><i class="fas fa-home"></i></a>
+                    <span>/</span>
+                    <a href="/browse-courses">Khóa học</a>
+                    <span>/</span>
+                    <span><%= course.title %></span>
+                </nav>
+            </div>
+        </section>
+
+        <!-- Course Header -->
+        <section class="course-header">
+            <div class="container">
+                <div class="course-header-content">
+                    <div class="course-info" data-aos="fade-right">
+                        <h1><%= course.title %></h1>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-tag"></i> <%= course.category %></span>
+                            <span><i class="fas fa-signal"></i> 
+                                <% if (course.level === 'beginner') { %>Cơ bản
+                                <% } else if (course.level === 'intermediate') { %>Trung cấp
+                                <% } else { %>Nâng cao<% } %>
+                            </span>
+                            <span><i class="fas fa-clock"></i> <%= course.duration %></span>
+                            <span><i class="fas fa-users"></i> <%= course.enrolledCount || 0 %> học viên</span>
+                        </div>
+
+                        <div class="course-description">
+                            <%= course.description %>
+                        </div>
+
+                        <% if (course.instructor && course.instructor.fullName) { %>
+                            <div class="course-instructor">
+                                <h3><i class="fas fa-chalkboard-teacher"></i> Giảng viên</h3>
+                                <p><%= course.instructor.fullName %></p>
+                                <% if (course.instructor.email) { %>
+                                    <p><i class="fas fa-envelope"></i> <%= course.instructor.email %></p>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="course-sidebar" data-aos="fade-left">
+                        <div class="course-card">
+                            <div class="course-image">
+                                <% if (course.imageUrl && course.imageUrl !== '/images/default-course.jpg') { %>
+                                    <img src="<%= course.imageUrl %>" alt="<%= course.title %>">
+                                <% } else { %>
+                                    <div style="color: white; font-size: 3rem;">
+                                        <% if (course.category === 'Ngữ pháp') { %>
+                                            <i class="fas fa-book"></i>
+                                        <% } else if (course.category === 'Từ vựng') { %>
+                                            <i class="fas fa-spell-check"></i>
+                                        <% } else if (course.category === 'Nghe nói') { %>
+                                            <i class="fas fa-microphone"></i>
+                                        <% } else if (course.category === 'Viết') { %>
+                                            <i class="fas fa-pen"></i>
+                                        <% } else { %>
+                                            <i class="fas fa-graduation-cap"></i>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                                <div class="course-badge">
+                                    <i class="fas fa-users"></i> <%= course.enrolledCount || 0 %>
+                                </div>
+                            </div>
+
+                            <div class="course-price">
+                                <%= new Intl.NumberFormat('vi-VN').format(course.price) %>₫
+                            </div>
+
+                            <% if (user) { %>
+                                <% if (isEnrolled) { %>
+                                    <button class="course-btn" disabled style="margin-bottom: 1rem;">
+                                        <i class="fas fa-check"></i> Đã đăng ký
+                                    </button>
+                                    <a href="/student/<%= course._id %>/classes" class="course-btn" style="display: block; text-decoration: none; text-align: center;">
+                                        <i class="fas fa-chalkboard-teacher"></i> Xem danh sách lớp học
+                                    </a>
+                                <% } else { %>
+                                    <button class="course-btn" onclick="enrollCourse('<%= course._id %>')">
+                                        <i class="fas fa-shopping-cart"></i> Đăng ký khóa học
+                                    </button>
+                                <% } %>
+                            <% } else { %>
+                                <button class="course-btn" onclick="loginRequired()">
+                                    <i class="fas fa-sign-in-alt"></i> Đăng nhập để đăng ký
+                                </button>
+                            <% } %>
+
+                            <div class="course-features">
+                                <h4>Khóa học bao gồm:</h4>
+                                <ul>
+                                    <li><i class="fas fa-play-circle"></i> Video bài giảng chất lượng cao</li>
+                                    <li><i class="fas fa-file-alt"></i> Tài liệu học tập đầy đủ</li>
+                                    <li><i class="fas fa-tasks"></i> Bài tập thực hành</li>
+                                    <li><i class="fas fa-certificate"></i> Chứng chỉ hoàn thành</li>
+                                    <li><i class="fas fa-headset"></i> Hỗ trợ từ giảng viên</li>
+                                    <li><i class="fas fa-infinity"></i> Truy cập trọn đời</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Course Content -->
+        <section class="course-content">
+            <div class="container">
+                <div class="content-section" data-aos="fade-up">
+                    <h2>Mô tả chi tiết khóa học</h2>
+                    <p><%= course.description %></p>
+                    <p>
+                        Khóa học này được thiết kế dành cho người học ở cấp độ 
+                        <% if (course.level === 'beginner') { %>cơ bản
+                        <% } else if (course.level === 'intermediate') { %>trung cấp
+                        <% } else { %>nâng cao<% } %>,
+                        thuộc danh mục <strong><%= course.category %></strong> với thời lượng 
+                        <strong><%= course.duration %></strong>.
+                    </p>
+                </div>
+
+                <div class="content-section" data-aos="fade-up" data-aos-delay="100">
+                    <h2>Bạn sẽ học được gì?</h2>
+                    <p>Sau khi hoàn thành khóa học này, bạn sẽ có thể:</p>
+                    <ul style="color: rgba(255, 255, 255, 0.8); margin-left: 2rem;">
+                        <li>Nắm vững kiến thức cơ bản về <%= course.category.toLowerCase() %> tiếng Hàn</li>
+                        <li>Áp dụng kiến thức vào thực tế một cách hiệu quả</li>
+                        <li>Tự tin giao tiếp trong các tình huống thực tế</li>
+                        <li>Chuẩn bị tốt cho các kỳ thi tiếng Hàn</li>
+                    </ul>
+                </div>
+
+                <div class="content-section" data-aos="fade-up" data-aos-delay="200">
+                    <h2>Yêu cầu khóa học</h2>
+                    <ul style="color: rgba(255, 255, 255, 0.8); margin-left: 2rem;">
+                        <li>Có máy tính hoặc thiết bị di động kết nối internet</li>
+                        <li>Có khả năng đọc viết tiếng Việt cơ bản</li>
+                        <% if (course.level !== 'beginner') { %>
+                            <li>Đã có kiến thức tiếng Hàn cơ bản</li>
+                        <% } %>
+                        <li>Có động lực học tập và kiên trì</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Courses -->
+        <% if (relatedCourses && relatedCourses.length > 0) { %>
+            <section class="related-courses">
+                <div class="container">
+                    <h2 data-aos="fade-up">Khóa học liên quan</h2>
+                    <div class="related-grid">
+                        <% relatedCourses.forEach((relatedCourse, index) => { %>
+                            <div class="related-card" data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                                <div class="related-card-image">
+                                    <% if (relatedCourse.imageUrl && relatedCourse.imageUrl !== '/images/default-course.jpg') { %>
+                                        <img src="<%= relatedCourse.imageUrl %>" alt="<%= relatedCourse.title %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <% } else { %>
+                                        <div style="color: white; font-size: 2rem;">
+                                            <% if (relatedCourse.category === 'Ngữ pháp') { %>
+                                                <i class="fas fa-book"></i>
+                                            <% } else if (relatedCourse.category === 'Từ vựng') { %>
+                                                <i class="fas fa-spell-check"></i>
+                                            <% } else if (relatedCourse.category === 'Nghe nói') { %>
+                                                <i class="fas fa-microphone"></i>
+                                            <% } else if (relatedCourse.category === 'Viết') { %>
+                                                <i class="fas fa-pen"></i>
+                                            <% } else { %>
+                                                <i class="fas fa-graduation-cap"></i>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="related-card-content">
+                                    <h3><%= relatedCourse.title %></h3>
+                                    <p><%= relatedCourse.description.length > 80 ? relatedCourse.description.substring(0, 80) + '...' : relatedCourse.description %></p>
+                                    <div class="related-card-footer">
+                                        <div class="related-price">
+                                            <%= new Intl.NumberFormat('vi-VN').format(relatedCourse.price) %>₫
+                                        </div>
+                                        <button class="related-btn" onclick="viewCourseDetail('<%= relatedCourse._id %>')">
+                                            Xem chi tiết
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </section>
+        <% } %>
+    </main>
+
+    <!-- Include Footer -->
+    <%- include('../partials/Footer') %>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Function to view course detail
+        function viewCourseDetail(courseId) {
+            if (courseId) {
+                window.location.href = `/course-detail/${courseId}`;
+            } else {
+                alert('Không tìm thấy thông tin khóa học');
+            }
+        }
+
+        // Function to enroll course
+        function enrollCourse(courseId) {
+            if (confirm('Bạn có chắc chắn muốn đăng ký khóa học này?')) {
+                // TODO: Implement enrollment logic
+                alert('Chức năng đăng ký khóa học sẽ được triển khai trong phiên bản tiếp theo');
+            }
+        }
+
+        // Function for login required
+        function loginRequired() {
+            if (confirm('Bạn cần đăng nhập để đăng ký khóa học. Chuyển đến trang đăng nhập?')) {
+                window.location.href = '/login';
+            }
+        }
+    </script>
+</body>
+</html>

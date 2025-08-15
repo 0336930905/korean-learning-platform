@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korea_DB - Học Tiếng Hàn Theo Phong Cách Văn Hóa Hàn Quốc</title>
+    
+    <!-- Enhanced Meta Tags -->
+    <meta name="description" content="Nền tảng học tiếng Hàn hàng đầu với công nghệ AI và phong cách văn hóa Hàn Quốc đặc sắc">
+    <meta name="keywords" content="học tiếng hàn, korean culture, hanbok, seoul, 한국어, 한국문화">
+    
+    <!-- Enhanced CSS Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* ==== KOREAN CULTURAL COLOR PALETTE ==== */
+        :root {
+            /* Traditional Korean Colors */
+            --korea-red: #C2185B;
+            --korea-blue: #1976D2;
+            --korea-yellow: #FFB300;
+            --korea-white: #FFFFFF;
+            --korea-black: #263238;
+            
+            /* Modern Korean Palette */
+            --seoul-sky: #87CEEB;
+            --hanbok-pink: #FFB6C1;
+            --temple-brown: #8B4513;
+            --mountain-green: #228B22;
+            --cherry-blossom: #FFB7C5;
+            
+            /* Gradients */
+            --korean-sunset: linear-gradient(135deg, #FF6B9D 0%, #C2185B 50%, #8E24AA 100%);
+            --seoul-skyline: linear-gradient(180deg, #87CEEB 0%, #E1F5FE 50%, #F5F5F5 100%);
+            --hanbok-gradient: linear-gradient(45deg, #FFB6C1, #FF69B4, #C2185B);
+            
+            /* Glass Effects */
+            --glass-light: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            
+            /* Transitions */
+            --smooth-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --bounce-transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nanum Gothic', 'Noto Sans KR', 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--korea-black);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ==== HERO SECTION - SEOUL MODERN CITY ==== */
+        .hero-seoul {
+            min-height: 100vh;
+            background: url('/index/image-1753817529287.png') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--seoul-skyline);
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1000px;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .btn-hero {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: var(--bounce-transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary-hero {
+            background: var(--korean-sunset);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary-hero {
+            background: var(--glass-light);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Floating Korean Elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .korean-symbol {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            color: white;
+        }
+
+        .korean-symbol:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .korean-symbol:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
+        .korean-symbol:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+
+        /* ==== FEATURES SECTION - TRADITIONAL PALACE ==== */
+        .features-palace {
+            padding: 100px 0;
+            background: url('/index/image-1753817537554.png') center/cover no-repeat;
+            position: relative;
+        }
+
+        .palace-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+            z-index: 1;
+        }
+
+        .features-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--korea-red);
+            margin-bottom: 1rem;
+            font-family: 'Nanum Myeongjo', serif;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--korea-black);
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--glass-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: var(--smooth-transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hanbok-gradient);
+            opacity: 0;
+            transition: var(--smooth-transition);
+            z-index: -1;
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(194, 24, 91, 0.2);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--korean-sunset);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(194, 24, 91, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--korea-red);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--korea-black);
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Korean Traditional Pattern Overlay */
+        .korean-pattern-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(194, 24, 91, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 182, 193, 0.1) 0%, transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ==== COURSES SECTION - HANBOK CULTURE ==== */
+        .courses-hanbok {
+            padding: 100px 0;
+            background: url('/index/image-1753817544098.png') center/cover no-repeat;
+            position: relative;
+        }
+
+        .hanbok-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(25, 118, 210, 0.9) 0%, rgba(135, 206, 235, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .courses-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .course-card {
+            background: var(--glass-light);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--smooth-transition);
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .course-image {
+            height: 200px;
+            background: var(--korean-sunset);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-content {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .course-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--korea-yellow);
+        }
+
+        .course-btn {
+            background: var(--korean-sunset);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--bounce-transition);
+        }
+
+        .course-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4);
+        }
+
+        /* ==== CTA SECTION - MODERN SEOUL ==== */
+        .cta-seoul {
+            padding: 100px 0;
+            background: url('/index/image-1753817559673.png') center/cover no-repeat;
+            position: relative;
+            text-align: center;
+        }
+
+        .cta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(142, 36, 170, 0.9) 0%, rgba(194, 24, 91, 0.8) 100%);
+            z-index: 1;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-description {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background: white;
+            color: var(--korea-red);
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--bounce-transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ==== ANIMATIONS ==== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ==== RESPONSIVE DESIGN ==== */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2rem, 6vw, 3.5rem);
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid,
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .cta-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content,
+            .features-content,
+            .courses-content,
+            .cta-content {
+                padding: 0 1rem;
+            }
+            
+            .feature-card,
+            .course-card {
+                margin: 0 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include Header -->
+    <%- include('partials/Header') %>
+
+    <!-- Hero Section - Seoul Modern City -->
+    <section class="hero-seoul" id="home">
+        <div class="hero-overlay"></div>
+        <div class="floating-elements">
+            <div class="korean-symbol">한</div>
+            <div class="korean-symbol">국</div>
+            <div class="korean-symbol">어</div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Korea_DB</h1>
+            <p class="hero-subtitle">
+                🇰🇷 Học Tiếng Hàn Theo Phong Cách Văn Hóa Hàn Quốc Đặc Sắc
+                <br>Khám phá vẻ đẹp của ngôn ngữ và văn hóa xứ sở kim chi
+            </p>
+            <div class="hero-cta">
+                <a href="/browse-courses" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-graduation-cap"></i>
+                    Khám Phá Khóa Học
+                </a>
+                <a href="#features" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-play"></i>
+                    Tìm Hiểu Thêm
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Traditional Palace -->
+    <section class="features-palace" id="features">
+        <div class="palace-overlay"></div>
+        <div class="korean-pattern-overlay"></div>
+        
+        <div class="features-content">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title">Tính Năng Đặc Biệt</h2>
+                <p class="section-subtitle">
+                    Trải nghiệm học tiếng Hàn với công nghệ hiện đại và văn hóa truyền thống
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI Thông Minh</h3>
+                    <p class="feature-description">
+                        Hệ thống AI phân tích khả năng học và đưa ra lộ trình cá nhân hóa
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3 class="feature-title">Luyện Phát Âm</h3>
+                    <p class="feature-description">
+                        Công nghệ nhận diện giọng nói để hoàn thiện phát âm chuẩn Hàn Quốc
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Cộng Đồng</h3>
+                    <p class="feature-description">
+                        Kết nối với cộng đồng yêu thích văn hóa Hàn Quốc trên toàn thế giới
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="feature-title">Chứng Chỉ TOPIK</h3>
+                    <p class="feature-description">
+                        Chuẩn bị thi TOPIK với bộ đề thi thực tế và phân tích chi tiết
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="feature-title">Văn Hóa Hàn Quốc</h3>
+                    <p class="feature-description">
+                        Tìm hiểu sâu về văn hóa, lịch sử và phong tục tập quán Hàn Quốc
+                    </p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Học Mọi Lúc</h3>
+                    <p class="feature-description">
+                        Ứng dụng mobile để học tiếng Hàn mọi lúc, mọi nơi một cách tiện lợi
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section - Hanbok Culture -->
+    <section class="courses-hanbok" id="courses">
+        <div class="hanbok-overlay"></div>
+        
+        <div class="courses-content">
+            <div class="section-header" data-aos="fade-up">
+                <h2 class="section-title" style="color: white;">Khóa Học Phổ Biến</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">
+                    Các khóa học được thiết kế theo phong cách văn hóa Hàn Quốc độc đáo
+                </p>
+            </div>
+            
+            <div class="courses-grid">
+                <% if (typeof courses !== 'undefined' && courses && courses.length > 0) { %>
+                    <% courses.forEach((course) => { %>
+                        <div class="course-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="course-image" style="background-image: url('<%= course.image || '/images/default-course.jpg' %>');">
+                            </div>
+                            <div class="course-content">
+                                <h3 class="course-title"><%= course.title %></h3>
+                                <p class="course-description"><%= course.description %></p>
+                                <div class="course-meta">
+                                    <span class="course-price">
+                                        <%= course.price ? course.price.toLocaleString('vi-VN') + ' VNĐ' : 'Miễn phí' %>
+                                    </span>
+                                    <button class="course-btn" onclick="viewCourseDetail('<%= course._id %>')">
+                                        Xem Chi Tiết
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">Tiếng Hàn Cơ Bản</h3>
+                            <p class="course-description">Khóa học dành cho người mới bắt đầu với tiếng Hàn</p>
+                            <div class="course-meta">
+                                <span class="course-price">Miễn phí</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">Văn Hóa Hàn Quốc</h3>
+                            <p class="course-description">Tìm hiểu văn hóa và phong tục tập quán Hàn Quốc</p>
+                            <div class="course-meta">
+                                <span class="course-price">299,000 VNĐ</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="course-image"></div>
+                        <div class="course-content">
+                            <h3 class="course-title">TOPIK Prep</h3>
+                            <p class="course-description">Chuẩn bị thi chứng chỉ TOPIK hiệu quả</p>
+                            <div class="course-meta">
+                                <span class="course-price">599,000 VNĐ</span>
+                                <button class="course-btn">Xem Chi Tiết</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- Button xem tất cả khóa học -->
+            <div style="text-align: center; margin-top: 3rem;" data-aos="fade-up" data-aos-delay="400">
+                <a href="/browse-courses" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-list"></i>
+                    Xem Tất Cả Khóa Học
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section - Modern Seoul -->
+    <section class="cta-seoul">
+        <div class="cta-overlay"></div>
+        
+        <div class="cta-content" data-aos="fade-up">
+            <h2 class="cta-title">Bắt Đầu Hành Trình Học Tiếng Hàn</h2>
+            <p class="cta-description">
+                Tham gia cùng hàng nghìn học viên đang khám phá vẻ đẹp của ngôn ngữ và văn hóa Hàn Quốc
+            </p>
+            <a href="/browse-courses" class="cta-button">
+                🇰🇷 Đăng Ký Ngay Hôm Nay
+            </a>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <%- include('partials/Footer') %>
+
+    <!-- Enhanced JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS Animation
+        AOS.init({
+            duration: 1000,
+            offset: 120,
+            easing: 'ease-out-cubic',
+            once: true
+        });
+
+        // Function to view course detail
+        function viewCourseDetail(courseId) {
+            window.location.href = `/course-detail/${courseId}`;
+        }
+
+        // Add floating Korean characters animation
+        function createKoreanFloatingElements() {
+            const characters = ['한', '국', '어', '사', '랑', '해', '요', '감', '사', '합', '니', '다'];
+            const container = document.querySelector('.floating-elements');
+            
+            characters.forEach((char, index) => {
+                setTimeout(() => {
+                    const element = document.createElement('div');
+                    element.className = 'korean-symbol';
+                    element.textContent = char;
+                    element.style.left = Math.random() * 80 + 10 + '%';
+                    element.style.top = Math.random() * 80 + 10 + '%';
+                    element.style.animationDelay = Math.random() * 6 + 's';
+                    container.appendChild(element);
+                    
+                    // Remove element after animation
+                    setTimeout(() => {
+                        if (element.parentNode) {
+                            element.parentNode.removeChild(element);
+                        }
+                    }, 20000);
+                }, index * 2000);
+            });
+        }
+
+        // Initialize floating elements
+        createKoreanFloatingElements();
+        // Repeat every 30 seconds
+        setInterval(createKoreanFloatingElements, 30000);
+
+        // Add Korean greeting on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🇰🇷 안녕하세요! 한국어를 함께 배워요!');
+        });
+    </script>
+</body>
+</html>
+            position: relative;
+        }
+
+        .logo-vip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        .logo-vip:hover {
+            transform: perspective(1000px) rotateY(15deg) scale(1.1);
+        }
+
+        .nav-menu-vip {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-item-vip {
+            position: relative;
+        }
+
+        .nav-link-vip {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .nav-link-vip::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-premium);
+            border-radius: 50px;
+            opacity: 0;
+            transform: scale(0);
+            transition: var(--transition-bounce);
+        }
+
+        .nav-link-vip:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .nav-link-vip:hover {
+            color: var(--text-white);
+            transform: translateY(-3px) translateZ(15px);
+        }
+
+        .auth-section-vip {
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .btn-auth-vip {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition-bounce);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login-vip {
+            color: var(--text-white);
+            border: 2px solid var(--glass-border);
+            background: var(--glass-premium);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-register-vip {
+            background: var(--primary-korea);
+            color: white;
+            box-shadow: var(--shadow-glow);
+            border: none;
+        }
+
+        .btn-auth-vip:hover {
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* ==== HERO SECTION REVOLUTIONARY ==== */
+        .hero-ultimate {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--dark-elegant);
+        }
+
+        /* Enhanced 3D Background */
+        .hero-bg-ultimate {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape-3d {
+            position: absolute;
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            animation: shape3dFloat 12s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .shape-circle {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-square {
+            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+
+        .shape-diamond {
+            width: 80px;
+            height: 80px;
+            transform: rotate(45deg);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        .shape-hexagon {
+            width: 90px;
+            height: 90px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            top: 30%;
+            right: 25%;
+            animation-delay: 9s;
+        }
+
+        /* Korean Characters Enhanced */
+        .korean-chars-ultimate {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .korean-char-ultimate {
+            position: absolute;
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.15;
+            animation: koreanUltimate 20s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
+        }
+
+        /* Hero Content Enhanced */
+        .hero-content-ultimate {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title-ultimate {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 900;
+            margin-bottom: 2.5rem;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .title-word-ultimate {
+            display: inline-block;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
+            transform: translateZ(80px);
+            animation: titleUltimate 4s ease-in-out infinite alternate;
+            margin: 0 0.8rem;
+            position: relative;
+        }
+
+        .title-word-ultimate::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-pink);
+            opacity: 0;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .title-word-ultimate:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        .title-word-ultimate:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        .hero-subtitle-ultimate {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateZ(50px);
+            line-height: 1.8;
+        }
+
+        .hero-cta-ultimate {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            margin: 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-ultimate {
+            padding: 1.2rem 3rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            min-width: 220px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .btn-primary-ultimate {
+            background: var(--primary-korea);
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary-ultimate {
+            background: var(--glass-premium);
+            color: var(--text-white);
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+        }
+
+        .btn-hero-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-hero-ultimate:hover::before {
+            left: 100%;
+        }
+
+        .btn-hero-ultimate:hover {
+            transform: translateY(-8px) scale(1.08) rotateX(15deg);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* Enhanced Stats Section */
+        .hero-stats-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2.5rem;
+            margin-top: 5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-blue);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .stat-card-ultimate:hover::before {
+            opacity: 0.1;
+        }
+
+        .stat-card-ultimate:hover {
+            transform: translateY(-15px) rotateX(10deg) rotateY(5deg) scale(1.05);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .stat-number-ultimate {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+        }
+
+        .stat-label-ultimate {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ==== FEATURES SECTION VIP PRO ==== */
+        .features-ultimate {
+            padding: 150px 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features-bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .feature-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            opacity: 0.1;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 { width: 300px; height: 300px; top: 10%; left: 5%; animation-delay: 0s; }
+        .orb-2 { width: 200px; height: 200px; top: 60%; right: 10%; animation-delay: 7s; }
+        .orb-3 { width: 150px; height: 150px; bottom: 20%; left: 15%; animation-delay: 14s; }
+
+        .section-header-ultimate {
+            text-align: center;
+            margin-bottom: 100px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title-ultimate {
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-subtitle-ultimate {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .features-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 3.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-korea);
+            opacity: 0;
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .feature-card-ultimate:hover::before {
+            opacity: 0.05;
+        }
+
+        .feature-card-ultimate:hover {
+            transform: translateY(-25px) rotateX(15deg) rotateY(8deg) scale(1.03);
+            box-shadow: var(--shadow-premium);
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+
+        .feature-icon-ultimate {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 2.5rem;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            transform: translateZ(50px);
+            transition: var(--transition-bounce);
+            box-shadow: 0 25px 50px rgba(79, 172, 254, 0.4);
+            position: relative;
+        }
+
+        .feature-icon-ultimate::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .feature-card-ultimate:hover .feature-icon-ultimate {
+            transform: translateZ(70px) rotateY(360deg) scale(1.1);
+        }
+
+        .feature-title-ultimate {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-white);
+        }
+
+        .feature-description-ultimate {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* ==== COURSES SECTION PRO ==== */
+        .courses-ultimate {
+            padding: 150px 0;
+            background: var(--dark-elegant);
+            position: relative;
+        }
+
+        .courses-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .course-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .course-card-ultimate:hover {
+            transform: translateY(-20px) rotateX(8deg) scale(1.02);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .course-image-ultimate {
+            height: 220px;
+            background: var(--primary-korea);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) skewX(-25deg);
+            transition: var(--transition-smooth);
+        }
+
+        .course-card-ultimate:hover .course-image-ultimate::before {
+            transform: translateX(200%) skewX(-25deg);
+        }
+
+        .course-content-ultimate {
+            padding: 2.5rem;
+        }
+
+        .course-title-ultimate {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: var(--text-white);
+        }
+
+        .course-description-ultimate {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .course-meta-ultimate {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-price-ultimate {
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .course-btn-ultimate {
+            padding: 0.8rem 1.8rem;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        }
+
+        .course-btn-ultimate:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.5);
+        }
+
+        /* ==== TESTIMONIALS ULTIMATE ==== */
+        .testimonials-ultimate {
+            padding: 150px 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .testimonials-grid-ultimate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .testimonial-card-ultimate {
+            background: var(--glass-premium);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            transition: var(--transition-bounce);
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .testimonial-card-ultimate::before {
+            content: '"';
+            position: absolute;
+            top: 1.5rem;
+            left: 2.5rem;
+            font-size: 5rem;
+            background: var(--primary-korea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: serif;
+            opacity: 0.7;
+        }
+
+        .testimonial-card-ultimate:hover {
+            transform: translateY(-15px) rotateX(8deg);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .testimonial-content-ultimate {
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+            font-size: 1.05rem;
+        }
+
+        .testimonial-author-ultimate {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .author-avatar-ultimate {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--primary-korea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .author-info-ultimate h4 {
+            color: var(--text-white);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .author-info-ultimate p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ==== CTA SECTION ULTIMATE ==== */
+        .cta-ultimate {
+            padding: 150px 0;
+            background: var(--primary-korea);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-bg-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cta-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: ctaParticle 10s linear infinite;
+        }
+
+        .cta-content-ultimate {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cta-title-ultimate {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 900;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-description-ultimate {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 4rem;
+            line-height: 1.7;
+        }
+
+        .cta-button-ultimate {
+            padding: 1.5rem 4rem;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button-ultimate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(118, 75, 162, 0.1), transparent);
+            transition: var(--transition-smooth);
+        }
+
+        .cta-button-ultimate:hover::before {
+            left: 100%;
+        }
+
+        .cta-button-ultimate:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ==== ENHANCED ANIMATIONS ==== */
+        @keyframes logoGlow {
+            0% { opacity: 0.3; transform: translateY(-50%) scale(1); }
+            100% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { 
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shape3dFloat {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+            25% {
+                transform: translateY(-30px) rotateX(15deg) rotateY(15deg) rotateZ(5deg);
+            }
+            50% {
+                transform: translateY(-20px) rotateX(-10deg) rotateY(-10deg) rotateZ(-5deg);
+            }
+            75% {
+                transform: translateY(-40px) rotateX(10deg) rotateY(-15deg) rotateZ(10deg);
+            }
+        }
+
+        @keyframes koreanUltimate {
+            0% {
+                transform: translateY(100vh) rotateZ(0deg) scale(0.5);
+                opacity: 0;
+            }
+            5% { opacity: 0.15; }
+            95% { opacity: 0.15; }
+            100% {
+                transform: translateY(-50px) rotateZ(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes titleUltimate {
+            0% {
+                transform: translateZ(80px) scale(1) rotateY(0deg);
+            }
+            100% {
+                transform: translateZ(100px) scale(1.02) rotateY(2deg);
+            }
+        }
+
+        @keyframes titleGlow {
+            0% { opacity: 0; }
+            100% { opacity: 0.1; }
+        }
+
+        @keyframes orbFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            33% {
+                transform: translateY(-50px) scale(1.1);
+            }
+            66% {
+                transform: translateY(-30px) scale(0.9);
+            }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes ctaParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ==== RESPONSIVE DESIGN ENHANCED ==== */
+        @media (max-width: 768px) {
+            .nav-menu-vip {
+                display: none;
+            }
+            
+            .hero-cta-ultimate {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            
+            .hero-stats-ultimate {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .features-grid-ultimate {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .feature-card-ultimate {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats-ultimate {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container-vip {
+                padding: 0 1rem;
+            }
+            
+            .btn-hero-ultimate {
+                min-width: 180px;
+                padding: 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include Header -->
+    <%- include('partials/Header') %>
+
+
+    <!-- Revolutionary Hero Section -->
+    <section class="hero-ultimate" id="home">
+        <!-- Enhanced 3D Background -->
+        <div class="hero-bg-ultimate">
+            <!-- Particles -->
+            <div class="particles-container" id="particlesContainer"></div>
+            
+            <!-- 3D Floating Shapes -->
+            <div class="floating-shapes">
+                <div class="shape-3d shape-circle"></div>
+                <div class="shape-3d shape-square"></div>
+                <div class="shape-3d shape-diamond"></div>
+                <div class="shape-3d shape-hexagon"></div>
+            </div>
+            
+            <!-- Korean Characters Ultimate -->
+            <div class="korean-chars-ultimate" id="koreanCharsContainer"></div>
+        </div>
+
+        <!-- Hero Content Ultimate -->
+        <div class="hero-content-ultimate">
+            <h1 class="hero-title-ultimate">
+                <span class="title-word-ultimate">Học</span>
+                <span class="title-word-ultimate">Tiếng</span>
+                <span class="title-word-ultimate">Hàn</span>
+            </h1>
+            
+            <p class="hero-subtitle-ultimate">
+                Khám phá phương pháp học tiếng Hàn cách mạng với công nghệ 3D, AI thông minh 
+                và trải nghiệm học tập đỉnh cao. Chinh phục ngôn ngữ Hàn Quốc một cách hiệu quả và thú vị.
+            </p>
+            
+            <div class="hero-cta-ultimate">
+                <a href="/register" class="btn-hero-ultimate btn-primary-ultimate">
+                    <i class="fas fa-rocket"></i> Bắt đầu học ngay
+                </a>
+                <a href="#features" class="btn-hero-ultimate btn-secondary-ultimate scroll-link">
+                    <i class="fas fa-play-circle"></i> Xem demo
+                </a>
+            </div>
+            
+            <!-- Enhanced Hero Stats -->
+            <div class="hero-stats-ultimate">
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                    <span class="stat-number-ultimate" data-count="8500">0</span>
+                    <span class="stat-label-ultimate">Học viên thành công</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                    <span class="stat-number-ultimate" data-count="750">0</span>
+                    <span class="stat-label-ultimate">Bài học 3D</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                    <span class="stat-number-ultimate" data-count="95">0</span>
+                    <span class="stat-label-ultimate">Giáo viên chuyên nghiệp</span>
+                </div>
+                <div class="stat-card-ultimate" data-aos="fade-up" data-aos-delay="400">
+                    <span class="stat-number-ultimate" data-count="99">0</span>
+                    <span class="stat-label-ultimate">% Hài lòng</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate Features Section -->
+    <section class="features-ultimate" id="features">
+        <!-- Background Effects -->
+        <div class="features-bg-effects">
+            <div class="feature-orb orb-1"></div>
+            <div class="feature-orb orb-2"></div>
+            <div class="feature-orb orb-3"></div>
+        </div>
+        
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Tại sao chọn Korea_DB?</h2>
+            <p class="section-subtitle-ultimate">
+                Nền tảng học tiếng Hàn đầu tiên tại Việt Nam ứng dụng công nghệ 3D và AI, 
+                mang đến trải nghiệm học tập không giới hạn
+            </p>
+        </div>
+        
+        <div class="features-grid-ultimate">
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title-ultimate">AI Thông minh Siêu việt</h3>
+                <p class="feature-description-ultimate">
+                    Hệ thống AI tiên tiến phân tích từng hành vi học tập, đề xuất lộ trình cá nhân hóa 
+                    và tối ưu hóa tiến độ học theo khả năng của bạn.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Công nghệ 3D Cách mạng</h3>
+                <p class="feature-description-ultimate">
+                    Trải nghiệm học tập 3D sống động chưa từng có, giúp ghi nhớ từ vựng và ngữ pháp 
+                    hiệu quả gấp 10 lần phương pháp truyền thống.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-microphone-alt"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Nhận diện Giọng nói Chuẩn</h3>
+                <p class="feature-description-ultimate">
+                    Công nghệ nhận diện giọng nói AI chuẩn Seoul, chính xác đến 99.8%, 
+                    giúp bạn phát âm như người bản xứ.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Cộng đồng Học tập Sôi nổi</h3>
+                <p class="feature-description-ultimate">
+                    Kết nối với hơn 8,500 học viên, tham gia các hoạt động tương tác, 
+                    thực hành giao tiếp và chia sẻ kinh nghiệm học tập.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Chứng chỉ Quốc tế Uy tín</h3>
+                <p class="feature-description-ultimate">
+                    Chứng chỉ được công nhận bởi Viện Ngôn ngữ Hàn Quốc, 
+                    mở ra cơ hội việc làm và du học tại Hàn Quốc.
+                </p>
+            </div>
+            
+            <div class="feature-card-ultimate" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon-ultimate">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title-ultimate">Học Mọi lúc Mọi nơi</h3>
+                <p class="feature-description-ultimate">
+                    Ứng dụng mobile cao cấp, đồng bộ trên mọi thiết bị, 
+                    học offline và online với trải nghiệm mượt mà tuyệt đối.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate Courses Section -->
+    <section class="courses-ultimate" id="courses">
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Khóa học Nổi bật</h2>
+            <p class="section-subtitle-ultimate">
+                Top 3 khóa học được yêu thích nhất với số lượng học viên đăng ký cao nhất
+            </p>
+        </div>
+        
+        <div class="courses-grid-ultimate">
+            <% if (courses && courses.length > 0) { %>
+                <% courses.forEach((course, index) => { %>
+                    <div class="course-card-ultimate" data-aos="fade-up" data-aos-delay="<%= (index + 1) * 100 %>">
+                        <div class="course-image-ultimate">
+                            <% if (course.imageUrl && course.imageUrl !== '/images/default-course.jpg') { %>
+                                <img src="<%= course.imageUrl %>" alt="<%= course.title %>" style="width: 100%; height: 100%; object-fit: cover;">
+                            <% } else { %>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 3rem;">
+                                    <% if (course.category === 'Ngữ pháp') { %>
+                                        <i class="fas fa-book"></i>
+                                    <% } else if (course.category === 'Từ vựng') { %>
+                                        <i class="fas fa-spell-check"></i>
+                                    <% } else if (course.category === 'Nghe nói') { %>
+                                        <i class="fas fa-microphone"></i>
+                                    <% } else if (course.category === 'Viết') { %>
+                                        <i class="fas fa-pen"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-graduation-cap"></i>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                            <!-- Hiển thị badge số học viên -->
+                            <div style="position: absolute; top: 10px; right: 10px; background: rgba(255, 107, 157, 0.9); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                                <i class="fas fa-users"></i> <%= course.enrolledCount || 0 %> học viên
+                            </div>
+                        </div>
+                        <div class="course-content-ultimate">
+                            <h3 class="course-title-ultimate"><%= course.title %></h3>
+                            <p class="course-description-ultimate">
+                                <%= course.description.length > 120 ? course.description.substring(0, 120) + '...' : course.description %>
+                            </p>
+                            <div style="margin: 10px 0; color: rgba(255, 255, 255, 0.7);">
+                                <span><i class="fas fa-tag"></i> <%= course.category %></span>
+                                <span style="margin-left: 15px;"><i class="fas fa-signal"></i> 
+                                    <% if (course.level === 'beginner') { %>Cơ bản<% } else if (course.level === 'intermediate') { %>Trung cấp<% } else { %>Nâng cao<% } %>
+                                </span>
+                                <span style="margin-left: 15px;"><i class="fas fa-clock"></i> <%= course.duration %></span>
+                            </div>
+                            <% if (course.instructor && course.instructor.fullName) { %>
+                                <div style="margin: 10px 0; color: rgba(255, 255, 255, 0.8);">
+                                    <i class="fas fa-chalkboard-teacher"></i> Giảng viên: <%= course.instructor.fullName %>
+                                </div>
+                            <% } %>
+                            <div class="course-meta-ultimate">
+                                <span class="course-price-ultimate">
+                                    <%= new Intl.NumberFormat('vi-VN').format(course.price) %>₫
+                                </span>
+                                <button class="course-btn-ultimate" onclick="viewCourseDetail('<%= course._id %>')">
+                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- Hiển thị khi không có khóa học -->
+                <div style="grid-column: 1 / -1; text-align: center; color: rgba(255, 255, 255, 0.7); padding: 3rem;">
+                    <i class="fas fa-graduation-cap" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3>Chưa có khóa học nổi bật</h3>
+                    <p>Hiện tại chưa có khóa học nào trong hệ thống.</p>
+                </div>
+            <% } %>
+        </div>
+        
+        <!-- Button xem tất cả khóa học -->
+        <div style="text-align: center; margin-top: 3rem;" data-aos="fade-up" data-aos-delay="400">
+            <a href="/browse-courses" class="cta-button-ultimate" style="display: inline-block; text-decoration: none;">
+                <i class="fas fa-th-large"></i> Xem tất cả khóa học
+            </a>
+        </div>
+    </section>
+
+    <!-- Ultimate Testimonials -->
+    <section class="testimonials-ultimate" id="testimonials">
+        <div class="section-header-ultimate" data-aos="fade-up">
+            <h2 class="section-title-ultimate">Học viên Thành công nói gì</h2>
+            <p class="section-subtitle-ultimate">
+                Hàng nghìn câu chuyện thành công từ cộng đồng Korea_DB trên toàn thế giới
+            </p>
+        </div>
+        
+        <div class="testimonials-grid-ultimate">
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="100">
+                <p class="testimonial-content-ultimate">
+                    Korea_DB đã thay đổi hoàn toàn cuộc đời tôi! Công nghệ 3D thật kỳ diệu, 
+                    tôi học như đang chơi game. Chỉ sau 6 tháng, tôi đã đạt TOPIK Level 5 
+                    và nhận được học bổng toàn phần tại đại học Seoul National.
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">NH</div>
+                    <div class="author-info-ultimate">
+                        <h4>Nguyễn Thanh Hà</h4>
+                        <p>Du học sinh Seoul National University</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="200">
+                <p class="testimonial-content-ultimate">
+                    Phương pháp học 3D của Korea_DB quá tuyệt vời! AI phân tích điểm yếu 
+                    và tự động điều chỉnh bài học phù hợp. Tôi đã thăng tiến từ nhân viên 
+                    thành trưởng phòng tại công ty Samsung chỉ trong 1 năm.
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">TQ</div>
+                    <div class="author-info-ultimate">
+                        <h4>Trần Minh Quân</h4>
+                        <p>Trưởng phòng Samsung Electronics</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card-ultimate" data-aos="fade-up" data-aos-delay="300">
+                <p class="testimonial-content-ultimate">
+                    Tôi đã thử nhiều ứng dụng học tiếng Hàn nhưng không có cái nào bằng Korea_DB. 
+                    Giao diện đẹp, tính năng rich, đặc biệt là cộng đồng học tập rất tích cực. 
+                    Giờ tôi đã thành thạo 4 ngôn ngữ và tiếng Hàn là mạnh nhất!
+                </p>
+                <div class="testimonial-author-ultimate">
+                    <div class="author-avatar-ultimate">PT</div>
+                    <div class="author-info-ultimate">
+                        <h4>Phạm Thu Trang</h4>
+                        <p>Translator chuyên nghiệp</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimate CTA -->
+    <section class="cta-ultimate">
+        <!-- Background Effects -->
+        <div class="cta-bg-effects" id="ctaEffects"></div>
+        
+        <div class="cta-content-ultimate" data-aos="fade-up">
+            <h2 class="cta-title-ultimate">Bắt đầu Hành trình Chinh phục Tiếng Hàn</h2>
+            <p class="cta-description-ultimate">
+                Đăng ký ngay để nhận <strong>14 ngày học thử MIỄN PHÍ</strong> và trải nghiệm 
+                phương pháp học tiếng Hàn cách mạng với công nghệ 3D và AI tiên tiến nhất thế giới.
+            </p>
+            <a href="/register" class="cta-button-ultimate">
+                <i class="fas fa-crown"></i> Đăng ký VIP miễn phí
+            </a>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <%- include('partials/Footer') %>
+
+    <!-- Enhanced JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS with enhanced settings
+        AOS.init({
+            duration: 1200,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 120
+        });
+
+        // Enhanced Header scroll effect
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 20000);
+            }, 800);
+        }
+
+        // Enhanced Korean characters animation
+        function createKoreanChars() {
+            const container = document.getElementById('koreanCharsContainer');
+            const chars = [
+                '안녕하세요', '한국어', '공부', '감사합니다', '사랑해요', 
+                '친구', '행복', '가족', '학습', '교육', '꿈', '희망', 
+                '성공', '미래', '도전', '열정', '노력', '발전'
+            ];
+            
+            setInterval(() => {
+                const char = document.createElement('div');
+                char.className = 'korean-char-ultimate';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.fontSize = (Math.random() * 2 + 2) + 'rem';
+                char.style.animationDuration = (Math.random() * 8 + 15) + 's';
+                
+                container.appendChild(char);
+                
+                setTimeout(() => {
+                    char.remove();
+                }, 25000);
+            }, 3000);
+        }
+
+        // Enhanced counter animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number-ultimate[data-count]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        let current = 0;
+                        const increment = target / 150;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            counter.textContent = Math.floor(current);
+                            
+                            if (current >= target) {
+                                counter.textContent = target;
+                                clearInterval(timer);
+                            }
+                        }, 15);
+                        
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            counters.forEach(counter => observer.observe(counter));
+        }
+
+        // Create CTA particles
+        function createCTAParticles() {
+            const container = document.getElementById('ctaEffects');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'cta-particle';
+                
+                const size = Math.random() * 6 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 15000);
+            }, 1200);
+        }
+
+        // Enhanced smooth scroll for navigation links
+        document.querySelectorAll('.scroll-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 90;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Enhanced parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.shape-3d');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = (index + 1) * 0.05;
+                element.style.transform += ` translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Enhanced 3D mouse tilt effect
+        function addTiltEffect() {
+            const tiltElements = document.querySelectorAll(
+                '.feature-card-ultimate, .course-card-ultimate, .testimonial-card-ultimate, .stat-card-ultimate'
+            );
+            
+            tiltElements.forEach(element => {
+                element.addEventListener('mousemove', (e) => {
+                    const rect = element.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 15;
+                    const rotateY = (centerX - x) / 15;
+                    
+                    element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                });
+            });
+        }
+
+        // Function to view course detail
+        function viewCourseDetail(courseId) {
+            if (courseId) {
+                window.location.href = `window.location.href = `/course-detail/${courseId}`;`;
+            } else {
+                alert('Không tìm thấy thông tin khóa học');
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createKoreanChars();
+            animateCounters();
+            createParticles();
+            createCTAParticles();
+            addTiltEffect();
+        });
+    </script>
+</body>
+</html>
